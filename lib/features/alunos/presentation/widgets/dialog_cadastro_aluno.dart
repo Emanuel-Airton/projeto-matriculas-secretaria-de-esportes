@@ -220,20 +220,20 @@ class _DialogCadastroAlunoState extends ConsumerState<DialogCadastroAluno> {
                 //  double renda = double.parse(controllerRenda.text);
                 try {
                   AlunoModel alunoModel = AlunoModel(
-                      nome: controllerNomeAluno.text,
-                      sexo: 'm',
-                      telefone: controllerTelefone.text,
-                      nascimento: dataNascimento,
-                      rg: controllerRg.text,
-                      cpf: controllercpf.text,
-                      endereco: controllerEndereco.text,
-                      escola: controllerEscola.text,
-                      turno: controllerTurno.text,
-                      nomeMae: controllerNomeMae.text,
-                      rgMae: controllerRgMae.text,
-                      cpfMae: controllerCpfMae.text,
-                      postoSaude: controllerPostoSaude.text,
-                      renda: 1);
+                    nome: controllerNomeAluno.text,
+                    sexo: 'm',
+                    telefone: controllerTelefone.text,
+                    nascimento: dataNascimento,
+                    rg: controllerRg.text,
+                    cpf: controllercpf.text,
+                    endereco: controllerEndereco.text,
+                    escola: controllerEscola.text,
+                    turno: controllerTurno.text,
+                    nomeMae: controllerNomeMae.text,
+                    rgMae: controllerRgMae.text,
+                    cpfMae: controllerCpfMae.text,
+                    postoSaude: controllerPostoSaude.text,
+                  );
                   ref.read(alunoUseCaseProvider).cadastrarAluno(alunoModel);
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Center(

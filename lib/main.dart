@@ -7,7 +7,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 void main() async {
   await dotenv.load(fileName: ".env");
   String apiKey = dotenv.env['API_KEY']!;
-
   await Supabase.initialize(
       url: 'https://tpnpgqawlipmufjiuneo.supabase.co', anonKey: apiKey);
   runApp(ProviderScope(child: MyApp()));

@@ -8,7 +8,6 @@ class ModalidadesRepository {
   final _supabase = Supabase.instance.client;
 
   Future<List<ModalidadesModel>> buscarModalidade() async {
-    await buscar();
     final response = await _supabase.from('modalidades').select();
     return response.map<ModalidadesModel>((json) {
       debugPrint(json.toString());
@@ -16,17 +15,28 @@ class ModalidadesRepository {
     }).toList();
   }
 
-  buscar() async {
+  Future<List<MatriculaModalidadesModel>> buscarMatriculaModalidadeFiltro(
+      int id) async {
     final response = await _supabase
         .from('matricula_modalidade')
-        .select('id, matriculas(alunos(nome)), modalidades(nome)');
+        .select(
+            'id, matriculas(alunos(nome, telefone, cpf, sexo, nascimento, rg, cpf)), modalidades(nome)')
+        .filter('modalidade_id', 'eq', id);
+    return response.map<MatriculaModalidadesModel>(
+      (json) {
+        debugPrint('teste filtro: ${json.toString()}');
+        return MatriculaModalidadesModel.fromJson(json);
+      },
+    ).toList();
+  }
+
+  Future<List<MatriculaModalidadesModel>> buscarMatriculaModalidade() async {
+    final response = await _supabase.from('matricula_modalidade').select(
+        'id, matriculas(alunos(nome, telefone, cpf, sexo, nascimento, rg, cpf)), modalidades(nome)');
     return response.map<MatriculaModalidadesModel>(
       (json) {
         debugPrint('teste: ${json.toString()}');
-        return MatriculaModalidadesModel.teste(
-            matriculaId: json['id'],
-            // modalidadeId: json['modalidade_id'],
-            idAluno: json['matricula_id']);
+        return MatriculaModalidadesModel.fromJson(json);
       },
     ).toList();
   }

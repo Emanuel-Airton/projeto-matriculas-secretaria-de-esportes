@@ -8,4 +8,12 @@ class ModalidadesUsecase {
   Future<List<ModalidadesModel>> buscarModalidade() {
     return _repository.buscarModalidade();
   }
+
+  buscarMatriculaModalidade() {
+    return _repository.buscarMatriculaModalidade();
+  }
+
+  buscarMatriculaModalidadeFiltro(int id) {
+    return _repository.buscarMatriculaModalidadeFiltro(id);
+  }
 }

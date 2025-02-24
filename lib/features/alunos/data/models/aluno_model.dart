@@ -13,44 +13,46 @@ class AlunoModel {
   String? cpfMae;
   String? rgMae;
   String? postoSaude;
-  double? renda;
+  // double? renda;
 
   AlunoModel.semDados();
-  AlunoModel(
-      {this.id,
-      required this.nome,
-      required this.sexo,
-      required this.telefone,
-      required this.nascimento,
-      required this.rg,
-      required this.cpf,
-      required this.endereco,
-      required this.escola,
-      required this.turno,
-      required this.nomeMae,
-      required this.rgMae,
-      required this.cpfMae,
-      required this.postoSaude,
-      required this.renda});
+  AlunoModel({
+    this.id,
+    required this.nome,
+    required this.sexo,
+    required this.telefone,
+    required this.nascimento,
+    required this.rg,
+    required this.cpf,
+    required this.endereco,
+    required this.escola,
+    required this.turno,
+    required this.nomeMae,
+    required this.rgMae,
+    required this.cpfMae,
+    required this.postoSaude,
+    //required this.renda
+  });
 
   // Converte JSON para AlunoModel
   factory AlunoModel.fromJson(Map<String, dynamic> json, DateTime dateTime) {
     return AlunoModel(
-        id: json['id'],
-        nome: json['nome'],
-        sexo: json['sexo'],
-        telefone: json['telefone'],
-        nascimento: dateTime,
-        rg: json['rg'],
-        cpf: json['cpf'],
-        endereco: json['endereço'],
-        escola: json['escola'],
-        turno: json['turno'],
-        nomeMae: json['nome_mae'],
-        rgMae: json['rg_mae'],
-        cpfMae: json['cpf_mae'],
-        postoSaude: json['posto_saude'],
-        renda: json['renda']);
+      id: json['id'],
+      nome: json['nome'],
+      sexo: json['sexo'],
+      telefone: json['telefone'],
+      nascimento: dateTime,
+      rg: json['rg'],
+      cpf: json['cpf'],
+      endereco: json['endereço'],
+      escola: json['escola'],
+      turno: json['turno'],
+      nomeMae: json['nome_mae'],
+      rgMae: json['rg_mae'],
+      cpfMae: json['cpf_mae'],
+      postoSaude: json['posto_saude'],
+      // renda: json['renda']
+    );
   }
 
   // Converte AlunoModel para JSON
@@ -70,7 +72,7 @@ class AlunoModel {
       'rg_mae': rgMae,
       'cpf_mae': cpf,
       'posto_saude': postoSaude,
-      'renda': renda
+      //'renda': renda
     };
   }
 }
