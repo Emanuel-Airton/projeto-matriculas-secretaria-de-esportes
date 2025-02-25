@@ -1,30 +1,32 @@
 import '../../../alunos/data/models/aluno_model.dart';
 
 class MatriculaModalidadesModel {
+  int? id;
   int? matriculaId;
   String? modalidadeNome;
-  // String? nomeAluno;
-  // int? idAluno;
   int? modalidadeId;
   AlunoModel? aluno; // Instância de AlunoModel
+  DateTime? dataMatricula;
 
   MatriculaModalidadesModel(
       {required this.matriculaId, required this.modalidadeId, this.aluno});
 
   MatriculaModalidadesModel.teste({
+    required this.id,
     required this.matriculaId,
     required this.modalidadeNome,
-    //  required this.nomeAluno,
+    this.dataMatricula,
     this.aluno,
   });
 
   factory MatriculaModalidadesModel.fromJson(Map<String, dynamic> json) {
     return MatriculaModalidadesModel.teste(
-        matriculaId: json['id'],
-        modalidadeNome: json['modalidades']['nome'],
-        //   nomeAluno: json['matriculas']['alunos']['nome'],
-        aluno:
-            AlunoModel.fromJson(json['matriculas']['alunos'], DateTime.now()));
+      id: json['id'],
+      matriculaId: json['matricula_id'],
+      dataMatricula: DateTime.parse(json['matriculas']['data_matricula']),
+      modalidadeNome: json['modalidades']['nome'],
+      aluno: AlunoModel.fromJson(json['matriculas']['alunos']),
+    );
   }
   Map<String, dynamic> toJson() {
     return {

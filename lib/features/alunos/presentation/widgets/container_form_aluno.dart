@@ -34,17 +34,17 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
   AlunoModel alunoModel = AlunoModel.semDados();
   @override
   void initState() {
-    controllerNomeAluno.text = widget.alunoModel.nome!;
-    controllerTelefone.text = widget.alunoModel.telefone!;
-    controllercpf.text = widget.alunoModel.cpf!;
-    controllerRg.text = widget.alunoModel.rg!;
-    controllerEscola.text = widget.alunoModel.escola!;
-    controllerEndereco.text = widget.alunoModel.endereco!;
-    controllerCpfMae.text = widget.alunoModel.cpfMae!;
-    controllerPostoSaude.text = widget.alunoModel.postoSaude!;
-    controllerNomeMae.text = widget.alunoModel.nomeMae!;
-    controllerRgMae.text = widget.alunoModel.rgMae!;
-    valorTurno = widget.alunoModel.turno!;
+    controllerNomeAluno.text = widget.alunoModel.nome ?? '';
+    controllerTelefone.text = widget.alunoModel.telefone ?? '';
+    controllercpf.text = widget.alunoModel.cpf ?? '';
+    controllerRg.text = widget.alunoModel.rg ?? '';
+    controllerEscola.text = widget.alunoModel.escola ?? '';
+    controllerEndereco.text = widget.alunoModel.endereco ?? '';
+    controllerCpfMae.text = widget.alunoModel.cpfMae ?? '';
+    controllerPostoSaude.text = widget.alunoModel.postoSaude ?? '';
+    controllerNomeMae.text = widget.alunoModel.nomeMae ?? '';
+    controllerRgMae.text = widget.alunoModel.rgMae ?? '';
+    valorTurno = widget.alunoModel.turno ?? '';
     final dateFormat = DateFormat('dd/MM/yyyy');
     dataNascimentoString = dateFormat.format(widget.alunoModel.nascimento!);
     super.initState();
@@ -199,7 +199,9 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
                       onChanged: (value) => json['escola'] = value,
                       enabled: enabled,
                       decoration: InputDecoration(
-                          hintText: 'ESCOLA', border: OutlineInputBorder()),
+                          hintStyle: TextStyle(color: Colors.grey[400]),
+                          hintText: 'INFORME A ESCOLA',
+                          border: OutlineInputBorder()),
                       controller: controllerEscola),
                 ),
                 SizedBox(width: 30),

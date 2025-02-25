@@ -27,6 +27,7 @@ class MatriculaModel {
         nomeProjeto: json['projetos']['nome'],
         dataMatricula: DateTime.parse(json['data_matricula']));
   }
+
   // Converte um objeto MatriculaModel para JSON (para cadastrar)
   Map<String, dynamic> toJson() {
     return {

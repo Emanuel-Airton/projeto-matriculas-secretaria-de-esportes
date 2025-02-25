@@ -1,3 +1,6 @@
+import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
+
 class AlunoModel {
   int? id;
   String? nome;
@@ -35,13 +38,17 @@ class AlunoModel {
   });
 
   // Converte JSON para AlunoModel
-  factory AlunoModel.fromJson(Map<String, dynamic> json, DateTime dateTime) {
+  factory AlunoModel.fromJson(Map<String, dynamic> json) {
+    // final dateFormat = DateFormat('dd/MM/yyyy');
+    DateTime date = DateTime.parse(json['nascimento']);
+    //    String data = dateFormat.format(date);
+
     return AlunoModel(
       id: json['id'],
       nome: json['nome'],
       sexo: json['sexo'],
       telefone: json['telefone'],
-      nascimento: dateTime,
+      nascimento: date,
       rg: json['rg'],
       cpf: json['cpf'],
       endereco: json['endereço'],

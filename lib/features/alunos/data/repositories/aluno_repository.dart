@@ -8,8 +8,8 @@ class AlunoRepository {
   Future<List<AlunoModel>> buscarAlunos() async {
     final response = await _supabase.from('alunos').select();
     return response.map<AlunoModel>((json) {
-      final dateTime = DateTime.parse(json['nascimento'] ?? '');
-      return AlunoModel.fromJson(json, dateTime);
+      //   final dateTime = DateTime.parse(json['nascimento'] ?? '');
+      return AlunoModel.fromJson(json);
     }).toList();
   }
 

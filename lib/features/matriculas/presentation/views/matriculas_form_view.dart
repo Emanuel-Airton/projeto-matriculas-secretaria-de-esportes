@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/alertDialog_cadastro_matricula.dart';
 import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/container_info_matricula.dart';
 import '../../../modalidades/presentation/providers/modalidades_provider.dart';
-import '../../../modalidades/presentation/widgets/containers_select_modalidade.dart';
+import '../../../modalidades/presentation/widgets/row_containers_select_modalidade.dart';
 
 class MatriculaFormView extends ConsumerStatefulWidget {
   const MatriculaFormView({super.key});
@@ -38,8 +38,12 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ContainersSelectModalidade(),
-            const SizedBox(height: 16),
+            Container(
+              height: MediaQuery.sizeOf(context).height *
+                  0.15, // Defina uma altura fixa
+              child: RowContainersSelectModalidade(),
+            ),
+            const SizedBox(height: 15),
             // Dropdown de Projetos
             matriculasModalidades.when(
               data: (matriculas) {
@@ -55,7 +59,7 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                           padding: EdgeInsets.all(15),
                           height: !isExpanded
                               ? MediaQuery.sizeOf(context).height * 0.12
-                              : MediaQuery.sizeOf(context).height * 0.6,
+                              : MediaQuery.sizeOf(context).height * 0.5,
                           decoration: BoxDecoration(
                               boxShadow: [
                                 BoxShadow(
@@ -71,7 +75,7 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                      'N° da matricula: ${matriculas[index].matriculaId.toString()}'),
+                                      'N° da matricula: ${matriculas[index].id.toString()}'),
                                   //   Text('Data da matricula: $data')
                                 ],
                               ),
@@ -94,7 +98,8 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                                   ),
                                   if (isExpanded) ...[
                                     ContainerInfoMatricula(
-                                        modalidadesModel: matriculas[index])
+                                        matriculasModalidadesModel:
+                                            matriculas[index])
                                   ]
                                 ],
                               ),

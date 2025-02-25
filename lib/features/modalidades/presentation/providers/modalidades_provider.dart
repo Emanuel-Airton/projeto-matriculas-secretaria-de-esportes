@@ -29,3 +29,13 @@ final listMatriculaModalidadeProvider =
     }
   },
 );
+
+final selectMatriculaModalidadeId = StateProvider<int?>((ref) => null);
+final deletarMatriculaModalidade = Provider((ref) {
+  final idAluno = ref.read(selectMatriculaModalidadeId);
+  if (idAluno != null) {
+    return ref
+        .read(modalidadeUsecaseProvider)
+        .deletarMatriculaModalidade(idAluno);
+  }
+});

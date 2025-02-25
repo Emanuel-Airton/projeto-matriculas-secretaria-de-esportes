@@ -16,4 +16,8 @@ class ModalidadesUsecase {
   buscarMatriculaModalidadeFiltro(int id) {
     return _repository.buscarMatriculaModalidadeFiltro(id);
   }
+
+  deletarMatriculaModalidade(int id) {
+    return _repository.deletarMatriculaModalidade(id);
+  }
 }
