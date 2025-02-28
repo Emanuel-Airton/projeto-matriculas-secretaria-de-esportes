@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -33,26 +32,11 @@ class AlunoRepository {
     await _supabase.from('alunos').update(json).eq('id', alunoId);
   }
 
-  // StreamController para armazenar os alunos em tempo real
-  final StreamController<List<AlunoModel>> _alunosController =
-      StreamController.broadcast();
-
-  AlunoRepository() {
-    // Inicia ouvindo as mudanças na tabela 'alunos'
-    _supabase
-        .from('alunos')
-        .stream(primaryKey: ['id'])
-        .order('id', ascending: true)
-        .listen((data) {
-          final alunos = data
-              .map<AlunoModel>((json) => AlunoModel.fromJson(json))
-              .toList();
-          _alunosController
-              .add(alunos); // Atualiza os dados no StreamController
-        });
-
-    // Escutar eventos do Supabase Realtime (INSERT, UPDATE, DELETE)
+  Future<void> deletarAluno(int alunoId) async {
+    try {
+      await _supabase.from('alunos').delete().eq('id', alunoId);
+    } catch (e) {
+      throw 'Erro ao deletar aluno';
+    }
   }
-
-  // Método para retornar o stream
 }

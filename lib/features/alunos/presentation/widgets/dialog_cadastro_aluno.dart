@@ -249,7 +249,6 @@ class _DialogCadastroAlunoState extends ConsumerState<DialogCadastroAluno> {
                         child: Text('Aluno cadastrado com sucesso'),
                       )));
                       Navigator.pop(context);
-                      ref.read(urlImage.notifier).state = {};
                     } catch (erro) {
                       debugPrint('Erro: $erro');
                     }

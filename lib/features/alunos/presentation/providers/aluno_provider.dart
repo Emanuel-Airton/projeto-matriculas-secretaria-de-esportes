@@ -17,8 +17,8 @@ final uploadImageUsecase =
 
 final urlImage = StateProvider<Map<String, dynamic>?>((ref) => null);
 final uploadImage = FutureProvider<String?>((ref) {
-  final mapImage = ref.read(urlImage);
-  if (mapImage!.isNotEmpty) {
+  final mapImage = ref.read(urlImage) ?? {};
+  if (mapImage.isNotEmpty) {
     final valor2 = ref.read(uploadImageUsecase).uploadImage(mapImage);
 
     return valor2;

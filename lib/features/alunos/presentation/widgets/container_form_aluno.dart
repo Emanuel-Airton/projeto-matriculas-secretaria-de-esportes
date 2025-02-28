@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/alertDialog_delete_aluno.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/profile_image_widget.dart';
 
 class ContainerFormAluno extends ConsumerStatefulWidget {
@@ -66,15 +67,32 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Tooltip(
-              message: 'Alterar dados do aluno',
-              child: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      enabled = !enabled;
-                    });
-                  },
-                  icon: Icon(Icons.create)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Tooltip(
+                  message: 'Alterar dados do aluno',
+                  child: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          enabled = !enabled;
+                        });
+                      },
+                      icon: Icon(Icons.create)),
+                ),
+                Tooltip(
+                  message: 'Deletar aluno',
+                  child: IconButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertdialogDeleteAluno(
+                                alunoId: widget.alunoModel.id!,
+                                alunoNome: widget.alunoModel.nome));
+                      },
+                      icon: Icon(Icons.delete)),
+                )
+              ],
             ),
             ProfileImageWidget(urlImage: widget.alunoModel.fotoPerfilUrl ?? ''),
             SizedBox(height: 15),

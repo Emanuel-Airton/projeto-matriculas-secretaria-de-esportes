@@ -21,4 +21,8 @@ class AlunoUseCase {
   Future<void> atualizarAluno(int alunoId, Map<String, dynamic> json) {
     return _repository.atualizarAluno(alunoId, json);
   }
+
+  Future<void> deletarAluno(int alunoId) {
+    return _repository.deletarAluno(alunoId);
+  }
 }
