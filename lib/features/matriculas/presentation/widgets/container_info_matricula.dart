@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/alertDialog_delete_matricula_modalidade.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/matricula_modalidades_model.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -22,7 +23,26 @@ whatsAppLauncher() async {
   }
 }
 
+String dataMatricula = '';
+String dataNascimento = '';
+
 class _ContainerInfoMatriculaState extends State<ContainerInfoMatricula> {
+  @override
+  void initState() {
+    dataMatricula =
+        formatarData(widget.matriculasModalidadesModel.dataMatricula);
+    dataNascimento =
+        formatarData(widget.matriculasModalidadesModel.aluno!.nascimento);
+    super.initState();
+  }
+
+  formatarData(DateTime? inserirDateTime) {
+    final dateFormat = DateFormat('dd/MM/yyyy');
+    DateTime? dateTime = inserirDateTime;
+    String dataFormatada = dateFormat.format(dateTime!);
+    return dataFormatada;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -44,8 +64,7 @@ class _ContainerInfoMatriculaState extends State<ContainerInfoMatricula> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       color: Colors.white),
-                  child: Text(
-                      'Data da matricula: ${widget.matriculasModalidadesModel.dataMatricula.toString()}'),
+                  child: Text('Data da matricula: $dataMatricula'),
                 ),
                 Tooltip(
                   message: 'Excluir matricula',
@@ -107,8 +126,7 @@ class _ContainerInfoMatriculaState extends State<ContainerInfoMatricula> {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                             color: Colors.white),
-                        child: Text(
-                            'DATA DE NASCIMENTO: ${widget.matriculasModalidadesModel.aluno!.nascimento!}'),
+                        child: Text('DATA DE NASCIMENTO: $dataNascimento'),
                       ),
                       SizedBox(width: 20),
                       Container(
@@ -139,32 +157,37 @@ class _ContainerInfoMatriculaState extends State<ContainerInfoMatricula> {
                   ),
                   SizedBox(height: 10),
                   Row(
-                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
                         padding: EdgeInsets.all(15),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                             color: Colors.white),
-                        child: Container(
-                          // padding: EdgeInsets.all(10),
-                          child: Row(
-                            children: [
-                              Text(
-                                  'Telefone: ${widget.matriculasModalidadesModel.aluno!.telefone.toString()}'),
-                              IconButton(
-                                  icon: Icon(SimpleIcons.whatsapp,
-                                      color: Colors.green),
-                                  onPressed: () async {
-                                    try {
-                                      await whatsAppLauncher();
-                                    } catch (erro) {
-                                      debugPrint(erro.toString());
-                                    }
-                                  }),
-                            ],
-                          ),
+                        child: Row(
+                          children: [
+                            Text(
+                                'Telefone: ${widget.matriculasModalidadesModel.aluno!.telefone.toString()}'),
+                            IconButton(
+                                icon: Icon(SimpleIcons.whatsapp,
+                                    color: Colors.green),
+                                onPressed: () async {
+                                  try {
+                                    await whatsAppLauncher();
+                                  } catch (erro) {
+                                    debugPrint(erro.toString());
+                                  }
+                                }),
+                          ],
                         ),
+                      ),
+                      SizedBox(width: 20),
+                      Container(
+                        padding: EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.white),
+                        child: Text(
+                            'Nome: ${widget.matriculasModalidadesModel.aluno!.nomeMae.toString()}'),
                       ),
                       SizedBox(width: 20),
                       Container(
@@ -176,6 +199,14 @@ class _ContainerInfoMatriculaState extends State<ContainerInfoMatricula> {
                             'RG: ${widget.matriculasModalidadesModel.aluno!.rg.toString()}'),
                       ),
                       SizedBox(width: 20),
+                      Container(
+                        padding: EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.white),
+                        child: Text(
+                            'CPF: ${widget.matriculasModalidadesModel.aluno!.cpfMae.toString()}'),
+                      ),
                     ],
                   ),
                 ],

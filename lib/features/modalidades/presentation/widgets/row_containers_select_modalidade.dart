@@ -107,9 +107,12 @@ class _ContainersSelectModalidadeState
                       height: height * 0.05,
                     ),
                     SizedBox(height: 15),
-                    Text(
-                      listItens[index]['nome'].toString(),
-                      style: TextStyle(color: Colors.red[700]),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        listItens[index]['nome'].toString(),
+                        style: TextStyle(color: Colors.red[700]),
+                      ),
                     )
                   ],
                 ),

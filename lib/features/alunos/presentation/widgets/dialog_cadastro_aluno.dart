@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/profile_image_widget.dart';
 
 class DialogCadastroAluno extends ConsumerStatefulWidget {
   const DialogCadastroAluno({super.key});
@@ -47,6 +48,7 @@ class _DialogCadastroAlunoState extends ConsumerState<DialogCadastroAluno> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              ProfileImageWidget(urlImage: ''),
               TextField(
                   decoration: InputDecoration(hintText: 'NOME DO ALUNO'),
                   controller: controllerNomeAluno),
@@ -213,36 +215,50 @@ class _DialogCadastroAlunoState extends ConsumerState<DialogCadastroAluno> {
           ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
+                ref.read(urlImage.notifier).state = {};
               },
               child: Text('cancelar')),
           ElevatedButton(
               onPressed: () async {
+                // final url = ref.read(urlImage);
+                final urlImagemAsync = ref.watch(uploadImage);
+
+                urlImagemAsync.when(
+                  data: (data) async {
+                    try {
+                      AlunoModel alunoModel = AlunoModel(
+                          nome: controllerNomeAluno.text,
+                          sexo: 'm',
+                          telefone: controllerTelefone.text,
+                          nascimento: dataNascimento,
+                          rg: controllerRg.text,
+                          cpf: controllercpf.text,
+                          endereco: controllerEndereco.text,
+                          escola: controllerEscola.text,
+                          turno: valorTurno,
+                          nomeMae: controllerNomeMae.text,
+                          rgMae: controllerRgMae.text,
+                          cpfMae: controllerCpfMae.text,
+                          postoSaude: controllerPostoSaude.text,
+                          fotoPerfilUrl: data);
+
+                      ref.read(alunoUseCaseProvider).cadastrarAluno(alunoModel);
+
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Center(
+                        child: Text('Aluno cadastrado com sucesso'),
+                      )));
+                      Navigator.pop(context);
+                      ref.read(urlImage.notifier).state = {};
+                    } catch (erro) {
+                      debugPrint('Erro: $erro');
+                    }
+                  },
+                  error: (error, stackTrace) =>
+                      debugPrint('Erro ao carregar imagem: $error'),
+                  loading: () => debugPrint('Carregando imagem...'),
+                );
                 //  double renda = double.parse(controllerRenda.text);
-                try {
-                  AlunoModel alunoModel = AlunoModel(
-                    nome: controllerNomeAluno.text,
-                    sexo: 'm',
-                    telefone: controllerTelefone.text,
-                    nascimento: dataNascimento,
-                    rg: controllerRg.text,
-                    cpf: controllercpf.text,
-                    endereco: controllerEndereco.text,
-                    escola: controllerEscola.text,
-                    turno: controllerTurno.text,
-                    nomeMae: controllerNomeMae.text,
-                    rgMae: controllerRgMae.text,
-                    cpfMae: controllerCpfMae.text,
-                    postoSaude: controllerPostoSaude.text,
-                  );
-                  ref.read(alunoUseCaseProvider).cadastrarAluno(alunoModel);
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Center(
-                    child: Text('Aluno cadastrado com sucesso'),
-                  )));
-                  Navigator.pop(context);
-                } catch (erro) {
-                  debugPrint('Erro: $erro');
-                }
               },
               child: Text('Salvar'))
         ],

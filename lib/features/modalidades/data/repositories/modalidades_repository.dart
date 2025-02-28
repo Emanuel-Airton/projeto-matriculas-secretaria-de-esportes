@@ -8,6 +8,8 @@ class ModalidadesRepository {
   final _supabase = Supabase.instance.client;
   static const String tabelaMatriculaModalidade = 'matricula_modalidade';
   static const String tabelaModalidade = 'modalidades';
+  static const String buscarAluno =
+      'nome, telefone, cpf, sexo, nascimento, rg, cpf, escola, turno, endereço, nome_mae, cpf_mae ';
 
   Future<List<ModalidadesModel>> buscarModalidade() async {
     final response = await _supabase.from(tabelaModalidade).select();
@@ -23,7 +25,7 @@ class ModalidadesRepository {
     final response = await _supabase
         .from(tabelaMatriculaModalidade)
         .select(
-            'id, matriculas(data_matricula, alunos(nome, telefone, cpf, sexo, nascimento, rg, cpf, escola, turno, endereço)), modalidades(nome)')
+            'id, matriculas(data_matricula, alunos($buscarAluno)), modalidades(nome)')
         .filter('modalidade_id', 'eq', id);
     return response.map<MatriculaModalidadesModel>(
       (json) {
@@ -36,7 +38,7 @@ class ModalidadesRepository {
   //retorna a lista de todas as matriculas
   Future<List<MatriculaModalidadesModel>> buscarMatriculaModalidade() async {
     final response = await _supabase.from(tabelaMatriculaModalidade).select(
-        'id, matricula_id, matriculas(data_matricula, alunos(nome, telefone, cpf, sexo, nascimento, rg, cpf, escola, turno, endereço)), modalidades(nome)');
+        'id, matricula_id, matriculas(data_matricula,  alunos($buscarAluno)), modalidades(nome)');
     return response.map<MatriculaModalidadesModel>(
       (json) {
         debugPrint('teste: ${json.toString()}');

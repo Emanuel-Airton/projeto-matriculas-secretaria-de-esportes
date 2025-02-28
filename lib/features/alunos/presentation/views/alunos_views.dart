@@ -16,8 +16,7 @@ class _MyWidgetState extends ConsumerState<AlunosScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final alunosAsync = ref.watch(alunoListProvider);
-
+    final alunosAsync = ref.watch(alunoListProviderListen);
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
           icon: Icon(Icons.add),

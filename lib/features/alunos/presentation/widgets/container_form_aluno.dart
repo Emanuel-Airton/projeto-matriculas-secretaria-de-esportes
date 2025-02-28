@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/profile_image_widget.dart';
 
 class ContainerFormAluno extends ConsumerStatefulWidget {
   final AlunoModel alunoModel;
@@ -75,19 +76,24 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
                   },
                   icon: Icon(Icons.create)),
             ),
-            TextField(
-                onChanged: (value) {
-                  json['nome'] = value;
-                  debugPrint(json.toString());
-                },
-                enabled: enabled,
-                decoration: InputDecoration(
-                    hintText: 'NOME DO ALUNO', border: OutlineInputBorder()),
-                controller: controllerNomeAluno),
+            ProfileImageWidget(urlImage: widget.alunoModel.fotoPerfilUrl ?? ''),
             SizedBox(height: 15),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(
+                  width: MediaQuery.sizeOf(context).width * 0.3,
+                  child: TextField(
+                      onChanged: (value) {
+                        json['nome'] = value;
+                        debugPrint(json.toString());
+                      },
+                      enabled: enabled,
+                      decoration: InputDecoration(
+                          hintText: 'NOME DO ALUNO',
+                          border: OutlineInputBorder()),
+                      controller: controllerNomeAluno),
+                ),
+                SizedBox(width: 15),
                 SizedBox(
                     width: MediaQuery.sizeOf(context).width * 0.12,
                     child: DropdownButtonFormField(
@@ -110,9 +116,14 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
                                 });
                               }
                             : null)),
-                SizedBox(width: 15),
+              ],
+            ),
+            SizedBox(height: 15),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.1,
+                  width: MediaQuery.sizeOf(context).width * 0.08,
                   child: TextField(
                       onChanged: (value) {
                         json['telefone'] = value;
@@ -127,47 +138,48 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
                 SizedBox(width: 15),
                 SizedBox(
                     width: MediaQuery.sizeOf(context).width * 0.2,
-                    child: ListTile(
-                      leading: Tooltip(
-                        message: 'Selecionar a data',
-                        child: IconButton(
-                            onPressed: enabled
-                                ? () async {
-                                    dataNascimento = await showDatePicker(
-                                        context: context,
-                                        firstDate: DateTime(1910),
-                                        lastDate: DateTime(2030));
-                                    //debugPrint(dataNascimento?.toIso8601String());
-                                    if (dataNascimento != null) {
-                                      setState(() {
-                                        final dateFormat =
-                                            DateFormat('yyyy-MM-dd');
-                                        dataNascimentoString =
-                                            dateFormat.format(dataNascimento!);
-                                        DateFormat('dd/MM/yyyy')
-                                            .parse(dataNascimentoString);
-                                        json['nascimento'] = dataNascimento;
-                                      });
+                    child: Container(
+                      // padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.grey)),
+                      child: ListTile(
+                        leading: Tooltip(
+                          message: 'Selecionar a data',
+                          child: IconButton(
+                              onPressed: enabled
+                                  ? () async {
+                                      dataNascimento = await showDatePicker(
+                                          context: context,
+                                          firstDate: DateTime(1910),
+                                          lastDate: DateTime(2030));
+                                      //debugPrint(dataNascimento?.toIso8601String());
+                                      if (dataNascimento != null) {
+                                        setState(() {
+                                          final dateFormat =
+                                              DateFormat('yyyy-MM-dd');
+                                          dataNascimentoString = dateFormat
+                                              .format(dataNascimento!);
+                                          DateFormat('dd/MM/yyyy')
+                                              .parse(dataNascimentoString);
+                                          json['nascimento'] = dataNascimento;
+                                        });
+                                      }
                                     }
-                                  }
-                                : null,
-                            icon: const Icon(
-                              size: 35,
-                              Icons.calendar_month,
-                              color: Colors.grey,
-                            )),
+                                  : null,
+                              icon: const Icon(
+                                size: 30,
+                                Icons.calendar_month,
+                                color: Colors.grey,
+                              )),
+                        ),
+                        title:
+                            Text('DATA DE NASCIMENTO: $dataNascimentoString'),
                       ),
-                      title: Text('DATA DE NASCIMENTO: $dataNascimentoString'),
                     )),
-              ],
-            ),
-            SizedBox(height: 15),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              //mainAxisAlignment: MainAxisAlignment.start,
-              children: [
+                SizedBox(width: 15),
                 SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.2,
+                  width: MediaQuery.sizeOf(context).width * 0.08,
                   child: TextField(
                       onChanged: (value) => json['rg'] = value,
                       enabled: enabled,
@@ -176,9 +188,9 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
                           border: OutlineInputBorder()),
                       controller: controllerRg),
                 ),
-                SizedBox(width: 30),
+                SizedBox(width: 15),
                 SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.2,
+                  width: MediaQuery.sizeOf(context).width * 0.08,
                   child: TextField(
                       onChanged: (value) => json['cpf'] = value,
                       enabled: enabled,
@@ -204,7 +216,7 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
                           border: OutlineInputBorder()),
                       controller: controllerEscola),
                 ),
-                SizedBox(width: 30),
+                SizedBox(width: 15),
                 SizedBox(
                   width: MediaQuery.sizeOf(context).width * 0.1,
                   child: DropdownButtonFormField(
@@ -244,7 +256,7 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.2,
+                  width: MediaQuery.sizeOf(context).width * 0.08,
                   child: TextField(
                       onChanged: (value) => json['rg_mae'] = value,
                       enabled: enabled,
@@ -252,9 +264,9 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
                           hintText: 'RG DA MÃE', border: OutlineInputBorder()),
                       controller: controllerRgMae),
                 ),
-                SizedBox(width: 30),
+                SizedBox(width: 15),
                 SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.2,
+                  width: MediaQuery.sizeOf(context).width * 0.08,
                   child: TextField(
                       onChanged: (value) => json['cpf_mae'],
                       enabled: enabled,
@@ -262,14 +274,9 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
                           hintText: 'CPF DA MÃE', border: OutlineInputBorder()),
                       controller: controllerCpfMae),
                 ),
-              ],
-            ),
-            SizedBox(height: 15),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+                SizedBox(width: 15),
                 SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.3,
+                  width: MediaQuery.sizeOf(context).width * 0.25,
                   child: TextField(
                       onChanged: (value) => json['posto_saude'] = value,
                       decoration: InputDecoration(
@@ -278,31 +285,44 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
                           border: OutlineInputBorder()),
                       controller: controllerPostoSaude),
                 ),
-                SizedBox(width: 30),
               ],
+            ),
+            SizedBox(height: 15),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [],
             ),
             SizedBox(height: 5),
             ElevatedButton(
                 onPressed: () {
-                  if (json.isNotEmpty) {
-                    try {
-                      ref
-                          .read(alunoUseCaseProvider)
-                          .atualizarAluno(widget.alunoModel.id!, json);
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Center(
-                        child: Text('dados atualizados!'),
-                      )));
-                    } catch (e) {
-                      debugPrint('erro: $e');
-                    }
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Center(
-                              child: Text('Nenhuma alteração detectada!'))),
-                    );
-                  }
+                  final urlImagemAsync = ref.watch(uploadImage);
+                  urlImagemAsync.when(
+                    data: (data) {
+                      data != null ? json['foto_perfil_url'] = data : null;
+                      debugPrint('data: $data');
+                      if (json.isNotEmpty) {
+                        try {
+                          ref
+                              .read(alunoUseCaseProvider)
+                              .atualizarAluno(widget.alunoModel.id!, json);
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Center(
+                            child: Text('dados atualizados!'),
+                          )));
+                        } catch (e) {
+                          debugPrint('erro: $e');
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Center(
+                                  child: Text('Nenhuma alteração detectada!'))),
+                        );
+                      }
+                    },
+                    error: (error, stackTrace) {},
+                    loading: () {},
+                  );
                 },
                 child: Text('salvar alterações'))
           ],
