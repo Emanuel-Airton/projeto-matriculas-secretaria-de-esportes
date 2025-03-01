@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/aluno_provider.dart';
+import '../providers/image_picker_provider.dart';
+import '../providers/image_storage_provider.dart';
 
 class ProfileImageWidget extends ConsumerStatefulWidget {
   final String urlImage;
@@ -31,12 +33,12 @@ class _MyWidgetState extends ConsumerState<ProfileImageWidget> {
             onPressed: () async {
               try {
                 Map<String, dynamic>? map =
-                    await ref.read(uploadImageUsecase).execute();
+                    await ref.read(pickImageUseCase).pickImage();
                 setState(() {
                   teste = map!['filePath'];
                   debugPrint(map['fileName']);
                   debugPrint('teste valor: ${teste!.path}');
-                  ref.read(urlImage.notifier).state = map;
+                  ref.read(mapContentFileInfo.notifier).state = map;
                 });
                 debugPrint('teste: $teste');
               } catch (e) {

@@ -5,6 +5,8 @@ import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/profile_image_widget.dart';
 
+import '../providers/image_storage_provider.dart';
+
 class DialogCadastroAluno extends ConsumerStatefulWidget {
   const DialogCadastroAluno({super.key});
 
@@ -215,13 +217,13 @@ class _DialogCadastroAlunoState extends ConsumerState<DialogCadastroAluno> {
           ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
-                ref.read(urlImage.notifier).state = {};
+                ref.read(mapContentFileInfo.notifier).state = {};
               },
               child: Text('cancelar')),
           ElevatedButton(
               onPressed: () async {
                 // final url = ref.read(urlImage);
-                final urlImagemAsync = ref.watch(uploadImage);
+                final urlImagemAsync = ref.watch(uploadImageStorage);
 
                 urlImagemAsync.when(
                   data: (data) async {

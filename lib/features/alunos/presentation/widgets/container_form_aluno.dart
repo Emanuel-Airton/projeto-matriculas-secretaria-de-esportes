@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/image_storage_provider.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/alertDialog_delete_aluno.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/profile_image_widget.dart';
 
@@ -313,7 +314,7 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
             SizedBox(height: 5),
             ElevatedButton(
                 onPressed: () {
-                  final urlImagemAsync = ref.watch(uploadImage);
+                  final urlImagemAsync = ref.watch(uploadImageStorage);
                   urlImagemAsync.when(
                     data: (data) {
                       data != null ? json['foto_perfil_url'] = data : null;
