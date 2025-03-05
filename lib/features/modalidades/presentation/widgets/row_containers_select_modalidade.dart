@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/modalidades_model.dart';
 
 import '../providers/modalidades_provider.dart';
 
@@ -75,6 +76,10 @@ class _ContainersSelectModalidadeState
         scrollDirection: Axis.horizontal,
         itemCount: listItens.length,
         itemBuilder: (context, index) {
+          Map<String, dynamic> mapItem = {
+            'id': listItens[index]['id'],
+            'nome': listItens[index]['nome']
+          };
           isSelect = map[index] ?? false;
           return Padding(
             padding: const EdgeInsets.all(8.0),
@@ -93,7 +98,7 @@ class _ContainersSelectModalidadeState
                 onPressed: () {
                   setState(() {
                     ref.read(selectedModalidadeIdProvider.notifier).state =
-                        listItens[index]['id'];
+                        ModalidadesModel.fromJson(mapItem);
                     map.clear();
                     if (map.isEmpty) {
                       map[index] = !isSelect;

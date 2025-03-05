@@ -10,10 +10,19 @@ final modalidadeUsecaseProvider =
 
 final listModalidadeProvider = FutureProvider<List<ModalidadesModel>>(
   (ref) {
-    return ref.read(modalidadeUsecaseProvider).buscarModalidade();
+    return ref.read(modalidadeUsecaseProvider).buscarListaModalidade();
   },
 );
-final selectedModalidadeIdProvider = StateProvider<int?>((ref) => null);
+final selectedModalidadeIdProvider =
+    StateProvider<ModalidadesModel?>((ref) => null);
+//busca uma unica modalidade de acordo com o id passado
+final buscarModalidade = FutureProvider<ModalidadesModel?>((ref) {
+  final idModalidade = ref.watch(selectedModalidadeIdProvider);
+  if (idModalidade != null) {
+    return ref.watch(selectedModalidadeIdProvider);
+  }
+  return null;
+});
 
 final listMatriculaModalidadeProvider =
     FutureProvider<List<MatriculaModalidadesModel>>(
@@ -25,7 +34,7 @@ final listMatriculaModalidadeProvider =
           .buscarMatriculaModalidade(); // Retorna todas as matrículas se nenhum ID for selecionado
     } else {
       return repository.buscarMatriculaModalidadeFiltro(
-          modalidadeId); // Retorna filtrado por ID
+          modalidadeId.id!); // Retorna filtrado por ID
     }
   },
 );

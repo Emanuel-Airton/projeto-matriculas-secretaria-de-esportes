@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/services/image_picker_service.dart';

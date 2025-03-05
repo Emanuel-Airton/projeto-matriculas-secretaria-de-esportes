@@ -14,7 +14,7 @@ class ProfileImageWidget extends ConsumerStatefulWidget {
 }
 
 class _MyWidgetState extends ConsumerState<ProfileImageWidget> {
-  File? teste;
+  File? file;
   bool contenArquivo = false;
 
   @override
@@ -22,8 +22,8 @@ class _MyWidgetState extends ConsumerState<ProfileImageWidget> {
     return CircleAvatar(
       //backgroundImage: NetworkImage(imageUrl),
       radius: 50,
-      backgroundImage: teste != null
-          ? FileImage(teste!)
+      backgroundImage: file != null
+          ? FileImage(file!)
           : widget.urlImage != ''
               ? NetworkImage(widget.urlImage)
               : null,
@@ -35,18 +35,18 @@ class _MyWidgetState extends ConsumerState<ProfileImageWidget> {
                 Map<String, dynamic>? map =
                     await ref.read(pickImageUseCase).pickImage();
                 setState(() {
-                  teste = map!['filePath'];
+                  file = map!['filePath'];
                   debugPrint(map['fileName']);
-                  debugPrint('teste valor: ${teste!.path}');
+                  debugPrint('teste valor: ${file!.path}');
                   ref.read(mapContentFileInfo.notifier).state = map;
                 });
-                debugPrint('teste: $teste');
+                debugPrint('teste: $file');
               } catch (e) {
                 debugPrint(e.toString());
               }
             },
             icon: Icon(
-                teste != null || widget.urlImage != '' ? null : Icons.person,
+                file != null || widget.urlImage != '' ? null : Icons.person,
                 size: 50)),
       ),
     );

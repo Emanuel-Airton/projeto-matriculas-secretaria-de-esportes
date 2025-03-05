@@ -12,7 +12,7 @@ final imageStorageUseCase =
 final mapContentFileInfo = StateProvider<Map<String, dynamic>?>((ref) => null);
 final uploadImageStorage = FutureProvider((ref) {
   final map = ref.read(mapContentFileInfo);
-  if (map!.isNotEmpty) {
+  if (map != null) {
     return ref.read(imageStorageUseCase).uploadImageStorage(map);
   }
 });

@@ -93,7 +93,7 @@ class _MyWidgetState extends ConsumerState<AlunosScreen> {
                                               padding: EdgeInsets.all(15),
                                               height: MediaQuery.sizeOf(context)
                                                       .height *
-                                                  0.62,
+                                                  0.63,
                                               width: MediaQuery.sizeOf(context)
                                                   .width,
                                               //padding: EdgeInsets.all(15),

@@ -5,8 +5,12 @@ class ModalidadesUsecase {
   final ModalidadesRepository _repository;
   ModalidadesUsecase(this._repository);
 
-  Future<List<ModalidadesModel>> buscarModalidade() {
-    return _repository.buscarModalidade();
+  Future<List<ModalidadesModel>> buscarListaModalidade() {
+    return _repository.buscarListaModalidade();
+  }
+
+  Future<ModalidadesModel> buscarModalidade(int idModalidade) {
+    return _repository.buscarModalidade(idModalidade);
   }
 
   buscarMatriculaModalidade() {

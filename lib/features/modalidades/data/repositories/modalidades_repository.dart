@@ -11,7 +11,18 @@ class ModalidadesRepository {
   static const String buscarAluno =
       'nome, telefone, cpf, sexo, nascimento, rg, cpf, escola, turno, endereço, nome_mae, cpf_mae ';
 
-  Future<List<ModalidadesModel>> buscarModalidade() async {
+  Future<ModalidadesModel> buscarModalidade(int id) async {
+    final response =
+        await _supabase.from(tabelaModalidade).select().eq('id', id);
+    Map<String, dynamic> map = {};
+    for (var item in response) {
+      map = item;
+    }
+    return ModalidadesModel.fromJson(map);
+  }
+
+  Future<List<ModalidadesModel>> buscarListaModalidade() async {
+    buscarModalidade(1);
     final response = await _supabase.from(tabelaModalidade).select();
     return response.map<ModalidadesModel>((json) {
       debugPrint(json.toString());

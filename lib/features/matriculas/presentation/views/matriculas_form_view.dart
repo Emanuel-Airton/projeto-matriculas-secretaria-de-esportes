@@ -15,9 +15,11 @@ class MatriculaFormView extends ConsumerStatefulWidget {
 class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
   // bool isExpanded = false;
   Map<int, bool> map = {};
+
   @override
   Widget build(BuildContext context) {
     final matriculasModalidades = ref.watch(listMatriculaModalidadeProvider);
+    final modalidade = ref.watch(buscarModalidade);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Lista de Matrículas'),
@@ -44,6 +46,36 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
               child: RowContainersSelectModalidade(),
             ),
             const SizedBox(height: 15),
+            Row(
+              children: [
+                Container(
+                    padding: EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Theme.of(context).colorScheme.inversePrimary),
+                    child: Text('Modalidade selecionada:')),
+                SizedBox(width: 10),
+                Container(
+                    padding: EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Theme.of(context).colorScheme.inversePrimary),
+                    child: modalidade.when(
+                      data: (data) {
+                        debugPrint(data.toString());
+                        return Center(
+                          child: Text(data != null ? data.nome! : 'todas'),
+                        );
+                      },
+                      error: (error, stackTrace) {
+                        return null;
+                      },
+                      loading: () {
+                        return null;
+                      },
+                    )),
+              ],
+            ),
             // Dropdown de Projetos
             matriculasModalidades.when(
               data: (matriculas) {
