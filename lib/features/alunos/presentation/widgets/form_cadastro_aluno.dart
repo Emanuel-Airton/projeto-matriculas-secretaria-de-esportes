@@ -73,7 +73,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
     return Form(
       key: _key,
       child: Container(
-        width: MediaQuery.sizeOf(context).width * 0.43,
+        width: MediaQuery.sizeOf(context).width * 0.53,
         padding: EdgeInsets.all(15),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -88,7 +88,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
             Row(
               children: [
                 SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.3,
+                  width: MediaQuery.sizeOf(context).width * 0.27,
                   child: CustomContainerTextformfield(
                     child: CustomTextformfield(
                         validator: (value) {
@@ -123,10 +123,51 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                         onChanged: (value) {
                           setState(() {
                             widget.valorGenero = value;
+                            widget.json!['sexo'] = widget.valorGenero;
                           });
                         },
                       ),
                     )),
+                SizedBox(width: 15),
+                SizedBox(
+                  width: MediaQuery.sizeOf(context).width * 0.15,
+                  child: CustomContainerTextformfield(
+                    child: Row(
+                      children: [
+                        Tooltip(
+                          message: 'Selecionar a data',
+                          child: IconButton(
+                              onPressed: () async {
+                                dataNascimento = await showDatePicker(
+                                    context: context,
+                                    firstDate: DateTime(1910),
+                                    lastDate: DateTime(2030));
+                                //debugPrint(dataNascimento?.toIso8601String());
+                                if (dataNascimento != null) {
+                                  setState(() {
+                                    final dateFormat = DateFormat('dd/MM/yyyy');
+                                    dataNascimentoString =
+                                        dateFormat.format(dataNascimento!);
+                                    DateFormat('dd/MM/yyyy')
+                                        .parse(dataNascimentoString);
+                                  });
+                                }
+                              },
+                              icon: const Icon(
+                                size: 35,
+                                Icons.calendar_month,
+                                color: Colors.grey,
+                              )),
+                        ),
+                        Text('DATA DE NASCIMENTO $dataNascimentoString',
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 13)),
+                      ],
+                    ),
+                  ),
+                )
               ],
             ),
             SizedBox(height: 15),
@@ -134,47 +175,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                    width: MediaQuery.sizeOf(context).width * 0.16,
-                    child: CustomContainerTextformfield(
-                      child: Row(
-                        children: [
-                          Tooltip(
-                            message: 'Selecionar a data',
-                            child: IconButton(
-                                onPressed: () async {
-                                  dataNascimento = await showDatePicker(
-                                      context: context,
-                                      firstDate: DateTime(1910),
-                                      lastDate: DateTime(2030));
-                                  //debugPrint(dataNascimento?.toIso8601String());
-                                  if (dataNascimento != null) {
-                                    setState(() {
-                                      final dateFormat =
-                                          DateFormat('dd/MM/yyyy');
-                                      dataNascimentoString =
-                                          dateFormat.format(dataNascimento!);
-                                      DateFormat('dd/MM/yyyy')
-                                          .parse(dataNascimentoString);
-                                    });
-                                  }
-                                },
-                                icon: const Icon(
-                                  size: 35,
-                                  Icons.calendar_month,
-                                  color: Colors.grey,
-                                )),
-                          ),
-                          Text('DATA DE NASCIMENTO $dataNascimentoString',
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14)),
-                        ],
-                      ),
-                    )),
-                SizedBox(width: 15),
-                SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.1,
+                  width: MediaQuery.sizeOf(context).width * 0.08,
                   child: CustomContainerTextformfield(
                     child: CustomTextformfield(
                         validator: (value) {
@@ -189,21 +190,16 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                 ),
                 SizedBox(width: 15),
                 SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.1,
+                  width: MediaQuery.sizeOf(context).width * 0.08,
                   child: CustomContainerTextformfield(
                     child: CustomTextformfield(
                         hintText: 'CPF DO ALUNO',
                         controller: widget.controllercpf),
                   ),
                 ),
-              ],
-            ),
-            SizedBox(height: 15),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+                SizedBox(width: 15),
                 SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.3,
+                  width: MediaQuery.sizeOf(context).width * 0.25,
                   child: CustomContainerTextformfield(
                     child: CustomTextformfield(
                         hintText: 'ESCOLA',
@@ -249,7 +245,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
             Row(
               children: [
                 SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.3,
+                  width: MediaQuery.sizeOf(context).width * 0.27,
                   child: CustomContainerTextformfield(
                     child: CustomTextformfield(
                         hintText: 'NOME DA MÃE',
@@ -265,13 +261,8 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                         hintText: 'TELEFONE',
                         controller: widget.controllerTelefone),
                   ),
-                )
-              ],
-            ),
-            SizedBox(height: 15),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+                ),
+                SizedBox(width: 15),
                 SizedBox(
                   width: MediaQuery.sizeOf(context).width * 0.08,
                   child: CustomContainerTextformfield(
@@ -280,7 +271,12 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                         controller: widget.controllerRgMae),
                   ),
                 ),
-                SizedBox(width: 15),
+              ],
+            ),
+            SizedBox(height: 15),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 SizedBox(
                   width: MediaQuery.sizeOf(context).width * 0.08,
                   child: CustomContainerTextformfield(
@@ -323,7 +319,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                                   try {
                                     AlunoModel alunoModel = AlunoModel(
                                         nome: widget.controllerNomeAluno!.text,
-                                        sexo: 'm',
+                                        sexo: widget.valorGenero,
                                         telefone:
                                             widget.controllerTelefone!.text,
                                         nascimento: dataNascimento,

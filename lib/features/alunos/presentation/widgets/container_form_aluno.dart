@@ -51,8 +51,7 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-        child: Container(
+    return Container(
       width: MediaQuery.sizeOf(context).width * 0.55,
       padding: EdgeInsets.all(15),
       decoration: BoxDecoration(
@@ -82,9 +81,20 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
                 valorTurno: widget.alunoModel.turno,
                 valorGenero: widget.alunoModel.sexo),
             SizedBox(height: 5),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Tooltip(
+                message: 'Gerar PDF',
+                child: IconButton(
+                    iconSize: 30,
+                    color: Theme.of(context).colorScheme.primary,
+                    onPressed: () {},
+                    icon: Icon(Icons.picture_as_pdf)),
+              ),
+            )
           ],
         ),
       ),
-    ));
+    );
   }
 }
