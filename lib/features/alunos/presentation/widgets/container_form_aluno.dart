@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno_model.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/views/pdfPreview.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/form_cadastro_aluno.dart';
 
 class ContainerFormAluno extends ConsumerStatefulWidget {
@@ -63,6 +64,23 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: Tooltip(
+                message: 'Gerar PDF',
+                child: IconButton(
+                    iconSize: 30,
+                    color: Theme.of(context).colorScheme.primary,
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return Pdfpreview(alunoModel: widget.alunoModel);
+                          });
+                    },
+                    icon: Icon(Icons.picture_as_pdf)),
+              ),
+            ),
             FormCadastroAluno(
                 controllerNomeAluno: controllerNomeAluno,
                 controllerTelefone: controllerTelefone,
@@ -80,18 +98,6 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
                 urlImagem: widget.alunoModel.fotoPerfilUrl,
                 valorTurno: widget.alunoModel.turno,
                 valorGenero: widget.alunoModel.sexo),
-            SizedBox(height: 5),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Tooltip(
-                message: 'Gerar PDF',
-                child: IconButton(
-                    iconSize: 30,
-                    color: Theme.of(context).colorScheme.primary,
-                    onPressed: () {},
-                    icon: Icon(Icons.picture_as_pdf)),
-              ),
-            )
           ],
         ),
       ),

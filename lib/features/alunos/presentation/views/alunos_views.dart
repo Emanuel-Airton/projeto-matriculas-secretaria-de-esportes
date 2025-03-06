@@ -80,11 +80,11 @@ class _MyWidgetState extends ConsumerState<AlunosScreen> {
                                 width: MediaQuery.sizeOf(context).width * 0.5,
                                 decoration: BoxDecoration(
                                     color: Colors.white,
-                                    boxShadow: [
+                                    /*  boxShadow: [
                                       BoxShadow(
                                           color: Colors.grey,
                                           offset: Offset(2, 3))
-                                    ],
+                                    ],*/
                                     borderRadius: BorderRadius.circular(15)),
                                 child: SingleChildScrollView(
                                   child: Column(
