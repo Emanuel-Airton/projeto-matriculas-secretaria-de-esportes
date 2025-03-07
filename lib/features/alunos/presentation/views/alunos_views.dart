@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/container_form_aluno.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/dialog_cadastro_aluno.dart';
+import '../../data/models/aluno_model.dart';
 
 class AlunosScreen extends ConsumerStatefulWidget {
   const AlunosScreen({super.key});
@@ -12,14 +13,15 @@ class AlunosScreen extends ConsumerStatefulWidget {
 }
 
 class _MyWidgetState extends ConsumerState<AlunosScreen> {
-  int? totalAlunos;
-  int? totalMeninos;
-  int? totalMeninas;
+  int totalAlunos = 0;
+  int totalMeninos = 0;
+  int totalMeninas = 0;
   final Map<int, bool> _expandedState = {};
 
   @override
   Widget build(BuildContext context) {
-    final alunosAsync = ref.watch(alunoListProviderListen);
+    AsyncValue<List<AlunoModel?>> alunosAsync =
+        ref.watch(alunoListProviderListen);
     return Scaffold(
       backgroundColor: Colors.grey[200],
       floatingActionButton: FloatingActionButton.extended(
@@ -56,12 +58,12 @@ class _MyWidgetState extends ConsumerState<AlunosScreen> {
                         totalAlunos = alunos.length;
                         List list = [];
                         for (var aluno in alunos) {
-                          if (aluno.sexo == 'masculino') {
-                            list.add(aluno.sexo);
+                          if (aluno?.sexo == 'masculino') {
+                            list.add(aluno?.sexo);
                             totalMeninos = list.length;
-                          } else if (aluno.sexo == 'feminino') {
+                          } else if (aluno?.sexo == 'feminino') {
                             list.clear();
-                            list.add(aluno.sexo);
+                            list.add(aluno?.sexo);
                             totalMeninas = list.length;
                           }
                         }
@@ -79,19 +81,14 @@ class _MyWidgetState extends ConsumerState<AlunosScreen> {
                                 duration: const Duration(milliseconds: 200),
                                 width: MediaQuery.sizeOf(context).width * 0.5,
                                 decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    /*  boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.grey,
-                                          offset: Offset(2, 3))
-                                    ],*/
+                                    color: Colors.grey[100],
                                     borderRadius: BorderRadius.circular(15)),
                                 child: SingleChildScrollView(
                                   child: Column(
                                     children: [
                                       ListTile(
-                                        title: Text('${aluno.nome} ' ?? ''),
-                                        subtitle: Text(aluno.telefone ?? ''),
+                                        title: Text('${aluno?.nome} ' ?? ''),
+                                        subtitle: Text(aluno?.telefone ?? ''),
                                         trailing: Tooltip(
                                           message:
                                               'Visualizar mais informações',
@@ -126,7 +123,7 @@ class _MyWidgetState extends ConsumerState<AlunosScreen> {
                                                         BorderRadius.circular(
                                                             15)),
                                                 child: ContainerFormAluno(
-                                                    alunoModel: aluno)))
+                                                    alunoModel: aluno!)))
                                       ]
                                     ],
                                   ),
@@ -141,6 +138,16 @@ class _MyWidgetState extends ConsumerState<AlunosScreen> {
                       error: (err, stack) => Center(child: Text('Erro: $err')),
                     ),
                   ),
+                  Center(
+                    child: TextButton(
+                        onPressed: () async {
+                          final valor = ref.read(countListenable);
+                          debugPrint(valor.toString());
+                          ref.read(count.notifier).state = (valor! * 2);
+                          alunosAsync = ref.watch(alunoListProviderListen);
+                        },
+                        child: Text('Carregar mais...')),
+                  )
                 ],
               ),
             ),
@@ -158,56 +165,16 @@ class _MyWidgetState extends ConsumerState<AlunosScreen> {
                   Image.asset('assets/images/adl10.png',
                       height: MediaQuery.sizeOf(context).height * 0.2),
                   SizedBox(height: 60),
-                  Container(
-                    padding: EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.grey, width: 2)),
-                    child: Column(
-                      children: [
-                        ListTile(
-                            leading: Image.asset('assets/images/student.png',
-                                height:
-                                    MediaQuery.sizeOf(context).height * 0.04),
-                            title: Text(
-                                'Total de alunos  ${totalAlunos.toString()}')),
-                      ],
-                    ),
-                  ),
+                  containerInfoListAlunos(context, 'assets/images/student.png',
+                      'Total de alunos  ${totalAlunos.toString()}'),
                   SizedBox(height: 30),
-                  Container(
-                    padding: EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.grey, width: 2)),
-                    child: Column(
-                      children: [
-                        ListTile(
-                            leading: Image.asset('assets/images/masculino.png',
-                                height:
-                                    MediaQuery.sizeOf(context).height * 0.04),
-                            title: Text(
-                                'Total de meninos  ${totalMeninos.toString()}')),
-                      ],
-                    ),
-                  ),
+                  containerInfoListAlunos(
+                      context,
+                      'assets/images/masculino.png',
+                      'Total de meninos  ${totalMeninos.toString()}'),
                   SizedBox(height: 30),
-                  Container(
-                    padding: EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.grey, width: 2)),
-                    child: Column(
-                      children: [
-                        ListTile(
-                            leading: Image.asset('assets/images/femenino.png',
-                                height:
-                                    MediaQuery.sizeOf(context).height * 0.04),
-                            title: Text(
-                                'Total de meninas  ${totalMeninas.toString()}')),
-                      ],
-                    ),
-                  ),
+                  containerInfoListAlunos(context, 'assets/images/femenino.png',
+                      'Total de meninas  ${totalMeninas.toString()}'),
                 ],
               ),
             ),
@@ -216,4 +183,22 @@ class _MyWidgetState extends ConsumerState<AlunosScreen> {
       ),
     );
   }
+}
+
+Widget containerInfoListAlunos(
+    BuildContext context, String imageAsset, String totalMeninas) {
+  return Container(
+    padding: EdgeInsets.all(10.0),
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey, width: 2)),
+    child: Column(
+      children: [
+        ListTile(
+            leading: Image.asset(imageAsset,
+                height: MediaQuery.sizeOf(context).height * 0.04),
+            title: Text(totalMeninas)),
+      ],
+    ),
+  );
 }

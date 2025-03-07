@@ -13,8 +13,14 @@ final alunoListProvider = FutureProvider<List<AlunoModel>>((ref) {
   return ref.read(alunoUseCaseProvider).buscarAlunos();
 });
 
-final alunoListProviderListen = StreamProvider<List<AlunoModel>>((ref) {
-  return ref.read(alunoUseCaseProvider).buscarAlunosListen();
+final count = StateProvider<int?>((ref) => 2);
+final countListenable = Provider((ref) => ref.read(count));
+final alunoListProviderListen = StreamProvider<List<AlunoModel?>>((ref) {
+  final contador = ref.watch(count);
+  if (contador != null) {
+    return ref.watch(alunoUseCaseProvider).buscarAlunosListen(contador);
+  }
+  return ref.watch(alunoUseCaseProvider).buscarAlunosListen(contador!);
 });
 
 final cadastrarAlunoProvider = ((ref) {

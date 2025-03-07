@@ -10,8 +10,8 @@ class AlunoUseCase {
     return _repository.buscarAlunos();
   }
 
-  Stream<List<AlunoModel>> buscarAlunosListen() {
-    return _repository.buscarAlunosListen();
+  Stream<List<AlunoModel>> buscarAlunosListen(int count) {
+    return _repository.buscarAlunosListen(count);
   }
 
   Future<void> cadastrarAluno(AlunoModel aluno) {

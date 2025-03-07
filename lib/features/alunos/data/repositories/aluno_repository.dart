@@ -14,13 +14,19 @@ class AlunoRepository {
         .toList();
   }
 
-  Stream<List<AlunoModel>> buscarAlunosListen() {
-    return _supabase
-        .from('alunos')
-        .stream(primaryKey: ['id']) // Define a chave primária
-        .order('id', ascending: true) // Ordena por ID
-        .map((data) =>
-            data.map<AlunoModel>((json) => AlunoModel.fromJson(json)).toList());
+  Stream<List<AlunoModel>> buscarAlunosListen(int count) {
+    try {
+      return _supabase
+          .from('alunos')
+          .stream(primaryKey: ['id']) // Define a chave primária
+          .limit(count) //define um limite de intens por consulta
+          .order('id', ascending: true) // Ordena por ID
+          .map((data) => data
+              .map<AlunoModel>((json) => AlunoModel.fromJson(json))
+              .toList());
+    } catch (e) {
+      throw 'Erro: $e';
+    }
   }
 
   // Cadastrar aluno

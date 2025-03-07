@@ -64,40 +64,49 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: Tooltip(
-                message: 'Gerar PDF',
-                child: IconButton(
-                    iconSize: 30,
-                    color: Theme.of(context).colorScheme.primary,
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return Pdfpreview(alunoModel: widget.alunoModel);
-                          });
-                    },
-                    icon: Icon(Icons.picture_as_pdf)),
-              ),
+            Stack(
+              children: [
+                FormCadastroAluno(
+                    controllerNomeAluno: controllerNomeAluno,
+                    controllerTelefone: controllerTelefone,
+                    controllerCpfMae: controllerCpfMae,
+                    controllerEndereco: controllerEndereco,
+                    controllerEscola: controllerEscola,
+                    controllerNomeMae: controllerNomeMae,
+                    controllerPostoSaude: controllerPostoSaude,
+                    controllerRg: controllerRg,
+                    controllerRgMae: controllerRgMae,
+                    controllerTurno: controllerTurno,
+                    controllercpf: controllercpf,
+                    json: json,
+                    id: widget.alunoModel.id,
+                    urlImagem: widget.alunoModel.fotoPerfilUrl,
+                    valorTurno: widget.alunoModel.turno,
+                    valorGenero: widget.alunoModel.sexo),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Row(
+                    children: [
+                      Tooltip(
+                        message: 'Gerar PDF',
+                        child: IconButton(
+                            iconSize: 30,
+                            color: Colors.grey,
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return Pdfpreview(
+                                        alunoModel: widget.alunoModel);
+                                  });
+                            },
+                            icon: Icon(Icons.picture_as_pdf)),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            FormCadastroAluno(
-                controllerNomeAluno: controllerNomeAluno,
-                controllerTelefone: controllerTelefone,
-                controllerCpfMae: controllerCpfMae,
-                controllerEndereco: controllerEndereco,
-                controllerEscola: controllerEscola,
-                controllerNomeMae: controllerNomeMae,
-                controllerPostoSaude: controllerPostoSaude,
-                controllerRg: controllerRg,
-                controllerRgMae: controllerRgMae,
-                controllerTurno: controllerTurno,
-                controllercpf: controllercpf,
-                json: json,
-                id: widget.alunoModel.id,
-                urlImagem: widget.alunoModel.fotoPerfilUrl,
-                valorTurno: widget.alunoModel.turno,
-                valorGenero: widget.alunoModel.sexo),
           ],
         ),
       ),
