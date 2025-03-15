@@ -1,0 +1,83 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/container_form_aluno.dart';
+import '../providers/alunoNotifier.dart';
+
+final expandedStateProvider = StateProvider<Map<int, bool>>((ref) => {});
+
+class Animatedcontainer extends ConsumerWidget {
+  const Animatedcontainer({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // var alunosAsync = ref.watch(alunoListProviderListen);
+    var listAlunos = ref.watch(alunoNotifierProvider);
+    final expandedState = ref.watch(expandedStateProvider);
+
+    if (listAlunos.isNotEmpty) {
+      return Flexible(
+        child: ListView.builder(
+          itemCount: listAlunos.length,
+          itemBuilder: (context, index) {
+            final aluno = listAlunos[index];
+            final isExpanded = expandedState[index] ?? false;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: AnimatedContainer(
+                height: isExpanded
+                    ? MediaQuery.sizeOf(context).height * 0.7
+                    : MediaQuery.sizeOf(context).height * 0.08,
+                duration: const Duration(milliseconds: 200),
+                width: MediaQuery.sizeOf(context).width * 0.5,
+                decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(15)),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: Text('${aluno.nome} ' ?? ''),
+                        subtitle: Text(aluno.telefone ?? ''),
+                        trailing: Tooltip(
+                          message: 'Visualizar mais informações',
+                          child: IconButton(
+                            onPressed: () {
+                              ref.read(expandedStateProvider.notifier).state = {
+                                ...expandedState,
+                                index: !isExpanded
+                              };
+                            },
+                            icon: Icon(isExpanded
+                                ? Icons.keyboard_arrow_up
+                                : Icons.keyboard_arrow_down),
+                          ),
+                        ),
+                      ),
+                      if (isExpanded) ...[
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            padding: EdgeInsets.all(15),
+                            height: MediaQuery.sizeOf(context).height * 0.62,
+                            width: MediaQuery.sizeOf(context).width,
+                            decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(15)),
+                            child: ContainerFormAluno(alunoModel: aluno!),
+                          ),
+                        )
+                      ]
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    }
+    return Center(child: Text('ALUNO NÃO ENCONTRADO'));
+
+    // return const Center(child: CircularProgressIndicator());
+  }
+}

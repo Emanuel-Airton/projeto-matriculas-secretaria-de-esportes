@@ -10,6 +10,18 @@ class AlunoUseCase {
     return _repository.buscarAlunos();
   }
 
+  List<AlunoModel> buscarLista() {
+    return _repository.listAunoModel;
+  }
+
+  List<AlunoModel> setupRealTime() {
+    return _repository.setupRealTime();
+  }
+
+  Future<List<AlunoModel>> buscarAlunoNome(String nome) {
+    return _repository.buscarAlunoPNome(nome);
+  }
+
   Stream<List<AlunoModel>> buscarAlunosListen(int count) {
     return _repository.buscarAlunosListen(count);
   }
@@ -24,5 +36,9 @@ class AlunoUseCase {
 
   Future<void> deletarAluno(int alunoId) {
     return _repository.deletarAluno(alunoId);
+  }
+
+  Stream<List<AlunoModel>> buscarAlunoPorNomeStream(String nomeAluno) {
+    return _repository.buscarAlunoPorNomeStream(nomeAluno);
   }
 }

@@ -28,6 +28,7 @@ class FormCadastroAluno extends ConsumerStatefulWidget {
   String? valorGenero;
   int? id;
   String? urlImagem;
+  bool? enabled;
   FormCadastroAluno(
       {super.key,
       this.controllerNomeAluno,
@@ -46,7 +47,8 @@ class FormCadastroAluno extends ConsumerStatefulWidget {
       this.id,
       this.urlImagem,
       this.valorTurno,
-      this.valorGenero});
+      this.valorGenero,
+      this.enabled});
 
   @override
   ConsumerState<FormCadastroAluno> createState() => _FormCadastroAlunoState();
@@ -99,6 +101,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                         },
                         onChanged: (p0) => widget.json?['nome'] = p0,
                         hintText: 'NOME DO ALUNO',
+                        enabled: widget.enabled,
                         controller: widget.controllerNomeAluno),
                   ),
                 ),
@@ -107,26 +110,28 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                     width: MediaQuery.sizeOf(context).width * 0.07,
                     child: CustomContainerTextformfield(
                       child: DropdownButtonFormField(
-                        isExpanded: true,
-                        padding: EdgeInsets.only(left: 5.0),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'GÊNERO',
-                        ),
-                        value: widget.valorGenero,
-                        items: ['masculino', 'feminino'].map(
-                          (e) {
-                            return DropdownMenuItem(
-                                value: e, child: Text(e.toString()));
-                          },
-                        ).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            widget.valorGenero = value;
-                            widget.json!['sexo'] = widget.valorGenero;
-                          });
-                        },
-                      ),
+                          isExpanded: true,
+                          padding: EdgeInsets.only(left: 5.0),
+                          decoration: InputDecoration(
+                            enabled: false,
+                            border: InputBorder.none,
+                            hintText: 'GÊNERO',
+                          ),
+                          value: widget.valorGenero,
+                          items: ['masculino', 'feminino'].map(
+                            (e) {
+                              return DropdownMenuItem(
+                                  value: e, child: Text(e.toString()));
+                            },
+                          ).toList(),
+                          onChanged: widget.enabled == true
+                              ? (String? value) {
+                                  setState(() {
+                                    widget.valorGenero = value;
+                                    widget.json?['sexo'] = widget.valorGenero;
+                                  });
+                                }
+                              : null),
                     )),
                 SizedBox(width: 15),
                 SizedBox(
@@ -185,6 +190,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                           return null;
                         },
                         hintText: 'RG DO ALUNO',
+                        enabled: widget.enabled,
                         controller: widget.controllerRg),
                   ),
                 ),
@@ -194,6 +200,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                   child: CustomContainerTextformfield(
                     child: CustomTextformfield(
                         hintText: 'CPF DO ALUNO',
+                        enabled: widget.enabled,
                         controller: widget.controllercpf),
                   ),
                 ),
@@ -203,6 +210,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                   child: CustomContainerTextformfield(
                     child: CustomTextformfield(
                         hintText: 'ESCOLA',
+                        enabled: widget.enabled,
                         controller: widget.controllerEscola),
                   ),
                 ),
@@ -211,23 +219,24 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                   width: MediaQuery.sizeOf(context).width * 0.07,
                   child: CustomContainerTextformfield(
                     child: DropdownButtonFormField(
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Turno',
-                      ),
-                      value: widget.valorTurno,
-                      items: ['matutino', 'vespetino'].map(
-                        (e) {
-                          return DropdownMenuItem(
-                              value: e, child: Text(e.toString()));
-                        },
-                      ).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          widget.valorTurno = value;
-                        });
-                      },
-                    ),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'Turno',
+                        ),
+                        value: widget.valorTurno,
+                        items: ['matutino', 'vespetino'].map(
+                          (e) {
+                            return DropdownMenuItem(
+                                value: e, child: Text(e.toString()));
+                          },
+                        ).toList(),
+                        onChanged: widget.enabled == true
+                            ? (String? value) {
+                                setState(() {
+                                  widget.valorTurno = value;
+                                });
+                              }
+                            : null),
                   ),
                 ),
               ],
@@ -238,6 +247,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
               child: CustomContainerTextformfield(
                 child: CustomTextformfield(
                     hintText: 'ENDEREÇO COMPLETO',
+                    enabled: widget.enabled,
                     controller: widget.controllerEndereco),
               ),
             ),
@@ -249,6 +259,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                   child: CustomContainerTextformfield(
                     child: CustomTextformfield(
                         hintText: 'NOME DA MÃE',
+                        enabled: widget.enabled,
                         controller: widget.controllerNomeMae),
                   ),
                 ),
@@ -259,6 +270,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                     child: CustomTextformfield(
                         keyboardType: TextInputType.number,
                         hintText: 'TELEFONE',
+                        enabled: widget.enabled,
                         controller: widget.controllerTelefone),
                   ),
                 ),
@@ -268,6 +280,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                   child: CustomContainerTextformfield(
                     child: CustomTextformfield(
                         hintText: 'RG DA MÃE',
+                        enabled: widget.enabled,
                         controller: widget.controllerRgMae),
                   ),
                 ),
@@ -282,6 +295,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                   child: CustomContainerTextformfield(
                     child: CustomTextformfield(
                         hintText: 'CPF DA MÃE',
+                        enabled: widget.enabled,
                         controller: widget.controllerCpfMae),
                   ),
                 ),
@@ -291,6 +305,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                   child: CustomContainerTextformfield(
                     child: CustomTextformfield(
                         hintText: 'POSTO DE SAÚDE DE REFERÊNCIA DA FAMÍLIA',
+                        enabled: widget.enabled,
                         controller: widget.controllerPostoSaude),
                   ),
                 ),

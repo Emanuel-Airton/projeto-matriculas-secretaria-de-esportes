@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/home_page.dart';
+import 'package:projeto_secretaria_de_esportes/splashScreen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -20,12 +21,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          primary: const Color(0xFFCE2A2A),
+          primary: const Color.fromRGBO(206, 42, 42, 1),
           seedColor: const Color(0xFFCE2A2A),
         ),
         useMaterial3: true,
       ),
-      home: HomePage(),
+      home: Splashscreen(),
     );
   }
 }

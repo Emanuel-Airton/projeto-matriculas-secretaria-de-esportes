@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
-import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/container_form_aluno.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/dialog_cadastro_aluno.dart';
 import '../../data/models/aluno_model.dart';
+import '../../data/repositories/aluno_repository.dart';
+import '../providers/alunoNotifier.dart';
+import '../widgets/animatedContainer.dart';
 
 class AlunosScreen extends ConsumerStatefulWidget {
   const AlunosScreen({super.key});
@@ -16,12 +18,15 @@ class _MyWidgetState extends ConsumerState<AlunosScreen> {
   int totalAlunos = 0;
   int totalMeninos = 0;
   int totalMeninas = 0;
-  final Map<int, bool> _expandedState = {};
+  TextEditingController controller = TextEditingController();
+  AsyncValue<List<AlunoModel?>>? alunosAsync;
+  AlunoRepository alunoRepository = AlunoRepository();
+  String? teste;
 
   @override
   Widget build(BuildContext context) {
-    AsyncValue<List<AlunoModel?>> alunosAsync =
-        ref.watch(alunoListProviderListen);
+    //final nomeAluno = ref.watch(nomeAlunoProvider);
+    final alunoNotifier = ref.read(alunoNotifierProvider.notifier);
     return Scaffold(
       backgroundColor: Colors.grey[200],
       floatingActionButton: FloatingActionButton.extended(
@@ -52,97 +57,53 @@ class _MyWidgetState extends ConsumerState<AlunosScreen> {
                     'Lista de alunos',
                     style: TextStyle(fontSize: 20),
                   ),
-                  Flexible(
-                    child: alunosAsync.when(
-                      data: (alunos) {
-                        totalAlunos = alunos.length;
-                        List list = [];
-                        for (var aluno in alunos) {
-                          if (aluno?.sexo == 'masculino') {
-                            list.add(aluno?.sexo);
-                            totalMeninos = list.length;
-                          } else if (aluno?.sexo == 'feminino') {
-                            list.clear();
-                            list.add(aluno?.sexo);
-                            totalMeninas = list.length;
-                          }
-                        }
-                        return ListView.builder(
-                          itemCount: alunos.length,
-                          itemBuilder: (context, index) {
-                            final isExpanded = _expandedState[index] ?? false;
-                            final aluno = alunos[index];
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: AnimatedContainer(
-                                height: isExpanded
-                                    ? MediaQuery.sizeOf(context).height * 0.7
-                                    : MediaQuery.sizeOf(context).height * 0.08,
-                                duration: const Duration(milliseconds: 200),
-                                width: MediaQuery.sizeOf(context).width * 0.5,
-                                decoration: BoxDecoration(
-                                    color: Colors.grey[100],
-                                    borderRadius: BorderRadius.circular(15)),
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    children: [
-                                      ListTile(
-                                        title: Text('${aluno?.nome} ' ?? ''),
-                                        subtitle: Text(aluno?.telefone ?? ''),
-                                        trailing: Tooltip(
-                                          message:
-                                              'Visualizar mais informações',
-                                          child: IconButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  _expandedState[index] =
-                                                      !isExpanded;
-                                                });
-                                              },
-                                              icon: Icon(isExpanded
-                                                  ? Icons.keyboard_arrow_up
-                                                  : Icons.keyboard_arrow_down)),
-                                        ),
-                                      ),
-                                      if (isExpanded) ...[
-                                        Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Container(
-                                                padding: EdgeInsets.all(15),
-                                                height:
-                                                    MediaQuery.sizeOf(context)
-                                                            .height *
-                                                        0.62,
-                                                width:
-                                                    MediaQuery.sizeOf(context)
-                                                        .width,
-                                                //padding: EdgeInsets.all(15),
-                                                decoration: BoxDecoration(
-                                                    color: Colors.grey[300],
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            15)),
-                                                child: ContainerFormAluno(
-                                                    alunoModel: aluno!)))
-                                      ]
-                                    ],
-                                  ),
+                  SizedBox(height: 15),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.grey[200],
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  onChanged: (value) {
+                                    ref.read(nomeAlunoProvider.notifier).state =
+                                        value;
+                                    alunoNotifier.buscarAlunoNome(
+                                        value); // Chama a busca
+                                  },
+                                  controller: controller,
+                                  decoration: InputDecoration(
+                                      hintText: 'Pesquisar aluno por nome',
+                                      border: InputBorder.none),
                                 ),
                               ),
-                            );
-                          },
-                        );
-                      },
-                      loading: () =>
-                          const Center(child: CircularProgressIndicator()),
-                      error: (err, stack) => Center(child: Text('Erro: $err')),
-                    ),
+                              IconButton(
+                                  onPressed: () {
+                                    /*    ref.watch(nomeAluno.notifier).state =
+                                        controller.text;
+                                    alunosAsync =
+                                        ref.watch(alunoListProviderListen);*/
+                                  },
+                                  icon: Icon(Icons.search))
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+                  SizedBox(height: 30),
+                  Animatedcontainer(),
                   Center(
                     child: TextButton(
                         onPressed: () async {
                           final valor = ref.read(countListenable);
-                          debugPrint(valor.toString());
+                          //debugPrint(valor.toString());
                           ref.read(count.notifier).state = (valor! * 2);
                           alunosAsync = ref.watch(alunoListProviderListen);
                         },
@@ -190,13 +151,15 @@ Widget containerInfoListAlunos(
   return Container(
     padding: EdgeInsets.all(10.0),
     decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey, width: 2)),
+      color: Colors.grey[100],
+      borderRadius: BorderRadius.circular(10),
+      // border: Border.all(color: Colors.grey, width: 2)
+    ),
     child: Column(
       children: [
         ListTile(
             leading: Image.asset(imageAsset,
-                height: MediaQuery.sizeOf(context).height * 0.04),
+                height: MediaQuery.sizeOf(context).height * 0.03),
             title: Text(totalMeninas)),
       ],
     ),

@@ -28,7 +28,7 @@ class _DialogCadastroAlunoState extends ConsumerState<DialogCadastroAluno> {
   DateTime? dataNascimento;
   String dataNascimentoString = "";
   final _key = GlobalKey<FormState>();
-
+  bool enabled = true;
   @override
   void initState() {
     super.initState();
@@ -54,6 +54,9 @@ class _DialogCadastroAlunoState extends ConsumerState<DialogCadastroAluno> {
               controllerTelefone: controllerTelefone,
               controllerTurno: controllerTurno,
               controllercpf: controllercpf,
+              enabled: enabled,
+              valorGenero: valor,
+              valorTurno: valorTurno,
             )),
         actions: [],
       ),

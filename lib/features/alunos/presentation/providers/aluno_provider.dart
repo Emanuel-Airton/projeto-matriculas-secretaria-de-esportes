@@ -10,19 +10,51 @@ final alunoUseCaseProvider =
 
 // Estado dos alunos
 final alunoListProvider = FutureProvider<List<AlunoModel>>((ref) {
+  final contador = ref.watch(count);
   return ref.read(alunoUseCaseProvider).buscarAlunos();
 });
 
-final count = StateProvider<int?>((ref) => 2);
-final countListenable = Provider((ref) => ref.read(count));
-final alunoListProviderListen = StreamProvider<List<AlunoModel?>>((ref) {
+/*final alunoListProviderListen = StreamProvider<List<AlunoModel?>>((ref) {
   final contador = ref.watch(count);
+  final nome = ref.watch(nomeAluno);
   if (contador != null) {
+    if (nome != '') {
+      return ref.watch(alunoUseCaseProvider).buscarAlunoPorNome(nome!);
+    }
     return ref.watch(alunoUseCaseProvider).buscarAlunosListen(contador);
   }
   return ref.watch(alunoUseCaseProvider).buscarAlunosListen(contador!);
+});*/
+final pegarLista = StateProvider<List<AlunoModel>>(
+  (ref) {
+    return ref.watch(alunoUseCaseProvider).buscarLista();
+  },
+);
+
+final setupRealTime = FutureProvider<List<AlunoModel?>>(
+  (ref) async {
+    /* ref.watch(pegarLista.notifier).state =
+        await ref.watch(alunoUseCaseProvider).setupRealTime();*/
+    return ref.watch(alunoUseCaseProvider).setupRealTime();
+  },
+);
+final count = StateProvider<int?>((ref) => 20);
+final countListenable = Provider((ref) => ref.read(count));
+final nomeAluno = StateProvider<String?>((ref) => '');
+final alunoListProviderListen = FutureProvider<List<AlunoModel?>>((ref) async {
+  final contador = ref.watch(count);
+  final nome = ref.watch(nomeAluno);
+  if (contador != null) {
+    if (nome != '') {
+      return ref.watch(alunoUseCaseProvider).buscarAlunoNome(nome!);
+    }
+    return ref.watch(alunoUseCaseProvider).buscarAlunos();
+  }
+  return ref.watch(alunoUseCaseProvider).buscarAlunos();
 });
 
 final cadastrarAlunoProvider = ((ref) {
   return ref.read(alunoUseCaseProvider).cadastrarAluno();
 });
+
+final expandedStateProvider = StateProvider<Map<int, bool>>((ref) => {});

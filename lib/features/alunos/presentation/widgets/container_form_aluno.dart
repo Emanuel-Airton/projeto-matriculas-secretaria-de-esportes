@@ -82,28 +82,39 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
                     id: widget.alunoModel.id,
                     urlImagem: widget.alunoModel.fotoPerfilUrl,
                     valorTurno: widget.alunoModel.turno,
-                    valorGenero: widget.alunoModel.sexo),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Row(
-                    children: [
-                      Tooltip(
-                        message: 'Gerar PDF',
-                        child: IconButton(
-                            iconSize: 30,
-                            color: Colors.grey,
-                            onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return Pdfpreview(
-                                        alunoModel: widget.alunoModel);
-                                  });
-                            },
-                            icon: Icon(Icons.picture_as_pdf)),
-                      ),
-                    ],
-                  ),
+                    valorGenero: widget.alunoModel.sexo,
+                    enabled: enabled),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Tooltip(
+                      message: 'Gerar PDF',
+                      child: IconButton(
+                          iconSize: 30,
+                          color: Colors.grey,
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return Pdfpreview(
+                                      alunoModel: widget.alunoModel);
+                                });
+                          },
+                          icon: Icon(Icons.picture_as_pdf)),
+                    ),
+                    Tooltip(
+                      message: 'Alterar os dados',
+                      child: IconButton(
+                          iconSize: 30,
+                          color: Colors.grey,
+                          onPressed: () {
+                            setState(() {
+                              enabled = !enabled;
+                            });
+                          },
+                          icon: Icon(Icons.create)),
+                    ),
+                  ],
                 ),
               ],
             ),
