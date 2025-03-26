@@ -17,16 +17,21 @@ class AlunoNotifier extends StateNotifier<List<AlunoModel>> {
     state = await _alunoUseCase.buscarAlunos();
   }
 
+  deletarAluno(int alunoId) async {
+    state = await _alunoUseCase.deletarAluno(alunoId);
+  }
+
   buscarAlunoNome(String nome) async {
     state = await _alunoUseCase.buscarAlunoNome(nome);
   }
 
+/*
   void _setupRealTime() {
     state = _alunoUseCase.setupRealTime();
-  }
+  }*/
 
   /// Escuta eventos do Supabase em tempo real
-/* void _setupRealTime() {
+  void _setupRealTime() {
     _supabase
         .channel('alunos')
         .onPostgresChanges(
@@ -49,7 +54,7 @@ class AlunoNotifier extends StateNotifier<List<AlunoModel>> {
               }
             })
         .subscribe();
-  }*/
+  }
 }
 
 final alunoNotifierProvider =

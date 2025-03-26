@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/aluno_provider.dart';
 import '../providers/image_picker_provider.dart';
 import '../providers/image_storage_provider.dart';
 
@@ -32,15 +31,16 @@ class _MyWidgetState extends ConsumerState<ProfileImageWidget> {
         child: IconButton(
             onPressed: () async {
               try {
+                ref.read(mapContentFileInfo.notifier).state = {};
                 Map<String, dynamic>? map =
                     await ref.read(pickImageUseCase).pickImage();
                 setState(() {
                   file = map!['filePath'];
-                  debugPrint(map['fileName']);
-                  debugPrint('teste valor: ${file!.path}');
+                  debugPrint('nome do arquivo ${map['fileName']}');
+                  debugPrint('caminho do arquivo: ${file!.path}');
                   ref.read(mapContentFileInfo.notifier).state = map;
                 });
-                debugPrint('teste: $file');
+                // debugPrint('teste: $file');
               } catch (e) {
                 debugPrint(e.toString());
               }

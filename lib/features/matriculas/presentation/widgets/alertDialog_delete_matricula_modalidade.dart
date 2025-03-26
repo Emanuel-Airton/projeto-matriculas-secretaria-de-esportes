@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projeto_secretaria_de_esportes/features/modalidades/presentation/providers/matricula_modalidade_notifier.dart';
 import '../../../modalidades/presentation/providers/modalidades_provider.dart';
 
 class AlertdialogDeleteMatriculaModalidade extends ConsumerStatefulWidget {
@@ -36,9 +37,13 @@ class _AlertdialogDeleteMatriculaModalidadeState
         TextButton(
           onPressed: () {
             try {
-              ref.read(selectMatriculaModalidadeId.notifier).state =
+              /*   ref.read(selectMatriculaModalidadeId.notifier).state =
                   widget.alunoId;
-              ref.read(deletarMatriculaModalidade);
+              ref.read(deletarMatriculaModalidade);*/
+
+              ref
+                  .read(matriculaModalidade.notifier)
+                  .deletarMatriculaModalidade(widget.alunoId!);
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                   content: Center(

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/repositories/aluno_repository.dart';
@@ -14,6 +15,20 @@ final alunoListProvider = FutureProvider<List<AlunoModel>>((ref) {
   return ref.read(alunoUseCaseProvider).buscarAlunos();
 });
 
+final listAlunosProvider = StateProvider<List<AlunoModel>?>((ref) => []);
+final quantidadeAlunos = FutureProvider<Map<String, dynamic>?>((ref) async {
+  Map<String, dynamic> map = {};
+  final recuperaListAlunos = ref.watch(listAlunosProvider);
+  if (recuperaListAlunos != null) {
+    debugPrint('list: ${recuperaListAlunos.toString()}');
+
+    map = await ref
+        .read(alunoUseCaseProvider)
+        .quantidadeAlunoPorGenero(recuperaListAlunos);
+    debugPrint('map: ${map.toString()}');
+  }
+  return map;
+});
 /*final alunoListProviderListen = StreamProvider<List<AlunoModel?>>((ref) {
   final contador = ref.watch(count);
   final nome = ref.watch(nomeAluno);
@@ -38,7 +53,7 @@ final setupRealTime = FutureProvider<List<AlunoModel?>>(
     return ref.watch(alunoUseCaseProvider).setupRealTime();
   },
 );
-final count = StateProvider<int?>((ref) => 20);
+final count = StateProvider<int?>((ref) => 5);
 final countListenable = Provider((ref) => ref.read(count));
 final nomeAluno = StateProvider<String?>((ref) => '');
 final alunoListProviderListen = FutureProvider<List<AlunoModel?>>((ref) async {

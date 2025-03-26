@@ -44,6 +44,8 @@ dependencies:
   file_selector: ^1.0.3
   flutter_masked_text2: ^0.9.1
   printing: ^5.14.2
+  window_size: ^0.1.0
+  window_manager: ^0.4.3
 
 dev_dependencies:
   flutter_test:

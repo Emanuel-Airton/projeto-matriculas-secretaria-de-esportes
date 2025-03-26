@@ -25,16 +25,18 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
   TextEditingController controllerRgMae = TextEditingController();
   TextEditingController controllerCpfMae = TextEditingController();
   TextEditingController controllerPostoSaude = TextEditingController();
+  TextEditingController controllerNascimento = TextEditingController();
 
   String? valor;
   String? valorTurno;
   DateTime? dataNascimento;
-  String dataNascimentoString = "";
+  String? dataNascimentoString;
   bool enabled = false;
+  bool cadastrarNovoAluno = false;
   Map<String, dynamic> json = {};
   @override
   void initState() {
-    controllerNomeAluno.text = widget.alunoModel.nome ?? '';
+    controllerNomeAluno.text = widget.alunoModel.nome;
     controllerTelefone.text = widget.alunoModel.telefone ?? '';
     controllercpf.text = widget.alunoModel.cpf ?? '';
     controllerRg.text = widget.alunoModel.rg ?? '';
@@ -46,7 +48,13 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
     controllerRgMae.text = widget.alunoModel.rgMae ?? '';
     valorTurno = widget.alunoModel.turno ?? '';
     final dateFormat = DateFormat('dd/MM/yyyy');
-    dataNascimentoString = dateFormat.format(widget.alunoModel.nascimento!);
+
+    if (widget.alunoModel.nascimento != null) {
+      dataNascimentoString = dateFormat.format(widget.alunoModel.nascimento!);
+    } else {
+      dataNascimentoString = null;
+    }
+    controllerNascimento.text = dataNascimentoString ?? '';
     super.initState();
   }
 
@@ -78,12 +86,14 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
                     controllerRgMae: controllerRgMae,
                     controllerTurno: controllerTurno,
                     controllercpf: controllercpf,
+                    controllerNascimento: controllerNascimento,
                     json: json,
                     id: widget.alunoModel.id,
                     urlImagem: widget.alunoModel.fotoPerfilUrl,
                     valorTurno: widget.alunoModel.turno,
                     valorGenero: widget.alunoModel.sexo,
-                    enabled: enabled),
+                    enabled: enabled,
+                    cadastrarNovoAluno: cadastrarNovoAluno),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [

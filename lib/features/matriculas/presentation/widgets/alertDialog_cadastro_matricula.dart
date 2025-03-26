@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
+import 'package:projeto_secretaria_de_esportes/features/modalidades/presentation/providers/matricula_modalidade_notifier.dart';
 import '../../../modalidades/presentation/providers/modalidades_provider.dart';
-import '../../../projetos/presentation/providers/projetos_provider.dart';
-import '../../data/models/matricula_model.dart';
 import '../providers/matricula_provider.dart';
 
 class AlertdialogCadastroMatricula extends ConsumerStatefulWidget {
@@ -24,7 +23,7 @@ class _AlertdialogCadastroMatriculaState
   @override
   Widget build(BuildContext context) {
     final alunosAsync = ref.read(alunoListProvider);
-    final projetosAsync = ref.watch(listProjetosProvider);
+    //final projetosAsync = ref.watch(listProjetosProvider);
     final modalidadesAsync = ref.watch(listModalidadeProvider);
 
     return AlertDialog(
@@ -47,8 +46,10 @@ class _AlertdialogCadastroMatriculaState
                     return DropdownButtonFormField<int>(
                       value: alunoSelecionado,
                       hint: const Text('Selecione um aluno'),
-                      onChanged: (value) =>
-                          setState(() => alunoSelecionado = value),
+                      onChanged: (value) => setState(() {
+                        alunoSelecionado = value;
+                        debugPrint('id aluno: ${alunoSelecionado.toString()}');
+                      }),
                       items: alunos.map((aluno) {
                         return DropdownMenuItem<int>(
                           value: aluno.id,
@@ -63,7 +64,7 @@ class _AlertdialogCadastroMatriculaState
                 const SizedBox(height: 16),
 
                 // Dropdown de Projetos
-                projetosAsync.when(
+                /*   projetosAsync.when(
                   data: (projetos) {
                     return DropdownButtonFormField<int>(
                       value: projetoSelecionado,
@@ -81,7 +82,7 @@ class _AlertdialogCadastroMatriculaState
                   loading: () => const CircularProgressIndicator(),
                   error: (err, stack) => Text('Erro: $err'),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 16),*/
 
                 // Checkbox das Modalidades
                 modalidadesAsync.when(
@@ -89,7 +90,7 @@ class _AlertdialogCadastroMatriculaState
                     // debugPrint('modalidasde: $modalidades');
                     return Column(
                       children: modalidades.map((modalidade) {
-                        debugPrint('nome ${modalidade.nome!}');
+                        // debugPrint('nome ${modalidade.nome!}');
                         return CheckboxListTile(
                           title: Text(modalidade.nome!),
                           value:
@@ -115,20 +116,25 @@ class _AlertdialogCadastroMatriculaState
                 ElevatedButton(
                   onPressed: () async {
                     if (alunoSelecionado != null &&
-                        projetoSelecionado != null &&
                         modalidadesSelecionadas.isNotEmpty) {
                       try {
-                        MatriculaModel matriculaModel =
+                        /*  MatriculaModel matriculaModel =
                             MatriculaModel.cadastrarDados(
                                 idAluno: alunoSelecionado,
                                 idProjeto: projetoSelecionado,
-                                dataMatricula: DateTime.now());
+                                dataMatricula: DateTime.now());*/
                         await ref
                             .read(matriculaUseCaseProvider)
                             .cadastrarMatriculaComModalidades(
-                              matriculaModel,
+                              alunoSelecionado!,
                               modalidadesSelecionadas,
                             );
+                        ref.read(selectedModalidadeIdProvider.notifier).state =
+                            null;
+                        await ref
+                            .read(matriculaModalidade.notifier)
+                            .buscarMatriculasModalidade();
+
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Center(
                           child: Text('Matricula realizada dom sucesso'),
@@ -136,10 +142,16 @@ class _AlertdialogCadastroMatriculaState
                         Navigator.pop(context);
                       } catch (erro) {
                         debugPrint('Erro: $erro');
+
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Center(
+                          child: Text(
+                              'O aluno já está matriculado nessa modalidade'),
+                        )));
                       }
                     }
                   },
-                  child: const Text('Salvar Matrícula'),
+                  child: const Text('Salvar Matrícula de modalidade'),
                 ),
               ],
             ),

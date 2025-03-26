@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/alertDialog_select_image.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/buttom_atualizar_dados.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/custom_container_textFormField.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/custom_textFormField.dart';
@@ -23,12 +24,15 @@ class FormCadastroAluno extends ConsumerStatefulWidget {
   TextEditingController? controllerCpfMae;
   TextEditingController? controllerPostoSaude;
   TextEditingController? controllerRenda;
+  TextEditingController? controllerNascimento;
+
   Map<String, dynamic>? json;
   String? valorTurno;
   String? valorGenero;
   int? id;
   String? urlImagem;
   bool? enabled;
+  bool? cadastrarNovoAluno;
   FormCadastroAluno(
       {super.key,
       this.controllerNomeAluno,
@@ -43,30 +47,27 @@ class FormCadastroAluno extends ConsumerStatefulWidget {
       this.controllerCpfMae,
       this.controllerPostoSaude,
       this.controllerRenda,
+      this.controllerNascimento,
       this.json,
       this.id,
       this.urlImagem,
       this.valorTurno,
       this.valorGenero,
-      this.enabled});
+      this.enabled,
+      this.cadastrarNovoAluno});
 
   @override
   ConsumerState<FormCadastroAluno> createState() => _FormCadastroAlunoState();
 }
 
 class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
+  Widget? child = Text('Salvar');
   DateTime? dataNascimento;
   String dataNascimentoString = "";
   final _key = GlobalKey<FormState>();
 
   @override
   void initState() {
-    widget.controllerTelefone = MaskedTextController(
-        mask: '(00) 00000-0000', text: widget.controllerTelefone!.text);
-    widget.controllercpf = MaskedTextController(
-        mask: '000.000.000-00', text: widget.controllercpf!.text);
-    widget.controllerCpfMae = MaskedTextController(
-        mask: '000.000.000-00', text: widget.controllerCpfMae!.text);
     super.initState();
   }
 
@@ -74,309 +75,450 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
   Widget build(BuildContext context) {
     return Form(
       key: _key,
-      child: Container(
-        width: MediaQuery.sizeOf(context).width * 0.53,
-        padding: EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(25),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ProfileImageWidget(urlImage: widget.urlImagem ?? ''),
-            SizedBox(height: 15),
-            Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.27,
-                  child: CustomContainerTextformfield(
-                    child: CustomTextformfield(
+      child: SingleChildScrollView(
+        child: Container(
+          width: MediaQuery.of(context).size.width > 600
+              ? MediaQuery.of(context).size.width * 0.53
+              : MediaQuery.of(context).size.width * 0.9, // Largura responsiva
+          padding: EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(25),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Tooltip(
+                  message: 'Adicionar foto do perfil',
+                  child: ProfileImageWidget(urlImage: widget.urlImagem ?? '')),
+              /*CircleAvatar(
+                    backgroundImage: widget.urlImagem != ''
+                        ? NetworkImage(widget.urlImagem!)
+                        : null,
+                    radius: 50,
+                    child: Tooltip(
+                      message: 'Adicionar foto do perfil',
+                      child: IconButton(
+                        onPressed: () async {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertdialogSelectImage();
+                              });
+                        },
+                        icon: Icon(
+                            widget.urlImagem != null ? null : Icons.person),
+                        /*  icon: Icon(
+                file != null || widget.urlImage != '' ? null : Icons.person,
+                size: 50)),*/
+                      ),
+                    ),
+                  )),*/
+
+              SizedBox(height: 15),
+
+              // Nome, Gênero e Data de Nascimento
+              Row(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: CustomContainerTextformfield(
+                      child: CustomTextformfield(
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'insira o nome do aluno';
+                            return 'Insira o nome do aluno';
                           }
                           return null;
                         },
                         onChanged: (p0) => widget.json?['nome'] = p0,
                         hintText: 'NOME DO ALUNO',
                         enabled: widget.enabled,
-                        controller: widget.controllerNomeAluno),
-                  ),
-                ),
-                SizedBox(width: 15),
-                SizedBox(
-                    width: MediaQuery.sizeOf(context).width * 0.07,
-                    child: CustomContainerTextformfield(
-                      child: DropdownButtonFormField(
-                          isExpanded: true,
-                          padding: EdgeInsets.only(left: 5.0),
-                          decoration: InputDecoration(
-                            enabled: false,
-                            border: InputBorder.none,
-                            hintText: 'GÊNERO',
-                          ),
-                          value: widget.valorGenero,
-                          items: ['masculino', 'feminino'].map(
-                            (e) {
-                              return DropdownMenuItem(
-                                  value: e, child: Text(e.toString()));
-                            },
-                          ).toList(),
-                          onChanged: widget.enabled == true
-                              ? (String? value) {
-                                  setState(() {
-                                    widget.valorGenero = value;
-                                    widget.json?['sexo'] = widget.valorGenero;
-                                  });
-                                }
-                              : null),
-                    )),
-                SizedBox(width: 15),
-                SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.15,
-                  child: CustomContainerTextformfield(
-                    child: Row(
-                      children: [
-                        Tooltip(
-                          message: 'Selecionar a data',
-                          child: IconButton(
-                              onPressed: () async {
-                                dataNascimento = await showDatePicker(
-                                    context: context,
-                                    firstDate: DateTime(1910),
-                                    lastDate: DateTime(2030));
-                                //debugPrint(dataNascimento?.toIso8601String());
-                                if (dataNascimento != null) {
-                                  setState(() {
-                                    final dateFormat = DateFormat('dd/MM/yyyy');
-                                    dataNascimentoString =
-                                        dateFormat.format(dataNascimento!);
-                                    DateFormat('dd/MM/yyyy')
-                                        .parse(dataNascimentoString);
-                                  });
-                                }
-                              },
-                              icon: const Icon(
-                                size: 35,
-                                Icons.calendar_month,
-                                color: Colors.grey,
-                              )),
-                        ),
-                        Text('DATA DE NASCIMENTO $dataNascimentoString',
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 13)),
-                      ],
+                        controller: widget.controllerNomeAluno,
+                      ),
                     ),
                   ),
-                )
-              ],
-            ),
-            SizedBox(height: 15),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.08,
-                  child: CustomContainerTextformfield(
-                    child: CustomTextformfield(
+                  SizedBox(width: 15),
+                  Expanded(
+                    flex: 1,
+                    child: CustomContainerTextformfield(
+                      child: DropdownButtonFormField(
+                        isExpanded: true,
+                        padding: EdgeInsets.only(left: 5.0),
+                        decoration: InputDecoration(
+                          enabled: false,
+                          border: InputBorder.none,
+                          hintText: 'GÊNERO',
+                        ),
+                        value: widget.valorGenero,
+                        items: ['masculino', 'feminino'].map((e) {
+                          return DropdownMenuItem(
+                            value: e,
+                            child: Text(e.toString()),
+                          );
+                        }).toList(),
+                        onChanged: widget.enabled == true
+                            ? (String? value) {
+                                setState(() {
+                                  widget.valorGenero = value;
+                                  widget.json?['sexo'] = widget.valorGenero;
+                                });
+                              }
+                            : null,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  Expanded(
+                    flex: 2,
+                    child: CustomContainerTextformfield(
+                      child: CustomTextformfield(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Insira a data de nascimento';
+                          }
+
+                          // Verifica se a data está no formato correto (10 caracteres incluindo as barras)
+                          if (value.length != 10) {
+                            return 'Data inválida';
+                          }
+
+                          try {
+                            // Converte a string para DateTime mantendo as barras
+                            DateFormat('dd/MM/yyyy').parseStrict(value);
+                          } catch (e) {
+                            return 'Data inválida';
+                          }
+
+                          return null;
+                        },
+                        enabled: widget.enabled,
+                        controller: widget.controllerNascimento =
+                            MaskedTextController(
+                          mask: '00/00/0000',
+                          text: widget.controllerNascimento?.text,
+                        ),
+                        hintText: 'DATA DE NASCIMENTO',
+                        onChanged: (p0) {
+                          if (p0 != null && p0.isNotEmpty && p0.length == 10) {
+                            try {
+                              // Converte a string para DateTime mantendo as barras
+                              dataNascimento =
+                                  DateFormat('dd/MM/yyyy').parseStrict(p0);
+
+                              // Converte para formato ISO 8601
+                              widget.json?['nascimento'] =
+                                  dataNascimento?.toIso8601String();
+
+                              debugPrint(
+                                  'data nascimento: ${dataNascimento?.toIso8601String()}');
+                            } catch (e) {
+                              widget.json?['nascimento'] = null;
+                              debugPrint('Erro ao converter data: $e');
+                            }
+                          } else {
+                            widget.json?['nascimento'] = null;
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 15),
+
+              // RG, CPF, Escola e Turno
+              Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: CustomContainerTextformfield(
+                      child: CustomTextformfield(
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'insira o RG do aluno';
+                            return 'Insira o RG do aluno';
                           }
                           return null;
                         },
+                        onChanged: (p0) => widget.json?['rg'] = p0,
                         hintText: 'RG DO ALUNO',
                         enabled: widget.enabled,
-                        controller: widget.controllerRg),
+                        maxLength: 10,
+                        controller: widget.controllerRg,
+                      ),
+                    ),
                   ),
-                ),
-                SizedBox(width: 15),
-                SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.08,
-                  child: CustomContainerTextformfield(
-                    child: CustomTextformfield(
+                  SizedBox(width: 15),
+                  Expanded(
+                    flex: 1,
+                    child: CustomContainerTextformfield(
+                      child: CustomTextformfield(
                         hintText: 'CPF DO ALUNO',
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Insira o CPF';
+                          }
+                          return null;
+                        },
+                        onChanged: (p0) => widget.json?['cpf'] = p0,
                         enabled: widget.enabled,
-                        controller: widget.controllercpf),
+                        controller: widget.controllercpf = MaskedTextController(
+                          mask: '000.000.000-00',
+                          text: widget.controllercpf!.text,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                SizedBox(width: 15),
-                SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.25,
-                  child: CustomContainerTextformfield(
-                    child: CustomTextformfield(
+                  SizedBox(width: 15),
+                  Expanded(
+                    flex: 2,
+                    child: CustomContainerTextformfield(
+                      child: CustomTextformfield(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Insira a escola';
+                          }
+                          return null;
+                        },
                         hintText: 'ESCOLA',
+                        onChanged: (p0) => widget.json?['escola'] = p0,
                         enabled: widget.enabled,
-                        controller: widget.controllerEscola),
+                        controller: widget.controllerEscola,
+                      ),
+                    ),
                   ),
-                ),
-                SizedBox(width: 15),
-                SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.07,
-                  child: CustomContainerTextformfield(
-                    child: DropdownButtonFormField(
+                  SizedBox(width: 15),
+                  Expanded(
+                    flex: 1,
+                    child: CustomContainerTextformfield(
+                      child: DropdownButtonFormField(
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: 'Turno',
                         ),
                         value: widget.valorTurno,
-                        items: ['matutino', 'vespetino'].map(
-                          (e) {
-                            return DropdownMenuItem(
-                                value: e, child: Text(e.toString()));
-                          },
-                        ).toList(),
+                        items: ['matutino', 'vespetino'].map((e) {
+                          return DropdownMenuItem(
+                            value: e,
+                            child: Text(e.toString()),
+                          );
+                        }).toList(),
                         onChanged: widget.enabled == true
                             ? (String? value) {
                                 setState(() {
                                   widget.valorTurno = value;
+                                  widget.json?['turno'] = value;
                                 });
                               }
-                            : null),
+                            : null,
+                      ),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 15),
-            SizedBox(
-              width: MediaQuery.sizeOf(context).width * 0.4,
-              child: CustomContainerTextformfield(
-                child: CustomTextformfield(
-                    hintText: 'ENDEREÇO COMPLETO',
-                    enabled: widget.enabled,
-                    controller: widget.controllerEndereco),
+                ],
               ),
-            ),
-            SizedBox(height: 15),
-            Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.27,
-                  child: CustomContainerTextformfield(
-                    child: CustomTextformfield(
-                        hintText: 'NOME DA MÃE',
-                        enabled: widget.enabled,
-                        controller: widget.controllerNomeMae),
-                  ),
+              SizedBox(height: 15),
+
+              // Endereço
+              CustomContainerTextformfield(
+                child: CustomTextformfield(
+                  hintText: 'ENDEREÇO COMPLETO',
+                  onChanged: (p0) => widget.json?['endereço'] = p0,
+                  enabled: widget.enabled,
+                  controller: widget.controllerEndereco,
                 ),
-                SizedBox(width: 15),
-                SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.1,
-                  child: CustomContainerTextformfield(
-                    child: CustomTextformfield(
+              ),
+              SizedBox(height: 15),
+
+              // Nome da Mãe, Telefone e RG da Mãe
+              Row(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: CustomContainerTextformfield(
+                      child: CustomTextformfield(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Insira o nome da mãe ou responsável';
+                          }
+                          return null;
+                        },
+                        hintText: 'NOME DA MÃE OU RESPONSÁVEL',
+                        onChanged: (p0) => widget.json?['nome_mae'] = p0,
+                        enabled: widget.enabled,
+                        controller: widget.controllerNomeMae,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  Expanded(
+                    flex: 1,
+                    child: CustomContainerTextformfield(
+                      child: CustomTextformfield(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Insira o telefone';
+                          }
+                          return null;
+                        },
                         keyboardType: TextInputType.number,
                         hintText: 'TELEFONE',
+                        onChanged: (p0) => widget.json?['telefone'] = p0,
                         enabled: widget.enabled,
-                        controller: widget.controllerTelefone),
+                        controller: widget.controllerTelefone =
+                            MaskedTextController(
+                          mask: '(00) 00000-0000',
+                          text: widget.controllerTelefone!.text,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                SizedBox(width: 15),
-                SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.08,
-                  child: CustomContainerTextformfield(
-                    child: CustomTextformfield(
+                  SizedBox(width: 15),
+                  Expanded(
+                    flex: 1,
+                    child: CustomContainerTextformfield(
+                      child: CustomTextformfield(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Insira o RG';
+                          }
+                          return null;
+                        },
                         hintText: 'RG DA MÃE',
+                        onChanged: (p0) => widget.json?['rg_mae'] = p0,
                         enabled: widget.enabled,
-                        controller: widget.controllerRgMae),
+                        maxLength: 10,
+                        controller: widget.controllerRgMae,
+                      ),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 15),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.08,
-                  child: CustomContainerTextformfield(
-                    child: CustomTextformfield(
+                ],
+              ),
+              SizedBox(height: 15),
+
+              // CPF da Mãe e Posto de Saúde
+              Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: CustomContainerTextformfield(
+                      child: CustomTextformfield(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Insira o CPF';
+                          }
+                          return null;
+                        },
                         hintText: 'CPF DA MÃE',
+                        onChanged: (p0) => widget.json?['cpf_mae'] = p0,
                         enabled: widget.enabled,
-                        controller: widget.controllerCpfMae),
+                        controller: widget.controllerCpfMae =
+                            MaskedTextController(
+                          mask: '000.000.000-00',
+                          text: widget.controllerCpfMae!.text,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                SizedBox(width: 15),
-                SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.23,
-                  child: CustomContainerTextformfield(
-                    child: CustomTextformfield(
+                  SizedBox(width: 15),
+                  Expanded(
+                    flex: 2,
+                    child: CustomContainerTextformfield(
+                      child: CustomTextformfield(
                         hintText: 'POSTO DE SAÚDE DE REFERÊNCIA DA FAMÍLIA',
+                        onChanged: (p0) {
+                          widget.json?['posto_saude'] = p0;
+                          debugPrint(
+                              'json: ${widget.json?['posto_saude'].toString()}');
+                        },
                         enabled: widget.enabled,
-                        controller: widget.controllerPostoSaude),
+                        controller: widget.controllerPostoSaude,
+                      ),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 15),
-            widget.json != null
-                ? ButtomAtualizarDados(id: widget.id!, json: widget.json!)
-                : Row(
-                    children: [
-                      ElevatedButton(
+                ],
+              ),
+              SizedBox(height: 15),
+
+              // Botões
+              widget.json != null
+                  ? ButtomAtualizarDados(id: widget.id!, json: widget.json!)
+                  : Row(
+                      children: [
+                        ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
                             ref.read(mapContentFileInfo.notifier).state = {};
                           },
-                          child: Text('cancelar')),
-                      SizedBox(width: 15),
-                      ElevatedButton(
-                          onPressed: () async {
+                          child: Text('Cancelar'),
+                        ),
+                        SizedBox(width: 15),
+                        ElevatedButton(
+                          onPressed: () {
                             if (_key.currentState!.validate()) {
                               final urlImagemAsync =
                                   ref.watch(uploadImageStorage);
                               urlImagemAsync.when(
-                                data: (data) async {
-                                  debugPrint('data: ${data.toString()}');
-                                  try {
-                                    AlunoModel alunoModel = AlunoModel(
-                                        nome: widget.controllerNomeAluno!.text,
-                                        sexo: widget.valorGenero,
-                                        telefone:
-                                            widget.controllerTelefone!.text,
-                                        nascimento: dataNascimento,
-                                        rg: widget.controllerRg!.text,
-                                        cpf: widget.controllercpf!.text,
-                                        endereco:
-                                            widget.controllerEndereco!.text,
-                                        escola: widget.controllerEscola!.text,
-                                        turno: widget.valorTurno,
-                                        nomeMae: widget.controllerNomeMae!.text,
-                                        rgMae: widget.controllerRgMae!.text,
-                                        cpfMae: widget.controllerCpfMae!.text,
-                                        postoSaude:
-                                            widget.controllerPostoSaude!.text,
-                                        fotoPerfilUrl: data);
+                                  data: (data) async {
+                                    try {
+                                      if (widget.cadastrarNovoAluno!) {
+                                        AlunoModel alunoModel = AlunoModel(
+                                          nome:
+                                              widget.controllerNomeAluno!.text,
+                                          sexo: widget.valorGenero,
+                                          telefone:
+                                              widget.controllerTelefone!.text,
+                                          nascimento: dataNascimento,
+                                          rg: widget.controllerRg!.text,
+                                          cpf: widget.controllercpf!.text,
+                                          endereco:
+                                              widget.controllerEndereco!.text,
+                                          escola: widget.controllerEscola!.text,
+                                          turno: widget.valorTurno,
+                                          nomeMae:
+                                              widget.controllerNomeMae!.text,
+                                          rgMae: widget.controllerRgMae!.text,
+                                          cpfMae: widget.controllerCpfMae!.text,
+                                          postoSaude:
+                                              widget.controllerPostoSaude!.text,
+                                          fotoPerfilUrl: data,
+                                        );
 
-                                    ref
-                                        .read(alunoUseCaseProvider)
-                                        .cadastrarAluno(alunoModel);
-
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
+                                        await ref
+                                            .read(alunoUseCaseProvider)
+                                            .cadastrarAluno(alunoModel);
+                                        setState(() {
+                                          child = Text('Cadastrado');
+                                        });
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
                                             content: Center(
-                                      child:
-                                          Text('Aluno cadastrado com sucesso'),
-                                    )));
-                                    Navigator.pop(context);
-                                  } catch (erro) {
-                                    debugPrint('Erro: $erro');
-                                  }
-                                },
-                                error: (error, stackTrace) => debugPrint(
-                                    'Erro ao carregar imagem: $error'),
-                                loading: () =>
-                                    debugPrint('Carregando imagem...'),
-                              );
+                                              child: Text(
+                                                  'Aluno cadastrado com sucesso'),
+                                            ),
+                                          ),
+                                        );
+                                        Future.delayed(Duration(seconds: 1))
+                                            .then((value) =>
+                                                Navigator.pop(context));
+                                      }
+                                    } catch (erro) {
+                                      debugPrint('Erro: $erro');
+                                    }
+                                  },
+                                  error: (error, stackTrace) => debugPrint(
+                                      'Erro ao carregar imagem: $error'),
+                                  loading: () =>
+                                      //debugPrint('Carregando imagem...'),
+                                      CircularProgressIndicator());
                             }
                           },
-                          child: Text('Salvar')),
-                    ],
-                  ),
-          ],
+                          child: child,
+                        ),
+                      ],
+                    ),
+            ],
+          ),
         ),
       ),
     );

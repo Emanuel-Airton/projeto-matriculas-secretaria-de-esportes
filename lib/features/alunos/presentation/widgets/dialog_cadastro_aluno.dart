@@ -23,12 +23,15 @@ class _DialogCadastroAlunoState extends ConsumerState<DialogCadastroAluno> {
   TextEditingController controllerCpfMae = TextEditingController();
   TextEditingController controllerPostoSaude = TextEditingController();
   TextEditingController controllerRenda = TextEditingController();
+  TextEditingController controllerNascimento = TextEditingController();
+
   String? valor;
   String? valorTurno;
   DateTime? dataNascimento;
   String dataNascimentoString = "";
   final _key = GlobalKey<FormState>();
   bool enabled = true;
+  bool cadastrarNovoAluno = true;
   @override
   void initState() {
     super.initState();
@@ -54,9 +57,11 @@ class _DialogCadastroAlunoState extends ConsumerState<DialogCadastroAluno> {
               controllerTelefone: controllerTelefone,
               controllerTurno: controllerTurno,
               controllercpf: controllercpf,
+              controllerNascimento: controllerNascimento,
               enabled: enabled,
               valorGenero: valor,
               valorTurno: valorTurno,
+              cadastrarNovoAluno: cadastrarNovoAluno,
             )),
         actions: [],
       ),

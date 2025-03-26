@@ -32,43 +32,19 @@ class _HomePageState extends ConsumerState<HomePage> {
         children: [
           Container(
             padding: EdgeInsets.all(15),
-            width: MediaQuery.sizeOf(context).width * 0.2,
+            width: MediaQuery.sizeOf(context).width * 0.15,
             color: Theme.of(context).colorScheme.primary,
             child: Column(
               children: [
                 Padding(
                     padding: const EdgeInsets.all(30.0),
-                    child: IconButton(
-                        onPressed: () async {
-                          await ref
-                              .read(authViewModelProvider.notifier)
-                              .logout();
-
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Splashscreen()));
-                        },
-                        icon: Icon(Icons.person, color: Colors.white))),
-                SizedBox(height: 15),
-                ListTile(
-                  leading: Icon(Icons.person, color: Colors.white),
-                  title: Text('Alunos', style: TextStyle(color: Colors.white)),
-                  onTap: () => setState(() {
-                    pageController.jumpToPage(0);
-                  }),
-                ),
-                SizedBox(height: 15),
-                ListTile(
-                  leading: Icon(Icons.add_business, color: Colors.white),
-                  title:
-                      Text('Projetos', style: TextStyle(color: Colors.white)),
-                  onTap: () {
-                    setState(() {
-                      pageController.jumpToPage(1);
-                    });
-                  },
-                ),
+                    child: Text(
+                      'Menu',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20),
+                    )),
                 SizedBox(height: 15),
                 ListTile(
                   leading: Icon(Icons.add, color: Colors.white),
@@ -79,6 +55,28 @@ class _HomePageState extends ConsumerState<HomePage> {
                       pageController.jumpToPage(2);
                     });
                   },
+                ),
+                SizedBox(height: 15),
+                ListTile(
+                  leading: Icon(Icons.person, color: Colors.white),
+                  title: Text('Alunos', style: TextStyle(color: Colors.white)),
+                  onTap: () => setState(() {
+                    pageController.jumpToPage(0);
+                  }),
+                ),
+                SizedBox(height: 15),
+                ListTile(
+                  leading: IconButton(
+                      onPressed: () async {
+                        await ref.read(authViewModelProvider.notifier).logout();
+
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Splashscreen()));
+                      },
+                      icon: Icon(Icons.account_circle, color: Colors.white)),
+                  title: Text('Perfil', style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),

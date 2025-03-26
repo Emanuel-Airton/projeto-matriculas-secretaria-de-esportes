@@ -1,15 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:projeto_secretaria_de_esportes/home_page.dart';
 import 'package:projeto_secretaria_de_esportes/splashScreen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:window_manager/window_manager.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
   String apiKey = dotenv.env['API_KEY']!;
   await Supabase.initialize(
       url: 'https://tpnpgqawlipmufjiuneo.supabase.co', anonKey: apiKey);
+
+  // Inicializa o window_manager
+  await windowManager.ensureInitialized();
+
+  // Configura o tamanho inicial da janela
+  WindowOptions windowOptions = WindowOptions(
+    size: Size(1200, 800),
+    minimumSize: Size(1000, 600),
+    center: true, // Centraliza a janela
+    title: 'Projeto Adolescente Nota 10', // Título da janela
+  );
+
+  await windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show(); // Exibe a janela
+    await windowManager.focus(); // Foca na janela
+    await windowManager.setFullScreen(false);
+    await windowManager.maximize(); // Maximiza a janela
+  });
+
   runApp(ProviderScope(child: MyApp()));
 }
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/modalidades_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import '../models/matricula_modalidades_model.dart';
 
 class ModalidadesRepository {
@@ -35,8 +34,7 @@ class ModalidadesRepository {
       int id) async {
     final response = await _supabase
         .from(tabelaMatriculaModalidade)
-        .select(
-            'id, matriculas(data_matricula, alunos($buscarAluno)), modalidades(nome)')
+        .select('id, data_matricula, alunos($buscarAluno), modalidades(nome)')
         .filter('modalidade_id', 'eq', id);
     return response.map<MatriculaModalidadesModel>(
       (json) {
@@ -49,7 +47,7 @@ class ModalidadesRepository {
   //retorna a lista de todas as matriculas
   Future<List<MatriculaModalidadesModel>> buscarMatriculaModalidade() async {
     final response = await _supabase.from(tabelaMatriculaModalidade).select(
-        'id, matricula_id, matriculas(data_matricula,  alunos($buscarAluno)), modalidades(nome)');
+        'id, data_matricula, aluno_id, alunos($buscarAluno), modalidades(nome)');
     return response.map<MatriculaModalidadesModel>(
       (json) {
         debugPrint('teste: ${json.toString()}');

@@ -13,8 +13,8 @@ class ContainerInfoMatricula extends StatefulWidget {
   State<ContainerInfoMatricula> createState() => _ContainerInfoMatriculaState();
 }
 
-whatsAppLauncher() async {
-  String telefone = '77999598633';
+whatsAppLauncher(String telefone) async {
+  // String telefone = '77999598633';
   var whatsappUrl = "https://api.whatsapp.com/send/?phone=$telefone";
   if (await canLaunchUrl(Uri.parse(whatsappUrl))) {
     await launchUrl(Uri.parse(whatsappUrl));
@@ -66,23 +66,6 @@ class _ContainerInfoMatriculaState extends State<ContainerInfoMatricula> {
                       color: Colors.white),
                   child: Text('Data da matricula: $dataMatricula'),
                 ),
-                Tooltip(
-                  message: 'Excluir matricula',
-                  child: IconButton(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertdialogDeleteMatriculaModalidade(
-                                  alunoId:
-                                      widget.matriculasModalidadesModel.id);
-                            });
-                      },
-                      icon: Icon(
-                        Icons.delete,
-                        color: Colors.grey[500],
-                      )),
-                )
               ],
             ),
             SizedBox(height: 10),
@@ -172,7 +155,14 @@ class _ContainerInfoMatriculaState extends State<ContainerInfoMatricula> {
                                     color: Colors.green),
                                 onPressed: () async {
                                   try {
-                                    await whatsAppLauncher();
+                                    //formatando o numero de telefone
+                                    String? telefoneFormatado = widget
+                                        .matriculasModalidadesModel
+                                        .aluno!
+                                        .telefone
+                                        ?.replaceAll(RegExp(r'\D'), '');
+                                    await whatsAppLauncher(
+                                        telefoneFormatado ?? '');
                                   } catch (erro) {
                                     debugPrint(erro.toString());
                                   }

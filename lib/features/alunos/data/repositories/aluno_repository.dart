@@ -15,8 +15,31 @@ class AlunoRepository {
         .order('nome', ascending: true);
     listAunoModel =
         response.map<AlunoModel>((json) => AlunoModel.fromJson(json)).toList();
-    debugPrint('tamanho da lista 1: ${listAunoModel.length}');
+    //debugPrint('tamanho da lista 1: ${listAunoModel.length}');
     return listAunoModel;
+  }
+
+  Future<Map<String, dynamic>> quantidadeAlunoPorGenero(
+      List<AlunoModel> listAlunoModel) async {
+    List listMasculino = [];
+    List listFeminino = [];
+
+    final totalAlunos = listAlunoModel.length;
+    for (int index = 0; index < listAlunoModel.length; index++) {
+      if (listAlunoModel[index].sexo == 'masculino') {
+        listMasculino.add(listAlunoModel[index]);
+      } else {
+        listFeminino.add(listAlunoModel[index]);
+      }
+    }
+    debugPrint(listMasculino.length.toString());
+    debugPrint(listFeminino.length.toString());
+
+    return {
+      'total': totalAlunos,
+      'masculino': listMasculino.length,
+      'feminino': listFeminino.length
+    };
   }
 
   Future<List<AlunoModel>> buscarAlunoPNome(String nome) async {

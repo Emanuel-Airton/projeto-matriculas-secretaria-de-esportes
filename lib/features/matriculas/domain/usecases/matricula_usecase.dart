@@ -10,13 +10,12 @@ class MatriculaUsecase {
     return _repository.buscarMatricula();
   }
 
-  Future<void> cadastrarMatricula(MatriculaModel matriculaModel) {
+  /*Future<void> cadastrarMatricula(MatriculaModel matriculaModel) {
     return _repository.cadastrarMatricula(matriculaModel);
-  }
+  }*/
 
   Future<void> cadastrarMatriculaComModalidades(
-      MatriculaModel matriculaModel, List<int> modalidades) {
-    return _repository.cadastrarMatriculaComModalidades(
-        matriculaModel, modalidades);
+      int alunoId, List<int> modalidades) {
+    return _repository.cadastrarMatriculaComModalidades(alunoId, modalidades);
   }
 }

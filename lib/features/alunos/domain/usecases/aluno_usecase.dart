@@ -34,11 +34,16 @@ class AlunoUseCase {
     return _repository.atualizarAluno(alunoId, json);
   }
 
-  Future<void> deletarAluno(int alunoId) {
+  Future deletarAluno(int alunoId) {
     return _repository.deletarAluno(alunoId);
   }
 
   Stream<List<AlunoModel>> buscarAlunoPorNomeStream(String nomeAluno) {
     return _repository.buscarAlunoPorNomeStream(nomeAluno);
+  }
+
+  Future<Map<String, dynamic>> quantidadeAlunoPorGenero(
+      List<AlunoModel> listAlunoModel) async {
+    return await _repository.quantidadeAlunoPorGenero(listAlunoModel);
   }
 }

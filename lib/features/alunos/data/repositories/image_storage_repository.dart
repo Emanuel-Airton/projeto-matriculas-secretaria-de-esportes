@@ -4,8 +4,9 @@ class ImageStorageRepository {
   final StorageService _storageService;
   ImageStorageRepository(this._storageService);
 
-  uploadImageStorage(Map<String, dynamic> mapContentFile) {
-    return _storageService.uploadImage(
+  Future<String?> uploadImageStorage(
+      Map<String, dynamic> mapContentFile) async {
+    return await _storageService.uploadImage(
         mapContentFile['fileName'], mapContentFile['filePath']);
   }
 }

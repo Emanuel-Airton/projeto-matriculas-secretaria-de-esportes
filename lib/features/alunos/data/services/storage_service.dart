@@ -12,6 +12,8 @@ class StorageService {
             pathFile,
             fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
           );
+      debugPrint(
+          'upload feito: ${_supabase.storage.from(imageBucket).getPublicUrl(fileName)}');
       return _supabase.storage.from(imageBucket).getPublicUrl(fileName);
     } catch (e) {
       debugPrint('Erro ao fazer upload da imagem: $e');

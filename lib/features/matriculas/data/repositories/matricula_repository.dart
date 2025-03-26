@@ -17,11 +17,11 @@ class MatriculaRepository {
   }
 
   //cadastrar uma nova matricula
-  Future<void> cadastrarMatricula(MatriculaModel matriculaModel) async {
+/*  Future<void> cadastrarMatricula(MatriculaModel matriculaModel) async {
     await _supaBase.from(tabelaMatricula).insert(matriculaModel.toJson());
   }
-
-  Future<void> cadastrarMatriculaComModalidades(
+*/
+  /* Future<void> cadastrarMatriculaComModalidades(
       MatriculaModel matriculaModel, List<int> modalidades) async {
     //Criar a matrícula
     final response = await _supaBase
@@ -36,6 +36,20 @@ class MatriculaRepository {
       (modalidadeId) {
         return MatriculaModalidadesModel(
                 matriculaId: matriculaId, modalidadeId: modalidadeId)
+            .toJson();
+      },
+    ).toList();
+    await _supaBase.from('matricula_modalidade').insert(modalidadesData);
+  }*/
+  Future<void> cadastrarMatriculaComModalidades(
+      int alunoId, List<int> modalidades) async {
+    //Criar a matrícula
+
+    //Cadastrar as modalidades escolhidas
+    final List<Map<String, dynamic>> modalidadesData = modalidades.map(
+      (modalidadeId) {
+        return MatriculaModalidadesModel(
+                alunoId: alunoId, modalidadeId: modalidadeId)
             .toJson();
       },
     ).toList();

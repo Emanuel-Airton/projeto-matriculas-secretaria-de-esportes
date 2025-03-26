@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/services.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno_model.dart';
@@ -11,7 +13,9 @@ class GeneratePdf {
   }
 
   Future<Uint8List> gerarPdf(AlunoModel aluno) async {
+    final dateFormat = DateFormat('dd/MM/yyyy').format(aluno.nascimento!);
     final pdf = pw.Document();
+
     pw.Image image = await carregarImagem();
     pdf.addPage(
       pw.Page(
@@ -21,8 +25,9 @@ class GeneratePdf {
               pw.Center(child: image),
               criarTabelaTitulo('ADOLESCENTE NOTA 10'),
               criarTabelaLinha('NOME DO ALUNO:', aluno.nome),
-              criarTabelaLinhaDupla('GÊNERO:', aluno.sexo ?? '', 'TELEFONE:',
-                  aluno.telefone ?? ''),
+              criarTabelaLinhaDupla('GÊNERO:', aluno.sexo ?? '',
+                  'DATA DE NASCIMENTO:', dateFormat ?? ''),
+              criarTabelaLinha('TELEFONE:', aluno.telefone ?? ''),
               criarTabelaLinha('ENDEREÇO:', aluno.endereco ?? ''),
               criarTabelaLinha('ESCOLA QUE ESTUDA:', aluno.escola ?? ''),
               criarTabelaLinha('NOME DA MÃE:', aluno.nomeMae ?? ''),

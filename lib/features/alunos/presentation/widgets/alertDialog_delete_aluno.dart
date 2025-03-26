@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/alunoNotifier.dart';
 import '../providers/aluno_provider.dart';
 
 class AlertdialogDeleteAluno extends ConsumerStatefulWidget {
@@ -37,14 +38,22 @@ class _AlertdialogDeleteAlunoState
         TextButton(
           onPressed: () {
             try {
-              ref.read(alunoUseCaseProvider).deletarAluno(widget.alunoId);
-              debugPrint('Aluno deletado com sucesso');
+              /* ref.read(alunoUseCaseProvider).deletarAluno(widget.alunoId);
+              debugPrint('Aluno deletado com sucesso');*/
+              ref
+                  .read(alunoNotifierProvider.notifier)
+                  .deletarAluno(widget.alunoId);
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  content: Center(
+                child: Text('Registro de aluno excluido com sucesso'),
+              )));
             } catch (erro) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  //  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                   content: Center(
-                    child: Text('Erro ao excluir aluno'),
-                  )));
+                child: Text('Erro ao excluir aluno'),
+              )));
             }
             Navigator.pop(context);
           },
