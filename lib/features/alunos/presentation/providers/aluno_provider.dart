@@ -11,7 +11,7 @@ final alunoUseCaseProvider =
 
 // Estado dos alunos
 final alunoListProvider = FutureProvider<List<AlunoModel>>((ref) {
-  final contador = ref.watch(count);
+  //final contador = ref.watch(count);
   return ref.read(alunoUseCaseProvider).buscarAlunos();
 });
 

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno_model.dart';
 import '../providers/aluno_provider.dart';
 import '../providers/image_storage_provider.dart';
 
 class ButtomAtualizarDados extends ConsumerStatefulWidget {
   final int id;
   final Map<String, dynamic> json;
-  ButtomAtualizarDados({super.key, required this.id, required this.json});
+  const ButtomAtualizarDados({super.key, required this.id, required this.json});
 
   @override
   ConsumerState<ButtomAtualizarDados> createState() =>

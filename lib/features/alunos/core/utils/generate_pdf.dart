@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/services.dart';
@@ -26,7 +25,7 @@ class GeneratePdf {
               criarTabelaTitulo('ADOLESCENTE NOTA 10'),
               criarTabelaLinha('NOME DO ALUNO:', aluno.nome),
               criarTabelaLinhaDupla('GÊNERO:', aluno.sexo ?? '',
-                  'DATA DE NASCIMENTO:', dateFormat ?? ''),
+                  'DATA DE NASCIMENTO:', dateFormat),
               criarTabelaLinha('TELEFONE:', aluno.telefone ?? ''),
               criarTabelaLinha('ENDEREÇO:', aluno.endereco ?? ''),
               criarTabelaLinha('ESCOLA QUE ESTUDA:', aluno.escola ?? ''),

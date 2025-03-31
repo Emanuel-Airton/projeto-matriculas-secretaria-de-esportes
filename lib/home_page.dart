@@ -25,7 +25,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final authViewModel = ref.watch(authViewModelProvider);
+    //  final authViewModel = ref.watch(authViewModelProvider);
     return Scaffold(
       body: Row(
         mainAxisAlignment: MainAxisAlignment.start,
