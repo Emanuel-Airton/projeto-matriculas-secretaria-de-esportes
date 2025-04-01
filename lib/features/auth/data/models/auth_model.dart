@@ -1,7 +1,8 @@
 class UserModel {
-  final String id;
-  final String email;
+  String? id;
+  String? email;
 
+  UserModel.semDados();
   UserModel({
     required this.id,
     required this.email,

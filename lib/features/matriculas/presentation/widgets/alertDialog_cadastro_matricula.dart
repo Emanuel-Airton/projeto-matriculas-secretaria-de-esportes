@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
+import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/providers/matricula_provider.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/presentation/providers/matricula_modalidade_notifier.dart';
-import '../../../modalidades/presentation/providers/modalidades_provider.dart';
-import '../providers/matricula_provider.dart';
+import 'package:projeto_secretaria_de_esportes/features/modalidades/presentation/providers/modalidades_provider.dart';
 
 class AlertdialogCadastroMatricula extends ConsumerStatefulWidget {
   const AlertdialogCadastroMatricula({super.key});
@@ -19,11 +20,18 @@ class _AlertdialogCadastroMatriculaState
   int? alunoSelecionado;
   int? projetoSelecionado;
   List<int> modalidadesSelecionadas = [];
+  TextEditingController searchController = TextEditingController();
+  List<AlunoModel> filteredAlunos = [];
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final alunosAsync = ref.read(alunoListProvider);
-    //final projetosAsync = ref.watch(listProjetosProvider);
     final modalidadesAsync = ref.watch(listModalidadeProvider);
 
     return AlertDialog(
@@ -40,22 +48,66 @@ class _AlertdialogCadastroMatriculaState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Dropdown de Alunos
+                // Campo de pesquisa para alunos
                 alunosAsync.when(
                   data: (alunos) {
-                    return DropdownButtonFormField<int>(
-                      value: alunoSelecionado,
-                      hint: const Text('Selecione um aluno'),
-                      onChanged: (value) => setState(() {
-                        alunoSelecionado = value;
-                        debugPrint('id aluno: ${alunoSelecionado.toString()}');
-                      }),
-                      items: alunos.map((aluno) {
-                        return DropdownMenuItem<int>(
-                          value: aluno.id,
-                          child: Text(aluno.nome!),
-                        );
-                      }).toList(),
+                    if (filteredAlunos.isEmpty && alunos.isNotEmpty) {
+                      filteredAlunos = alunos;
+                    }
+
+                    return Column(
+                      children: [
+                        TextFormField(
+                          controller: searchController,
+                          decoration: InputDecoration(
+                            labelText: 'Pesquisar aluno',
+                            suffixIcon: Icon(Icons.search),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              filteredAlunos = alunos
+                                  .where((aluno) => aluno.nome!
+                                      .toLowerCase()
+                                      .contains(value.toLowerCase()))
+                                  .toList();
+                            });
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          height: 200, // Altura fixa para a lista
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: ListView.builder(
+                            itemCount: filteredAlunos.length,
+                            itemBuilder: (context, index) {
+                              final aluno = filteredAlunos[index];
+                              return ListTile(
+                                title: Text(aluno.nome!),
+                                onTap: () {
+                                  setState(() {
+                                    alunoSelecionado = aluno.id;
+                                    searchController.text = aluno.nome!;
+                                  });
+                                },
+                                selected: alunoSelecionado == aluno.id,
+                                selectedTileColor: Colors.blue.withOpacity(0.1),
+                              );
+                            },
+                          ),
+                        ),
+                        if (alunoSelecionado != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              'Aluno selecionado: ${alunos.firstWhere((a) => a.id == alunoSelecionado).nome}',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                      ],
                     );
                   },
                   loading: () => const CircularProgressIndicator(),
@@ -63,34 +115,11 @@ class _AlertdialogCadastroMatriculaState
                 ),
                 const SizedBox(height: 16),
 
-                // Dropdown de Projetos
-                /*   projetosAsync.when(
-                  data: (projetos) {
-                    return DropdownButtonFormField<int>(
-                      value: projetoSelecionado,
-                      hint: const Text('Selecione um projeto'),
-                      onChanged: (value) =>
-                          setState(() => projetoSelecionado = value),
-                      items: projetos.map((projeto) {
-                        return DropdownMenuItem<int>(
-                          value: projeto.id,
-                          child: Text(projeto.nome!),
-                        );
-                      }).toList(),
-                    );
-                  },
-                  loading: () => const CircularProgressIndicator(),
-                  error: (err, stack) => Text('Erro: $err'),
-                ),
-                const SizedBox(height: 16),*/
-
-                // Checkbox das Modalidades
+                // Restante do seu código...
                 modalidadesAsync.when(
                   data: (modalidades) {
-                    // debugPrint('modalidasde: $modalidades');
                     return Column(
                       children: modalidades.map((modalidade) {
-                        // debugPrint('nome ${modalidade.nome!}');
                         return CheckboxListTile(
                           title: Text(modalidade.nome!),
                           value:
@@ -118,11 +147,6 @@ class _AlertdialogCadastroMatriculaState
                     if (alunoSelecionado != null &&
                         modalidadesSelecionadas.isNotEmpty) {
                       try {
-                        /*  MatriculaModel matriculaModel =
-                            MatriculaModel.cadastrarDados(
-                                idAluno: alunoSelecionado,
-                                idProjeto: projetoSelecionado,
-                                dataMatricula: DateTime.now());*/
                         await ref
                             .read(matriculaUseCaseProvider)
                             .cadastrarMatriculaComModalidades(
@@ -137,7 +161,7 @@ class _AlertdialogCadastroMatriculaState
 
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Center(
-                          child: Text('Matricula realizada dom sucesso'),
+                          child: Text('Matricula realizada com sucesso'),
                         )));
                         Navigator.pop(context);
                       } catch (erro) {

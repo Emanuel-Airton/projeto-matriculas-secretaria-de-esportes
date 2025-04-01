@@ -46,6 +46,18 @@ class _ButtomAtualizarDadosState extends ConsumerState<ButtomAtualizarDados> {
                         Center(child: Text('Nenhuma alteração detectada!'))),
               );
             }
+          } else if (widget.json.isNotEmpty) {
+            try {
+              await ref
+                  .read(alunoUseCaseProvider)
+                  .atualizarAluno(widget.id, widget.json);
+              debugPrint(widget.json.toString());
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Center(child: Text('Dados atualizados!'))),
+              );
+            } catch (e) {
+              debugPrint('Erro ao atualizar dados: $e');
+            }
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

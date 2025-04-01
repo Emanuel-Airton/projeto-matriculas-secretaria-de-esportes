@@ -25,7 +25,7 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Lista de Inscritos',
+          'Lista de Matriculas',
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
         ),
       ),

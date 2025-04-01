@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/auth/data/models/auth_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/auth/data/repository/auth_repository.dart';
@@ -13,7 +14,9 @@ class AuthViewModel extends StateNotifier<AsyncValue<UserModel?>> {
     state = const AsyncValue.loading(); // Indica que o login está em andamento
     try {
       final user = await _authRepository.login(email, password);
-      state = AsyncValue.data(user); // Atualiza o estado com o usuário logado
+      state = AsyncValue.data(user);
+      debugPrint(
+          'email logado: ${state.value?.email}'); // Atualiza o estado com o usuário logado
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current); // Indica erro no login
     }
