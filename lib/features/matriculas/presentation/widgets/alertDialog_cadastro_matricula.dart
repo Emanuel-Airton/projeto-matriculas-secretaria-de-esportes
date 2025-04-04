@@ -39,7 +39,7 @@ class _AlertdialogCadastroMatriculaState
         key: _key,
         child: Container(
           padding: EdgeInsets.all(20),
-          width: MediaQuery.sizeOf(context).width * 0.6,
+          width: MediaQuery.sizeOf(context).width * 0.35,
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.inversePrimary,
             borderRadius: BorderRadius.circular(15),
@@ -119,6 +119,8 @@ class _AlertdialogCadastroMatriculaState
                 modalidadesAsync.when(
                   data: (modalidades) {
                     return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: modalidades.map((modalidade) {
                         return CheckboxListTile(
                           title: Text(modalidade.nome!),
@@ -140,7 +142,7 @@ class _AlertdialogCadastroMatriculaState
                   loading: () => const CircularProgressIndicator(),
                   error: (err, stack) => Text('Erro: $err'),
                 ),
-
+                SizedBox(height: 30),
                 // Botão de Cadastro
                 ElevatedButton(
                   onPressed: () async {

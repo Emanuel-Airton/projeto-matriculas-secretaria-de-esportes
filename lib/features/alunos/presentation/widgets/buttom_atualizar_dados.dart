@@ -61,8 +61,7 @@ class _ButtomAtualizarDadosState extends ConsumerState<ButtomAtualizarDados> {
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                  content:
-                      Center(child: Text('Erro ao fazer upload da imagem!'))),
+                  content: Center(child: Text('Nenhuma alteração detectada!'))),
             );
           }
         },

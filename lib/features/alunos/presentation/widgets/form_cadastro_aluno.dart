@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/alertDialog_select_image.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/buttom_atualizar_dados.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/custom_container_textFormField.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/custom_textFormField.dart';
@@ -225,7 +224,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                   ),
                 ],
               ),
-              SizedBox(height: 15),
+              SizedBox(height: 5),
 
               // RG, CPF, Escola e Turno
               Row(
@@ -316,7 +315,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                   ),
                 ],
               ),
-              SizedBox(height: 15),
+              SizedBox(height: 5),
 
               // Endereço
               CustomContainerTextformfield(
@@ -327,7 +326,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                   controller: widget.controllerEndereco,
                 ),
               ),
-              SizedBox(height: 15),
+              SizedBox(height: 5),
 
               // Nome da Mãe, Telefone e RG da Mãe
               Row(
@@ -393,7 +392,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                   ),
                 ],
               ),
-              SizedBox(height: 15),
+              SizedBox(height: 5),
 
               // CPF da Mãe e Posto de Saúde
               Row(

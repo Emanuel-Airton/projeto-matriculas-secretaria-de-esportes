@@ -37,6 +37,7 @@ class _ContainerInfoAlunosState extends ConsumerState<ContainerInfoAlunos> {
     });
 
     return Container(
+      width: MediaQuery.sizeOf(context).width * 0.14,
       padding: EdgeInsets.all(15.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),

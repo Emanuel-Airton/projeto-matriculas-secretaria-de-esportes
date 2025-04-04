@@ -33,7 +33,7 @@ class Animatedcontainer extends ConsumerWidget {
               padding: const EdgeInsets.only(bottom: 8.0),
               child: AnimatedContainer(
                 height: isExpanded
-                    ? MediaQuery.sizeOf(context).height * 0.7
+                    ? MediaQuery.sizeOf(context).height * 0.64
                     : MediaQuery.sizeOf(context).height * 0.08,
                 duration: const Duration(milliseconds: 200),
                 width: MediaQuery.sizeOf(context).width * 0.5,
@@ -90,7 +90,7 @@ class Animatedcontainer extends ConsumerWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
                             padding: EdgeInsets.all(15),
-                            height: MediaQuery.sizeOf(context).height * 0.62,
+                            height: MediaQuery.sizeOf(context).height * 0.56,
                             width: MediaQuery.sizeOf(context).width,
                             decoration: BoxDecoration(
                                 color: Colors.grey[300],

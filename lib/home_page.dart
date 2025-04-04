@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:projeto_secretaria_de_esportes/features/auth/data/models/auth_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/auth/presentation/controller/auth_controller.dart';
 import 'package:projeto_secretaria_de_esportes/splashScreen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -49,66 +48,78 @@ class _HomePageState extends ConsumerState<HomePage> {
                     )),
                 SizedBox(height: 15),
                 ListTile(
-                  leading: Icon(Icons.add, color: Colors.white),
-                  title:
-                      Text('Matriculas', style: TextStyle(color: Colors.white)),
+                  leading: Icon(Icons.add,
+                      color:
+                          currentPageIndex == 0 ? Colors.black : Colors.white),
+                  title: Text('Matriculas',
+                      style: TextStyle(
+                          color: currentPageIndex == 0
+                              ? Colors.black
+                              : Colors.white)),
                   onTap: () {
                     setState(() {
-                      pageController.jumpToPage(2);
+                      currentPageIndex = 0;
+                      pageController.jumpToPage(0);
                     });
                   },
                 ),
                 SizedBox(height: 15),
                 ListTile(
-                  leading: Icon(Icons.person, color: Colors.white),
-                  title: Text('Alunos', style: TextStyle(color: Colors.white)),
+                  leading: Icon(Icons.person,
+                      color:
+                          currentPageIndex == 1 ? Colors.black : Colors.white),
+                  title: Text('Alunos',
+                      style: TextStyle(
+                          color: currentPageIndex == 1
+                              ? Colors.black
+                              : Colors.white)),
                   onTap: () => setState(() {
-                    pageController.jumpToPage(0);
+                    currentPageIndex = 1;
+                    pageController.jumpToPage(1);
                   }),
                 ),
                 SizedBox(height: 15),
                 ListTile(
-                  leading: IconButton(
-                      onPressed: () async {
-                        final currentUser =
-                            Supabase.instance.client.auth.currentUser;
-                        final authProvider =
-                            ref.read(authViewModelProvider.notifier);
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              //UserModel userModel = UserModel.semDados();
-                              return AlertDialog(
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Center(
-                                      child: Column(
-                                        children: [
-                                          Text('Email logado'),
-                                          Text(currentUser?.email ?? '')
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                  leading: Icon(Icons.account_circle, color: Colors.white),
+                  title: Text('Usuário', style: TextStyle(color: Colors.white)),
+                  onTap: () async {
+                    final currentUser =
+                        Supabase.instance.client.auth.currentUser;
+                    final authProvider =
+                        ref.read(authViewModelProvider.notifier);
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          //UserModel userModel = UserModel.semDados();
+                          return AlertDialog(
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Center(
+                                  child: Column(
+                                    children: [
+                                      Text('Email logado'),
+                                      Text(currentUser?.email ?? '')
+                                    ],
+                                  ),
                                 ),
-                                actions: [
-                                  ElevatedButton(
-                                      onPressed: () async {
-                                        authProvider.logout();
-                                        Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    Splashscreen()));
-                                      },
-                                      child: Text('Sair'))
-                                ],
-                              );
-                            });
-                      },
-                      icon: Icon(Icons.account_circle, color: Colors.white)),
-                  title: Text('Perfil', style: TextStyle(color: Colors.white)),
+                              ],
+                            ),
+                            actions: [
+                              ElevatedButton(
+                                  onPressed: () async {
+                                    authProvider.logout();
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                Splashscreen()));
+                                  },
+                                  child: Text('Sair'))
+                            ],
+                          );
+                        });
+                  },
                 ),
               ],
             ),
@@ -116,7 +127,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           Expanded(
             child: PageView(
               controller: pageController,
-              children: [AlunosScreen(), ProjetosView(), MatriculaFormView()],
+              children: [MatriculaFormView(), AlunosScreen()],
             ),
           )
         ],

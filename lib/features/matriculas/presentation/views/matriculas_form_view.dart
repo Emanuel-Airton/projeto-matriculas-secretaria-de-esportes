@@ -29,7 +29,7 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      /*   floatingActionButton: FloatingActionButton.extended(
         icon: Icon(Icons.add),
         onPressed: () {
           showDialog(
@@ -40,7 +40,7 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
           );
         },
         label: Text('Nova matricula'),
-      ),
+      ),*/
       body: Padding(
         padding: EdgeInsets.all(15),
         child: Column(
@@ -56,38 +56,58 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
 
             // Modalidade Selecionada
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  padding: EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Theme.of(context).colorScheme.inversePrimary,
-                  ),
-                  child: Text('Modalidade selecionada:'),
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Theme.of(context).colorScheme.inversePrimary,
+                      ),
+                      child: Text('Modalidade selecionada:'),
+                    ),
+                    SizedBox(width: 10),
+                    Container(
+                      padding: EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Theme.of(context).colorScheme.inversePrimary,
+                      ),
+                      child: modalidade.when(
+                        data: (data) {
+                          return Center(
+                            child: Text(
+                              data != null ? data.nome! : 'Todas modalidades',
+                            ),
+                          );
+                        },
+                        error: (error, stackTrace) {
+                          return Text('Erro ao carregar');
+                        },
+                        loading: () {
+                          return CircularProgressIndicator();
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(width: 10),
-                Container(
-                  padding: EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Theme.of(context).colorScheme.inversePrimary,
-                  ),
-                  child: modalidade.when(
-                    data: (data) {
-                      return Center(
-                        child: Text(
-                          data != null ? data.nome! : 'Todas modalidades',
-                        ),
+                ElevatedButton.icon(
+                    style: ButtonStyle(
+                        fixedSize: WidgetStatePropertyAll(Size(
+                            MediaQuery.sizeOf(context).width * 0.12,
+                            MediaQuery.sizeOf(context).height * 0.045))),
+                    icon: Icon(Icons.add),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertdialogCadastroMatricula();
+                        },
                       );
                     },
-                    error: (error, stackTrace) {
-                      return Text('Erro ao carregar');
-                    },
-                    loading: () {
-                      return CircularProgressIndicator();
-                    },
-                  ),
-                ),
+                    label: Text('Nova matricula'))
               ],
             ),
 
