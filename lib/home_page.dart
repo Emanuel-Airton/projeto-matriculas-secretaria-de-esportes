@@ -5,7 +5,6 @@ import 'package:projeto_secretaria_de_esportes/splashScreen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'features/alunos/presentation/views/alunos_views.dart';
 import 'features/matriculas/presentation/views/matriculas_form_view.dart';
-import 'features/projetos/presentation/views/projetos_view.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});

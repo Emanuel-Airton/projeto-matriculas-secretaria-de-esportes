@@ -45,7 +45,7 @@ class _SplashscreenState extends State<Splashscreen>
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.red,
+      color: Theme.of(context).colorScheme.primary,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -55,7 +55,7 @@ class _SplashscreenState extends State<Splashscreen>
             SizedBox(
                 width: MediaQuery.sizeOf(context).width * 0.2,
                 child: LinearProgressIndicator(
-                  backgroundColor: Colors.red,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   color: Colors.white,
                 ))
           ],

@@ -107,7 +107,7 @@ Widget containerInfoListAlunos(
     BuildContext context, String imageAsset, String totalMeninas) {
   return Container(
     width: MediaQuery.sizeOf(context).width * 0.14,
-    padding: EdgeInsets.all(10.0),
+    padding: EdgeInsets.all(5.0),
     decoration: BoxDecoration(
       color: Colors.grey[100],
       borderRadius: BorderRadius.circular(10),

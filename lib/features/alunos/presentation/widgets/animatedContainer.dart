@@ -108,7 +108,7 @@ class Animatedcontainer extends ConsumerWidget {
         ),
       );
     }
-    return Center(child: Text('ALUNO NÃO ENCONTRADO'));
+    return Center(child: Text('NENHUM ALUNO ENCONTRADO'));
 
     // return const Center(child: CircularProgressIndicator());
   }

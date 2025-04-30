@@ -12,17 +12,18 @@ class RowContainersSelectModalidade extends ConsumerWidget {
     final listItens = [
       {
         'nome': 'Todas modalidades',
-        'id': 9,
+        'id': 10,
         'image': 'assets/images/adl10.png'
       },
       {'nome': 'Atletismo', 'id': 8, 'image': 'assets/images/runner.png'},
+      {'nome': 'Capoeira', 'id': 9, 'image': 'assets/images/capoeira.png'},
       {'nome': 'Futsal', 'id': 2, 'image': 'assets/images/football.png'},
       {'nome': 'Futebol', 'id': 3, 'image': 'assets/images/football.png'},
       {'nome': 'Handebol', 'id': 6, 'image': 'assets/images/handball.png'},
       {'nome': 'Oficina de Dança', 'id': 7, 'image': 'assets/images/dance.png'},
       {'nome': 'Queimada', 'id': 5, 'image': 'assets/images/softball.png'},
       {'nome': 'Xadrez', 'id': 4, 'image': 'assets/images/xadrez.png'},
-      {'nome': 'volei', 'id': 1, 'image': 'assets/images/volleyball.png'},
+      {'nome': 'Volei', 'id': 1, 'image': 'assets/images/volleyball.png'},
     ];
 
     bool isSmallScreen = MediaQuery.of(context).size.width < 600;
@@ -53,7 +54,7 @@ class RowContainersSelectModalidade extends ConsumerWidget {
                   ),
                 ),
                 onPressed: () {
-                  if (item['id'] == 9) {
+                  if (item['id'] == 10) {
                     ref
                         .read(matriculaModalidade.notifier)
                         .buscarMatriculasModalidade();

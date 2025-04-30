@@ -117,7 +117,7 @@ class _MyWidgetState extends ConsumerState<AlunosScreen> {
                   ),
                   SizedBox(height: 30),
                   Animatedcontainer(),
-                  Center(
+                  /* Center(
                     child: TextButton(
                       onPressed: () async {
                         final valor = ref.read(countListenable);
@@ -126,7 +126,7 @@ class _MyWidgetState extends ConsumerState<AlunosScreen> {
                       },
                       child: Text('Carregar mais...'),
                     ),
-                  ),
+                  ),*/
                 ],
               ),
             ),

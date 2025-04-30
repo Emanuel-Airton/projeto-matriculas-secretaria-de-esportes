@@ -8,11 +8,8 @@ class AlunoRepository {
   List<AlunoModel> listAunoModel = [];
   // Buscar todos os alunos
   Future<List<AlunoModel>> buscarAlunos() async {
-    final response = await _supabase
-        .from('alunos')
-        .select()
-        .limit(20)
-        .order('nome', ascending: true);
+    final response =
+        await _supabase.from('alunos').select().order('nome', ascending: true);
     listAunoModel =
         response.map<AlunoModel>((json) => AlunoModel.fromJson(json)).toList();
     //debugPrint('tamanho da lista 1: ${listAunoModel.length}');

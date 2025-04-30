@@ -31,7 +31,7 @@ class _AlertdialogCadastroMatriculaState
 
   @override
   Widget build(BuildContext context) {
-    final alunosAsync = ref.read(alunoListProvider);
+    final alunosAsync = ref.watch(alunoListProvider);
     final modalidadesAsync = ref.watch(listModalidadeProvider);
 
     return AlertDialog(

@@ -142,6 +142,12 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                     flex: 1,
                     child: CustomContainerTextformfield(
                       child: DropdownButtonFormField(
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Selecione o gênero';
+                          }
+                          return null;
+                        },
                         isExpanded: true,
                         padding: EdgeInsets.only(left: 5.0),
                         decoration: InputDecoration(
@@ -291,6 +297,12 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                     flex: 1,
                     child: CustomContainerTextformfield(
                       child: DropdownButtonFormField(
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Selecione o turno';
+                          }
+                          return null;
+                        },
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: 'Turno',
