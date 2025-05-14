@@ -29,8 +29,8 @@ class AlunoRepository {
         listFeminino.add(listAlunoModel[index]);
       }
     }
-    debugPrint(listMasculino.length.toString());
-    debugPrint(listFeminino.length.toString());
+    //  debugPrint(listMasculino.length.toString());
+    // debugPrint(listFeminino.length.toString());
 
     return {
       'total': totalAlunos,
@@ -49,7 +49,7 @@ class AlunoRepository {
       listAunoModel = response
           .map<AlunoModel>((json) => AlunoModel.fromJson(json))
           .toList();
-      debugPrint('tamanho da lista 2: ${listAunoModel.length}');
+      //debugPrint('tamanho da lista 2: ${listAunoModel.length}');
 
       return listAunoModel;
     } catch (e) {

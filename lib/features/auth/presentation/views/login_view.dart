@@ -124,10 +124,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 Text(
                                     'Bem-vindo, ${authViewModel.value?.email}');
                                 Future.delayed(Duration(seconds: 1)).then(
-                                    (value) => Navigator.push(
+                                    (value) => Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => HomePage())));
+                                            builder: (context) => HomePage()),
+                                        (route) => mounted));
                               }
                               return SizedBox
                                   .shrink(); // Evita renderizar um widget vazio

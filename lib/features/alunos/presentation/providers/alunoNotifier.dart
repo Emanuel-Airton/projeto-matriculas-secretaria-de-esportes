@@ -12,7 +12,6 @@ class AlunoNotifier extends StateNotifier<List<AlunoModel>> {
     _setupRealTime();
     _fetchAlunos();
   }
-
   _fetchAlunos() async {
     state = await _alunoUseCase.buscarAlunos();
   }
@@ -24,11 +23,6 @@ class AlunoNotifier extends StateNotifier<List<AlunoModel>> {
   buscarAlunoNome(String nome) async {
     state = await _alunoUseCase.buscarAlunoNome(nome);
   }
-
-/*
-  void _setupRealTime() {
-    state = _alunoUseCase.setupRealTime();
-  }*/
 
   /// Escuta eventos do Supabase em tempo real
   void _setupRealTime() {
@@ -62,6 +56,7 @@ final alunoNotifierProvider =
   final supabase = Supabase.instance.client;
   final alunoRepository = AlunoRepository();
   final alunoUseCase = AlunoUseCase(alunoRepository);
+
   return AlunoNotifier(supabase, alunoUseCase);
 });
 final nomeAlunoProvider = StateProvider<String>((ref) => '');

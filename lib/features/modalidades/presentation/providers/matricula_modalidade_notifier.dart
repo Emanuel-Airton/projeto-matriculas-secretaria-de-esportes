@@ -19,7 +19,8 @@ class MatriculaModalidadeNotifier
   }
 
   deletarMatriculaModalidade(int id) async {
-    state = await _modalidadesUsecase.deletarMatriculaModalidade(id);
+    await _modalidadesUsecase.deletarMatriculaModalidade(id);
+    state = state.where((matricula) => matricula.id != id).toList();
   }
 
   buscarMatriculasModalidadeFiltro(int id) async {
@@ -38,13 +39,12 @@ class MatriculaModalidadeNotifier
               debugPrint('Payload: ${payload.newRecord}');
 
               try {
-                /* if (payload.eventType == PostgresChangeEvent.insert) {
+                if (payload.eventType == PostgresChangeEvent.insert) {
                   state = [
                     ...state,
                     MatriculaModalidadesModel.fromJson(payload.newRecord)
                   ];
-                } */
-                if (payload.eventType == PostgresChangeEvent.update) {
+                } else if (payload.eventType == PostgresChangeEvent.update) {
                   state = [
                     for (final matricula in state)
                       if (matricula.id == payload.newRecord['id'])
@@ -53,10 +53,14 @@ class MatriculaModalidadeNotifier
                         matricula
                   ];
                 } else if (payload.eventType == PostgresChangeEvent.delete) {
-                  state = [
+                  state = state
+                      .where((element) => element.id != payload.oldRecord['id'])
+                      .toList();
+
+                  /*[
                     for (final matricula in state)
                       if (matricula.id != payload.oldRecord['id']) matricula
-                  ];
+                  ];*/
                 }
               } catch (e) {
                 debugPrint('Erro ao processar payload: $e');

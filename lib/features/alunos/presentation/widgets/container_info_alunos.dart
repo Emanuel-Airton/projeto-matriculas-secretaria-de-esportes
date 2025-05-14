@@ -83,13 +83,13 @@ class _ContainerInfoAlunosState extends ConsumerState<ContainerInfoAlunos> {
                         containerInfoListAlunos(
                           context,
                           'assets/images/masculino.png',
-                          'Total de meninos ${map?['masculino']}',
+                          'Meninos ${map?['masculino']}',
                         ),
                         SizedBox(height: 30),
                         containerInfoListAlunos(
                           context,
                           'assets/images/femenino.png',
-                          'Total de meninas ${map?['feminino']}',
+                          'Meninas ${map?['feminino']}',
                         ),
                       ],
                     );
@@ -104,7 +104,7 @@ class _ContainerInfoAlunosState extends ConsumerState<ContainerInfoAlunos> {
 }
 
 Widget containerInfoListAlunos(
-    BuildContext context, String imageAsset, String totalMeninas) {
+    BuildContext context, String imageAsset, String totalAlunos) {
   return Container(
     width: MediaQuery.sizeOf(context).width * 0.14,
     padding: EdgeInsets.all(5.0),
@@ -119,7 +119,11 @@ Widget containerInfoListAlunos(
             imageAsset,
             height: MediaQuery.sizeOf(context).height * 0.025,
           ),
-          title: Text(totalMeninas),
+          title: Text(
+            totalAlunos,
+            style:
+                TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),
+          ),
         ),
       ],
     ),

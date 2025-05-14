@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/buttom_atualizar_dados.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/buttom_salvar_dados.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/custom_container_textFormField.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/custom_textFormField.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/profile_image_widget.dart';
-import '../../data/models/aluno_model.dart';
-import '../providers/aluno_provider.dart';
 import '../providers/image_storage_provider.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 
@@ -77,7 +76,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
       child: SingleChildScrollView(
         child: Container(
           width: MediaQuery.of(context).size.width > 600
-              ? MediaQuery.of(context).size.width * 0.53
+              ? MediaQuery.of(context).size.width * 0.6
               : MediaQuery.of(context).size.width * 0.9, // Largura responsiva
           padding: EdgeInsets.all(15),
           decoration: BoxDecoration(
@@ -91,30 +90,6 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
               Tooltip(
                   message: 'Adicionar foto do perfil',
                   child: ProfileImageWidget(urlImage: widget.urlImagem ?? '')),
-              /*CircleAvatar(
-                    backgroundImage: widget.urlImagem != ''
-                        ? NetworkImage(widget.urlImagem!)
-                        : null,
-                    radius: 50,
-                    child: Tooltip(
-                      message: 'Adicionar foto do perfil',
-                      child: IconButton(
-                        onPressed: () async {
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertdialogSelectImage();
-                              });
-                        },
-                        icon: Icon(
-                            widget.urlImagem != null ? null : Icons.person),
-                        /*  icon: Icon(
-                file != null || widget.urlImage != '' ? null : Icons.person,
-                size: 50)),*/
-                      ),
-                    ),
-                  )),*/
-
               SizedBox(height: 15),
 
               // Nome, Gênero e Data de Nascimento
@@ -122,19 +97,17 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                 children: [
                   Expanded(
                     flex: 3,
-                    child: CustomContainerTextformfield(
-                      child: CustomTextformfield(
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Insira o nome do aluno';
-                          }
-                          return null;
-                        },
-                        onChanged: (p0) => widget.json?['nome'] = p0,
-                        hintText: 'NOME DO ALUNO',
-                        enabled: widget.enabled,
-                        controller: widget.controllerNomeAluno,
-                      ),
+                    child: CustomTextformfield(
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Insira o nome do aluno';
+                        }
+                        return null;
+                      },
+                      onChanged: (p0) => widget.json?['nome'] = p0,
+                      hintText: 'NOME DO ALUNO',
+                      enabled: widget.enabled,
+                      controller: widget.controllerNomeAluno,
                     ),
                   ),
                   SizedBox(width: 15),
@@ -176,120 +149,105 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                   SizedBox(width: 15),
                   Expanded(
                     flex: 2,
-                    child: CustomContainerTextformfield(
-                      child: CustomTextformfield(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Insira a data de nascimento';
-                          }
+                    child: CustomTextformfield(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Insira a data de nascimento';
+                        }
+                        // Verifica se a data está no formato correto (10 caracteres incluindo as barras)
+                        if (value.length != 10) {
+                          return 'Data inválida';
+                        }
+                        try {
+                          // Converte a string para DateTime mantendo as barras
+                          DateFormat('dd/MM/yyyy').parseStrict(value);
+                        } catch (e) {
+                          return 'Data inválida';
+                        }
 
-                          // Verifica se a data está no formato correto (10 caracteres incluindo as barras)
-                          if (value.length != 10) {
-                            return 'Data inválida';
-                          }
-
+                        return null;
+                      },
+                      enabled: widget.enabled,
+                      controller: widget.controllerNascimento =
+                          MaskedTextController(
+                        mask: '00/00/0000',
+                        text: widget.controllerNascimento?.text,
+                      ),
+                      hintText: 'DATA DE NASCIMENTO',
+                      onChanged: (p0) {
+                        if (p0 != null && p0.isNotEmpty && p0.length == 10) {
                           try {
                             // Converte a string para DateTime mantendo as barras
-                            DateFormat('dd/MM/yyyy').parseStrict(value);
+                            dataNascimento =
+                                DateFormat('dd/MM/yyyy').parseStrict(p0);
+                            // Converte para formato ISO 8601
+                            widget.json?['nascimento'] =
+                                dataNascimento?.toIso8601String();
                           } catch (e) {
-                            return 'Data inválida';
-                          }
-
-                          return null;
-                        },
-                        enabled: widget.enabled,
-                        controller: widget.controllerNascimento =
-                            MaskedTextController(
-                          mask: '00/00/0000',
-                          text: widget.controllerNascimento?.text,
-                        ),
-                        hintText: 'DATA DE NASCIMENTO',
-                        onChanged: (p0) {
-                          if (p0 != null && p0.isNotEmpty && p0.length == 10) {
-                            try {
-                              // Converte a string para DateTime mantendo as barras
-                              dataNascimento =
-                                  DateFormat('dd/MM/yyyy').parseStrict(p0);
-
-                              // Converte para formato ISO 8601
-                              widget.json?['nascimento'] =
-                                  dataNascimento?.toIso8601String();
-
-                              debugPrint(
-                                  'data nascimento: ${dataNascimento?.toIso8601String()}');
-                            } catch (e) {
-                              widget.json?['nascimento'] = null;
-                              debugPrint('Erro ao converter data: $e');
-                            }
-                          } else {
                             widget.json?['nascimento'] = null;
+                            debugPrint('Erro ao converter data: $e');
                           }
-                        },
-                      ),
+                        } else {
+                          widget.json?['nascimento'] = null;
+                        }
+                      },
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 5),
-
+              SizedBox(height: 10),
               // RG, CPF, Escola e Turno
               Row(
                 children: [
                   Expanded(
                     flex: 1,
-                    child: CustomContainerTextformfield(
-                      child: CustomTextformfield(
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Insira o RG do aluno';
-                          }
-                          return null;
-                        },
-                        onChanged: (p0) => widget.json?['rg'] = p0,
-                        hintText: 'RG DO ALUNO',
-                        enabled: widget.enabled,
-                        maxLength: 10,
-                        controller: widget.controllerRg,
-                      ),
+                    child: CustomTextformfield(
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Insira o RG do aluno';
+                        }
+                        return null;
+                      },
+                      onChanged: (p0) => widget.json?['rg'] = p0,
+                      hintText: 'RG DO ALUNO',
+                      enabled: widget.enabled,
+                      maxLength: 10,
+                      controller: widget.controllerRg,
                     ),
                   ),
                   SizedBox(width: 15),
                   Expanded(
                     flex: 1,
-                    child: CustomContainerTextformfield(
-                      child: CustomTextformfield(
-                        hintText: 'CPF DO ALUNO',
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Insira o CPF';
-                          }
-                          return null;
-                        },
-                        onChanged: (p0) => widget.json?['cpf'] = p0,
-                        enabled: widget.enabled,
-                        controller: widget.controllercpf = MaskedTextController(
-                          mask: '000.000.000-00',
-                          text: widget.controllercpf!.text,
-                        ),
+                    child: CustomTextformfield(
+                      hintText: 'CPF DO ALUNO',
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Insira o CPF';
+                        }
+                        return null;
+                      },
+                      onChanged: (p0) => widget.json?['cpf'] = p0,
+                      enabled: widget.enabled,
+                      controller: widget.controllercpf = MaskedTextController(
+                        mask: '000.000.000-00',
+                        text: widget.controllercpf!.text,
                       ),
                     ),
                   ),
                   SizedBox(width: 15),
                   Expanded(
                     flex: 2,
-                    child: CustomContainerTextformfield(
-                      child: CustomTextformfield(
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Insira a escola';
-                          }
-                          return null;
-                        },
-                        hintText: 'ESCOLA',
-                        onChanged: (p0) => widget.json?['escola'] = p0,
-                        enabled: widget.enabled,
-                        controller: widget.controllerEscola,
-                      ),
+                    child: CustomTextformfield(
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Insira a escola';
+                        }
+                        return null;
+                      },
+                      hintText: 'ESCOLA',
+                      onChanged: (p0) => widget.json?['escola'] = p0,
+                      enabled: widget.enabled,
+                      controller: widget.controllerEscola,
                     ),
                   ),
                   SizedBox(width: 15),
@@ -328,78 +286,68 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                 ],
               ),
               SizedBox(height: 5),
-
               // Endereço
-              CustomContainerTextformfield(
-                child: CustomTextformfield(
-                  hintText: 'ENDEREÇO COMPLETO',
-                  onChanged: (p0) => widget.json?['endereço'] = p0,
-                  enabled: widget.enabled,
-                  controller: widget.controllerEndereco,
-                ),
+              CustomTextformfield(
+                hintText: 'ENDEREÇO COMPLETO',
+                onChanged: (p0) => widget.json?['endereço'] = p0,
+                enabled: widget.enabled,
+                controller: widget.controllerEndereco,
               ),
-              SizedBox(height: 5),
-
+              SizedBox(height: 10),
               // Nome da Mãe, Telefone e RG da Mãe
               Row(
                 children: [
                   Expanded(
                     flex: 3,
-                    child: CustomContainerTextformfield(
-                      child: CustomTextformfield(
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Insira o nome da mãe ou responsável';
-                          }
-                          return null;
-                        },
-                        hintText: 'NOME DA MÃE OU RESPONSÁVEL',
-                        onChanged: (p0) => widget.json?['nome_mae'] = p0,
-                        enabled: widget.enabled,
-                        controller: widget.controllerNomeMae,
+                    child: CustomTextformfield(
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Insira o nome da mãe ou responsável';
+                        }
+                        return null;
+                      },
+                      hintText: 'NOME DA MÃE OU RESPONSÁVEL',
+                      onChanged: (p0) => widget.json?['nome_mae'] = p0,
+                      enabled: widget.enabled,
+                      controller: widget.controllerNomeMae,
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  Expanded(
+                    flex: 1,
+                    child: CustomTextformfield(
+                      /*   validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Insira o telefone';
+                        }
+                        return null;
+                      },*/
+                      keyboardType: TextInputType.number,
+                      hintText: 'TELEFONE',
+                      onChanged: (p0) => widget.json?['telefone'] = p0,
+                      enabled: widget.enabled,
+                      controller: widget.controllerTelefone =
+                          MaskedTextController(
+                        mask: '(00) 00000-0000',
+                        text: widget.controllerTelefone!.text,
                       ),
                     ),
                   ),
                   SizedBox(width: 15),
                   Expanded(
                     flex: 1,
-                    child: CustomContainerTextformfield(
-                      child: CustomTextformfield(
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Insira o telefone';
-                          }
-                          return null;
-                        },
-                        keyboardType: TextInputType.number,
-                        hintText: 'TELEFONE',
-                        onChanged: (p0) => widget.json?['telefone'] = p0,
-                        enabled: widget.enabled,
-                        controller: widget.controllerTelefone =
-                            MaskedTextController(
-                          mask: '(00) 00000-0000',
-                          text: widget.controllerTelefone!.text,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 15),
-                  Expanded(
-                    flex: 1,
-                    child: CustomContainerTextformfield(
-                      child: CustomTextformfield(
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Insira o RG';
-                          }
-                          return null;
-                        },
-                        hintText: 'RG DA MÃE',
-                        onChanged: (p0) => widget.json?['rg_mae'] = p0,
-                        enabled: widget.enabled,
-                        maxLength: 10,
-                        controller: widget.controllerRgMae,
-                      ),
+                    child: CustomTextformfield(
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Insira o RG';
+                        }
+                        return null;
+                      },
+                      hintText: 'RG DA MÃE',
+                      onChanged: (p0) => widget.json?['rg_mae'] = p0,
+                      enabled: widget.enabled,
+                      maxLength: 10,
+                      controller: widget.controllerRgMae,
                     ),
                   ),
                 ],
@@ -411,45 +359,40 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                 children: [
                   Expanded(
                     flex: 1,
-                    child: CustomContainerTextformfield(
-                      child: CustomTextformfield(
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Insira o CPF';
-                          }
-                          return null;
-                        },
-                        hintText: 'CPF DA MÃE',
-                        onChanged: (p0) => widget.json?['cpf_mae'] = p0,
-                        enabled: widget.enabled,
-                        controller: widget.controllerCpfMae =
-                            MaskedTextController(
-                          mask: '000.000.000-00',
-                          text: widget.controllerCpfMae!.text,
-                        ),
+                    child: CustomTextformfield(
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Insira o CPF';
+                        }
+                        return null;
+                      },
+                      hintText: 'CPF DA MÃE',
+                      onChanged: (p0) => widget.json?['cpf_mae'] = p0,
+                      enabled: widget.enabled,
+                      controller: widget.controllerCpfMae =
+                          MaskedTextController(
+                        mask: '000.000.000-00',
+                        text: widget.controllerCpfMae!.text,
                       ),
                     ),
                   ),
                   SizedBox(width: 15),
                   Expanded(
                     flex: 2,
-                    child: CustomContainerTextformfield(
-                      child: CustomTextformfield(
-                        hintText: 'POSTO DE SAÚDE DE REFERÊNCIA DA FAMÍLIA',
-                        onChanged: (p0) {
-                          widget.json?['posto_saude'] = p0;
-                          debugPrint(
-                              'json: ${widget.json?['posto_saude'].toString()}');
-                        },
-                        enabled: widget.enabled,
-                        controller: widget.controllerPostoSaude,
-                      ),
+                    child: CustomTextformfield(
+                      hintText: 'POSTO DE SAÚDE DE REFERÊNCIA DA FAMÍLIA',
+                      onChanged: (p0) {
+                        widget.json?['posto_saude'] = p0;
+                        debugPrint(
+                            'json: ${widget.json?['posto_saude'].toString()}');
+                      },
+                      enabled: widget.enabled,
+                      controller: widget.controllerPostoSaude,
                     ),
                   ),
                 ],
               ),
               SizedBox(height: 15),
-
               // Botões
               widget.json != null
                   ? ButtomAtualizarDados(id: widget.id!, json: widget.json!)
@@ -463,69 +406,22 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                           child: Text('Cancelar'),
                         ),
                         SizedBox(width: 15),
-                        ElevatedButton(
-                          onPressed: () {
-                            if (_key.currentState!.validate()) {
-                              final urlImagemAsync =
-                                  ref.watch(uploadImageStorage);
-                              urlImagemAsync.when(
-                                  data: (data) async {
-                                    try {
-                                      if (widget.cadastrarNovoAluno!) {
-                                        AlunoModel alunoModel = AlunoModel(
-                                          nome:
-                                              widget.controllerNomeAluno!.text,
-                                          sexo: widget.valorGenero,
-                                          telefone:
-                                              widget.controllerTelefone!.text,
-                                          nascimento: dataNascimento,
-                                          rg: widget.controllerRg!.text,
-                                          cpf: widget.controllercpf!.text,
-                                          endereco:
-                                              widget.controllerEndereco!.text,
-                                          escola: widget.controllerEscola!.text,
-                                          turno: widget.valorTurno,
-                                          nomeMae:
-                                              widget.controllerNomeMae!.text,
-                                          rgMae: widget.controllerRgMae!.text,
-                                          cpfMae: widget.controllerCpfMae!.text,
-                                          postoSaude:
-                                              widget.controllerPostoSaude!.text,
-                                          fotoPerfilUrl: data,
-                                        );
-
-                                        await ref
-                                            .read(alunoUseCaseProvider)
-                                            .cadastrarAluno(alunoModel);
-                                        setState(() {
-                                          child = Text('Cadastrado');
-                                        });
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: Center(
-                                              child: Text(
-                                                  'Aluno cadastrado com sucesso'),
-                                            ),
-                                          ),
-                                        );
-                                        Future.delayed(Duration(seconds: 1))
-                                            .then((value) =>
-                                                Navigator.pop(context));
-                                      }
-                                    } catch (erro) {
-                                      debugPrint('Erro: $erro');
-                                    }
-                                  },
-                                  error: (error, stackTrace) => debugPrint(
-                                      'Erro ao carregar imagem: $error'),
-                                  loading: () =>
-                                      //debugPrint('Carregando imagem...'),
-                                      CircularProgressIndicator());
-                            }
-                          },
-                          child: child,
-                        ),
+                        ButtomSalvarDados(
+                            nomeAluno: widget.controllerNomeAluno?.text ?? '',
+                            valorGenero: widget.valorGenero ?? '',
+                            telefone: widget.controllerTelefone!,
+                            dataNascimento: dataNascimento,
+                            rg: widget.controllerRg!,
+                            cpf: widget.controllercpf!,
+                            endereco: widget.controllerEndereco?.text ?? '',
+                            escola: widget.controllerEscola?.text ?? '',
+                            turno: widget.valorTurno ?? '',
+                            nomeMae: widget.controllerNomeMae?.text ?? '',
+                            rgMae: widget.controllerRgMae!,
+                            cpfMae: widget.controllerCpfMae!,
+                            postoSaude: widget.controllerPostoSaude?.text ?? '',
+                            cadastrarNovoAluno: widget.cadastrarNovoAluno!,
+                            formKey: _key),
                       ],
                     ),
             ],

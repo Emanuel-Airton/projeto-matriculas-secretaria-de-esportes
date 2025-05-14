@@ -79,13 +79,14 @@ class _ContainerInfoMatriculaState extends State<ContainerInfoMatricula> {
                   children: [
                     Text(
                       'Dados do aluno',
-                      style: TextStyle(),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.grey[600]),
                     ),
                     SizedBox(height: 10),
                     Row(
                       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SizedBox(width: 20),
+                        // SizedBox(width: 20),
                         Container(
                           padding: EdgeInsets.all(15),
                           decoration: BoxDecoration(
@@ -138,7 +139,8 @@ class _ContainerInfoMatriculaState extends State<ContainerInfoMatricula> {
                   children: [
                     Text(
                       'Dados do responsável',
-                      style: TextStyle(),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.grey[600]),
                     ),
                     SizedBox(height: 10),
                     Row(

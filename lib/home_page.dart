@@ -46,79 +46,117 @@ class _HomePageState extends ConsumerState<HomePage> {
                           fontSize: 20),
                     )),
                 SizedBox(height: 15),
-                ListTile(
-                  leading: Icon(Icons.add,
-                      color:
-                          currentPageIndex == 0 ? Colors.black : Colors.white),
-                  title: Text('Matriculas',
-                      style: TextStyle(
-                          color: currentPageIndex == 0
-                              ? Colors.black
-                              : Colors.white)),
-                  onTap: () {
-                    setState(() {
-                      currentPageIndex = 0;
-                      pageController.jumpToPage(0);
-                    });
-                  },
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: currentPageIndex == 0
+                          ? Theme.of(context)
+                              .colorScheme
+                              .inversePrimary
+                              .withOpacity(0.5)
+                          : null),
+                  child: ListTile(
+                    leading: Icon(Icons.add,
+                        color: currentPageIndex == 0
+                            ? Colors.grey[800]
+                            : Colors.white),
+                    title: Text('Matriculas',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            color: currentPageIndex == 0
+                                ? Colors.grey[800]
+                                : Colors.white)),
+                    onTap: () {
+                      setState(() {
+                        currentPageIndex = 0;
+                        pageController.jumpToPage(0);
+                      });
+                    },
+                  ),
                 ),
                 SizedBox(height: 15),
-                ListTile(
-                  leading: Icon(Icons.person,
-                      color:
-                          currentPageIndex == 1 ? Colors.black : Colors.white),
-                  title: Text('Alunos',
-                      style: TextStyle(
-                          color: currentPageIndex == 1
-                              ? Colors.black
-                              : Colors.white)),
-                  onTap: () => setState(() {
-                    currentPageIndex = 1;
-                    pageController.jumpToPage(1);
-                  }),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: currentPageIndex == 1
+                          ? Theme.of(context)
+                              .colorScheme
+                              .inversePrimary
+                              .withOpacity(0.5)
+                          : null),
+                  child: ListTile(
+                    leading: Icon(Icons.person,
+                        color: currentPageIndex == 1
+                            ? Colors.grey[800]
+                            : Colors.white),
+                    title: Text('Alunos',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            color: currentPageIndex == 1
+                                ? Colors.grey[800]
+                                : Colors.white)),
+                    onTap: () => setState(() {
+                      currentPageIndex = 1;
+                      pageController.jumpToPage(1);
+                    }),
+                  ),
                 ),
                 SizedBox(height: 15),
-                ListTile(
-                  leading: Icon(Icons.account_circle, color: Colors.white),
-                  title: Text('Usuário', style: TextStyle(color: Colors.white)),
-                  onTap: () async {
-                    final currentUser =
-                        Supabase.instance.client.auth.currentUser;
-                    final authProvider =
-                        ref.read(authViewModelProvider.notifier);
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          //UserModel userModel = UserModel.semDados();
-                          return AlertDialog(
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Center(
-                                  child: Column(
-                                    children: [
-                                      Text('Email logado'),
-                                      Text(currentUser?.email ?? '')
-                                    ],
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: currentPageIndex == 2
+                          ? Theme.of(context)
+                              .colorScheme
+                              .inversePrimary
+                              .withOpacity(0.5)
+                          : null),
+                  child: ListTile(
+                    leading: Icon(Icons.account_circle, color: Colors.white),
+                    title: Text('Usuário',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        )),
+                    onTap: () async {
+                      final currentUser =
+                          Supabase.instance.client.auth.currentUser;
+                      final authProvider =
+                          ref.read(authViewModelProvider.notifier);
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            //UserModel userModel = UserModel.semDados();
+                            return AlertDialog(
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Center(
+                                    child: Column(
+                                      children: [
+                                        Text('Email logado'),
+                                        Text(currentUser?.email ?? '')
+                                      ],
+                                    ),
                                   ),
-                                ),
+                                ],
+                              ),
+                              actions: [
+                                ElevatedButton(
+                                    onPressed: () async {
+                                      authProvider.logout();
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Splashscreen()));
+                                    },
+                                    child: Text('Sair'))
                               ],
-                            ),
-                            actions: [
-                              ElevatedButton(
-                                  onPressed: () async {
-                                    authProvider.logout();
-                                    Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                Splashscreen()));
-                                  },
-                                  child: Text('Sair'))
-                            ],
-                          );
-                        });
-                  },
+                            );
+                          });
+                    },
+                  ),
                 ),
               ],
             ),

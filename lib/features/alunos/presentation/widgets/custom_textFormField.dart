@@ -34,10 +34,17 @@ class CustomTextformfield extends StatelessWidget {
       onChanged: onChanged,
       enabled: enabled,
       decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
-        border: InputBorder.none,
-      ),
+          filled: true,
+          fillColor: Colors.grey[200],
+          labelText: hintText,
+          labelStyle:
+              TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),
+          hintText: hintText,
+          hintStyle: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide.none,
+          )),
     );
   }
 }

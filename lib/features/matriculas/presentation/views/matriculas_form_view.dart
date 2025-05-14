@@ -29,18 +29,6 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
         ),
       ),
-      /*   floatingActionButton: FloatingActionButton.extended(
-        icon: Icon(Icons.add),
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertdialogCadastroMatricula();
-            },
-          );
-        },
-        label: Text('Nova matricula'),
-      ),*/
       body: Padding(
         padding: EdgeInsets.all(15),
         child: Column(
@@ -51,9 +39,7 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
               height: MediaQuery.of(context).size.height * 0.15,
               child: RowContainersSelectModalidade(),
             ),
-
             const SizedBox(height: 15),
-
             // Modalidade Selecionada
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -87,7 +73,9 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                           return Text('Erro ao carregar');
                         },
                         loading: () {
-                          return CircularProgressIndicator();
+                          return CircularProgressIndicator(
+                            color: Colors.black,
+                          );
                         },
                       ),
                     ),
@@ -110,10 +98,7 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                     label: Text('Nova matricula'))
               ],
             ),
-
             const SizedBox(height: 15),
-
-            // Lista de Matrículas
             Expanded(
               child: ListView.builder(
                 shrinkWrap: true,

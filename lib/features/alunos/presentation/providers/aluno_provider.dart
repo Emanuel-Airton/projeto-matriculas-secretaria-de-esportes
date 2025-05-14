@@ -20,7 +20,7 @@ final quantidadeAlunos = FutureProvider<Map<String, dynamic>?>((ref) async {
   Map<String, dynamic> map = {};
   final recuperaListAlunos = ref.watch(listAlunosProvider);
   if (recuperaListAlunos != null) {
-    debugPrint('list: ${recuperaListAlunos.toString()}');
+    //debugPrint('list: ${recuperaListAlunos.toString()}');
 
     map = await ref
         .read(alunoUseCaseProvider)
@@ -56,6 +56,7 @@ final setupRealTime = FutureProvider<List<AlunoModel?>>(
 final count = StateProvider<int?>((ref) => 5);
 final countListenable = Provider((ref) => ref.read(count));
 final nomeAluno = StateProvider<String?>((ref) => '');
+
 final alunoListProviderListen = FutureProvider<List<AlunoModel?>>((ref) async {
   final contador = ref.watch(count);
   final nome = ref.watch(nomeAluno);
