@@ -43,7 +43,7 @@ class CustomTextformfield extends StatelessWidget {
           hintStyle: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide.none,
+            borderSide: BorderSide(),
           )),
     );
   }

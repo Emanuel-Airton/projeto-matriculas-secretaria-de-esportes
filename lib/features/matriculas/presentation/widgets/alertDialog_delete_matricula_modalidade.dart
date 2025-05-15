@@ -44,10 +44,9 @@ class _AlertdialogDeleteMatriculaModalidadeState
                   .read(matriculaModalidade.notifier)
                   .deletarMatriculaModalidade(widget.alunoId!);
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                   content: Center(
-                    child: Text('Matricula excluida com sucesso'),
-                  )));
+                child: Text('Matricula excluida com sucesso'),
+              )));
             } catch (erro) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   backgroundColor: Theme.of(context).colorScheme.inversePrimary,
