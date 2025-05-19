@@ -409,7 +409,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                         ButtomSalvarDados(
                             nomeAluno: widget.controllerNomeAluno?.text ?? '',
                             valorGenero: widget.valorGenero ?? '',
-                            telefone: widget.controllerTelefone!,
+                            telefone: widget.controllerTelefone,
                             dataNascimento: dataNascimento,
                             rg: widget.controllerRg!,
                             cpf: widget.controllercpf!,

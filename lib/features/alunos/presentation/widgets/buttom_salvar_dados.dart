@@ -7,7 +7,7 @@ import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/prov
 class ButtomSalvarDados extends ConsumerStatefulWidget {
   final String nomeAluno;
   final String valorGenero;
-  final TextEditingController telefone; // Tornar explícito que pode ser nulo
+  final TextEditingController? telefone; // Tornar explícito que pode ser nulo
   final DateTime? dataNascimento;
   final TextEditingController rg;
   final TextEditingController cpf;
@@ -56,12 +56,10 @@ class _ButtomSalvarDadosState extends ConsumerState<ButtomSalvarDados> {
               data: (data) async {
                 try {
                   if (widget.cadastrarNovoAluno) {
-                    if (widget.telefone.text.isEmpty ||
-                        widget.cpfMae.text.isEmpty ||
-                        widget.cpf.text.isEmpty) {
+                    if (widget.cpfMae.text.isEmpty || widget.cpf.text.isEmpty) {
                       debugPrint('itens vazios');
                       debugPrint(
-                        'itens: telefone:${widget.telefone.text}, cpfMae:${widget.cpfMae.text}, cpf:${widget.cpf.text}, rgMae:${widget.rgMae.text}, rg:${widget.rg.text}',
+                        'itens: telefone:${widget.telefone?.text}, cpfMae:${widget.cpfMae.text}, cpf:${widget.cpf.text}, rgMae:${widget.rgMae.text}, rg:${widget.rg.text}',
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('dados vazios')));
@@ -71,9 +69,9 @@ class _ButtomSalvarDadosState extends ConsumerState<ButtomSalvarDados> {
                     AlunoModel alunoModel = AlunoModel(
                       nome: widget.nomeAluno,
                       sexo: widget.valorGenero,
-                      telefone: widget.telefone.text!,
+                      telefone: widget.telefone?.text,
                       nascimento: widget.dataNascimento!,
-                      rg: widget.rg.text!,
+                      rg: widget.rg.text,
                       cpf: widget.cpf.text,
                       endereco: widget.endereco,
                       escola: widget.escola,

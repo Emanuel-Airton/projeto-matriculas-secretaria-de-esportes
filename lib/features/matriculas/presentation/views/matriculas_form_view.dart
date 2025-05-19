@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/alertDialog_cadastro_matricula.dart';
 import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/alertDialog_delete_matricula_modalidade.dart';
 import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/container_info_matricula.dart';
+import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/pdf_preview_lista_matriculas.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/presentation/providers/matricula_modalidade_notifier.dart';
 import '../../../modalidades/presentation/providers/modalidades_provider.dart';
 import '../../../modalidades/presentation/widgets/row_containers_select_modalidade.dart';
@@ -79,6 +80,19 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                         },
                       ),
                     ),
+                    SizedBox(width: 10),
+                    ElevatedButton.icon(
+                        icon: Icon(Icons.picture_as_pdf),
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return PdfPreviewListaMatriculas(
+                                    listMatriculasModalidade:
+                                        matriculasModalidades);
+                              });
+                        },
+                        label: Text('Vizualizar lista de matriculas'))
                   ],
                 ),
                 ElevatedButton.icon(
