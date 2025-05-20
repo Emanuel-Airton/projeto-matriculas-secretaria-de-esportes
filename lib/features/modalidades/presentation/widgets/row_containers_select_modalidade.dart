@@ -17,7 +17,7 @@ class RowContainersSelectModalidade extends ConsumerWidget {
       },
       {'nome': 'Atletismo', 'id': 8, 'image': 'assets/images/runner.png'},
       {'nome': 'Capoeira', 'id': 9, 'image': 'assets/images/capoeira.png'},
-      {'nome': 'Futsal', 'id': 2, 'image': 'assets/images/football.png'},
+      {'nome': 'Futsal', 'id': 2, 'image': 'assets/images/ball.png'},
       {'nome': 'Futebol', 'id': 3, 'image': 'assets/images/football.png'},
       {'nome': 'Handebol', 'id': 6, 'image': 'assets/images/handball.png'},
       {'nome': 'Oficina de Dança', 'id': 7, 'image': 'assets/images/dance.png'},

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:projeto_secretaria_de_esportes/features/matriculas/core/utils/whatsApp_launcher.dart';
 import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/views/pdf_preview.dart';
+import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/container_dados_matricula.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/matricula_modalidades_model.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:simple_icons/simple_icons.dart';
 
 class ContainerInfoMatricula extends StatefulWidget {
@@ -11,15 +12,6 @@ class ContainerInfoMatricula extends StatefulWidget {
 
   @override
   State<ContainerInfoMatricula> createState() => _ContainerInfoMatriculaState();
-}
-
-whatsAppLauncher(String telefone) async {
-  var whatsappUrl = "https://api.whatsapp.com/send/?phone=$telefone";
-  if (await canLaunchUrl(Uri.parse(whatsappUrl))) {
-    await launchUrl(Uri.parse(whatsappUrl));
-  } else {
-    throw ('Não foi possível iniciar $whatsappUrl');
-  }
 }
 
 class _ContainerInfoMatriculaState extends State<ContainerInfoMatricula> {
@@ -40,14 +32,10 @@ class _ContainerInfoMatriculaState extends State<ContainerInfoMatricula> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    padding: EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: Colors.white),
-                    child: Text(
-                        'Data da matricula: ${DateFormat('dd/MM/yyyy').format(widget.matriculasModalidadesModel.dataMatricula!)}'),
-                  ),
+                  ContainerDadosMatricula(
+                      textoTopo: 'Data da matricula',
+                      textoDados: DateFormat('dd/MM/yyyy').format(
+                          widget.matriculasModalidadesModel.dataMatricula!)),
                   Tooltip(
                     message: 'Vizualizar matricula na modalidade',
                     child: IconButton(
@@ -87,41 +75,33 @@ class _ContainerInfoMatriculaState extends State<ContainerInfoMatricula> {
                       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         // SizedBox(width: 20),
-                        Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.white),
-                          child: Text(
-                              'RG: ${widget.matriculasModalidadesModel.aluno!.rg.toString()}'),
+                        ContainerDadosMatricula(
+                          textoTopo: 'RG',
+                          textoDados: widget
+                              .matriculasModalidadesModel.aluno!.rg
+                              .toString(),
                         ),
                         SizedBox(width: 20),
-                        Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.white),
-                          child: Text(
-                              'CPF: ${widget.matriculasModalidadesModel.aluno!.cpf.toString()}'),
-                        ),
+                        ContainerDadosMatricula(
+                            textoTopo: 'CPF',
+                            textoDados: widget
+                                .matriculasModalidadesModel.aluno!.cpf
+                                .toString()),
+
                         SizedBox(width: 20),
-                        Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.white),
-                          child: Text(
-                              'DATA DE NASCIMENTO: ${DateFormat('dd/MM/yyyy').format(widget.matriculasModalidadesModel.aluno!.nascimento!)}'),
-                        ),
+                        ContainerDadosMatricula(
+                            textoTopo: 'Data de nascimento',
+                            textoDados: DateFormat('dd/MM/yyyy').format(widget
+                                .matriculasModalidadesModel
+                                .aluno!
+                                .nascimento!)),
+
                         SizedBox(width: 20),
-                        Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.white),
-                          child: Text(
-                              'Endereço: ${widget.matriculasModalidadesModel.aluno!.endereco.toString()}'),
-                        ),
+                        ContainerDadosMatricula(
+                            textoTopo: 'Endereço',
+                            textoDados: widget
+                                .matriculasModalidadesModel.aluno!.endereco
+                                .toString()),
                       ],
                     ),
                   ],
@@ -145,65 +125,50 @@ class _ContainerInfoMatriculaState extends State<ContainerInfoMatricula> {
                     SizedBox(height: 10),
                     Row(
                       children: [
-                        Container(
-                          padding: EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.white),
-                          child: Row(
-                            children: [
-                              Text(
-                                  'Telefone: ${widget.matriculasModalidadesModel.aluno!.telefone.toString()}'),
-                              IconButton(
-                                  tooltip: 'Acessar WhatsApp',
-                                  icon: Icon(SimpleIcons.whatsapp,
-                                      size: MediaQuery.sizeOf(context).height *
-                                          0.02,
-                                      color: Colors.green),
-                                  onPressed: () async {
-                                    try {
-                                      //formatando o numero de telefone
-                                      String? telefoneFormatado = widget
-                                          .matriculasModalidadesModel
-                                          .aluno!
-                                          .telefone
-                                          ?.replaceAll(RegExp(r'\D'), '');
-                                      await whatsAppLauncher(
-                                          telefoneFormatado ?? '');
-                                    } catch (erro) {
-                                      debugPrint(erro.toString());
-                                    }
-                                  }),
-                            ],
-                          ),
+                        ContainerDadosMatricula(
+                          textoTopo: 'Telefone',
+                          textoDados: widget
+                              .matriculasModalidadesModel.aluno!.telefone
+                              .toString(),
+                          widget: IconButton(
+                              tooltip: 'Acessar WhatsApp',
+                              icon: Icon(SimpleIcons.whatsapp,
+                                  size:
+                                      MediaQuery.sizeOf(context).height * 0.02,
+                                  color: Colors.green),
+                              onPressed: () async {
+                                try {
+                                  //formatando o numero de telefone
+                                  String? telefoneFormatado = widget
+                                      .matriculasModalidadesModel
+                                      .aluno!
+                                      .telefone
+                                      ?.replaceAll(RegExp(r'\D'), '');
+                                  WhatsappLauncher().whatsAppLauncher(
+                                      telefoneFormatado ?? '');
+                                } catch (erro) {
+                                  debugPrint(erro.toString());
+                                }
+                              }),
                         ),
                         SizedBox(width: 20),
-                        Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.white),
-                          child: Text(
-                              'Nome: ${widget.matriculasModalidadesModel.aluno!.nomeMae.toString()}'),
-                        ),
+                        ContainerDadosMatricula(
+                            textoTopo: 'Nome',
+                            textoDados: widget
+                                .matriculasModalidadesModel.aluno!.nomeMae
+                                .toString()),
                         SizedBox(width: 20),
-                        Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.white),
-                          child: Text(
-                              'RG: ${widget.matriculasModalidadesModel.aluno!.rg.toString()}'),
-                        ),
+                        ContainerDadosMatricula(
+                            textoTopo: 'RG',
+                            textoDados: widget
+                                .matriculasModalidadesModel.aluno!.rg
+                                .toString()),
                         SizedBox(width: 20),
-                        Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.white),
-                          child: Text(
-                              'CPF: ${widget.matriculasModalidadesModel.aluno!.cpfMae.toString()}'),
-                        ),
+                        ContainerDadosMatricula(
+                            textoTopo: 'CPF',
+                            textoDados: widget
+                                .matriculasModalidadesModel.aluno!.cpfMae
+                                .toString()),
                       ],
                     ),
                   ],

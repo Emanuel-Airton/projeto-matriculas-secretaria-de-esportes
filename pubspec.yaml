@@ -88,6 +88,8 @@ flutter:
       - assets/images/logo.jpeg
       - assets/images/adl10 white.png
       - assets/images/capoeira.png
+      - assets/images/ball.png
+
 
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

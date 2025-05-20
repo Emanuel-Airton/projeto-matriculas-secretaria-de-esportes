@@ -25,9 +25,10 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Lista de Matriculas',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+          style:
+              TextStyle(fontWeight: FontWeight.bold, color: Colors.grey[700]),
         ),
       ),
       body: Padding(
@@ -51,9 +52,12 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                       padding: EdgeInsets.all(8.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Theme.of(context).colorScheme.inversePrimary,
+                        color: Colors.grey[200],
                       ),
-                      child: Text('Modalidade selecionada:'),
+                      child: Text('Modalidade selecionada',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: Colors.grey[700])),
                     ),
                     SizedBox(width: 10),
                     Container(
@@ -66,8 +70,10 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                         data: (data) {
                           return Center(
                             child: Text(
-                              data != null ? data.nome! : 'Todas modalidades',
-                            ),
+                                data != null ? data.nome! : 'Todas modalidades',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.grey[700])),
                           );
                         },
                         error: (error, stackTrace) {
@@ -138,6 +144,9 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                             children: [
                               Text(
                                 'N° da matricula: ${matriculasModalidades[index].id.toString()}',
+                                style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),

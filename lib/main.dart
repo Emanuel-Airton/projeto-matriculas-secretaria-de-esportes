@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          primary: const Color.fromARGB(255, 206, 42, 42),
+          primary: const Color(0xFFCE2A2A),
           seedColor: const Color(0xFFCE2A2A),
         ),
         useMaterial3: true,
