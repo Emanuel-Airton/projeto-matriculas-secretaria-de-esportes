@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno_model.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/alunoNotifier.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
+import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/providers/button_save_matricula_provider.dart';
 import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/providers/matricula_provider.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/presentation/providers/matricula_modalidade_notifier.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/presentation/providers/modalidades_provider.dart';
@@ -34,9 +36,9 @@ class _AlertdialogCadastroMatriculaState
 
   @override
   Widget build(BuildContext context) {
-    final alunosAsync = ref.watch(alunoListProvider);
+    final alunosAsync = ref.refresh(alunoListProvider);
     // final listAlunos = ref.watch(alunoNotifierProvider);
-
+    final buttonSaveMatricula = ref.watch(buttonSaveMatriculaProvider);
     final modalidadesAsync = ref.watch(listModalidadeProvider);
 
     return AlertDialog(
@@ -58,6 +60,7 @@ class _AlertdialogCadastroMatriculaState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Campo de pesquisa para alunos
+
                 alunosAsync.when(
                   data: (alunos) {
                     if (filteredAlunos.isEmpty && alunos.isNotEmpty) {
@@ -102,7 +105,7 @@ class _AlertdialogCadastroMatriculaState
                                                 BorderRadius.circular(15))))),
                             mode: Mode.custom,
                             items: (filter, loadProps) =>
-                                filteredAlunos.map((e) => e.nome).toList(),
+                                alunos.map((e) => e.nome).toList(),
                             filterFn: (item, filter) => item
                                 .toLowerCase()
                                 .contains(filter.toLowerCase()),
@@ -244,40 +247,55 @@ class _AlertdialogCadastroMatriculaState
         ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
+              alunosAsync.value?.clear();
             },
             child: Text('Cancelar')),
         ElevatedButton(
-          onPressed: () async {
-            if (alunoSelecionado != null &&
-                modalidadesSelecionadas.isNotEmpty) {
-              try {
-                await ref
-                    .read(matriculaUseCaseProvider)
-                    .cadastrarMatriculaComModalidades(
-                      alunoSelecionado!,
-                      modalidadesSelecionadas,
-                    );
-                ref.read(selectedModalidadeIdProvider.notifier).state = null;
-                await ref
-                    .read(matriculaModalidade.notifier)
-                    .buscarMatriculasModalidade();
+          onPressed: buttonSaveMatricula.isloading
+              ? null
+              : () async {
+                  if (alunoSelecionado != null &&
+                      modalidadesSelecionadas.isNotEmpty) {
+                    try {
+                      await ref
+                          .read(buttonSaveMatriculaProvider.notifier)
+                          .saveButton(() async {
+                        await ref
+                            .read(matriculaUseCaseProvider)
+                            .cadastrarMatriculaComModalidades(
+                              alunoSelecionado!,
+                              modalidadesSelecionadas,
+                            );
+                        ref.read(selectedModalidadeIdProvider.notifier).state =
+                            null;
+                        await ref
+                            .read(matriculaModalidade.notifier)
+                            .buscarMatriculasModalidade();
+                      });
 
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Center(
-                  child: Text('Matricula realizada com sucesso'),
-                )));
-                Navigator.pop(context);
-              } catch (erro) {
-                debugPrint('Erro: $erro');
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Center(
+                        child: Text('Matricula realizada com sucesso'),
+                      )));
+                      Navigator.pop(context);
+                    } catch (erro) {
+                      debugPrint('Erro: $erro');
 
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Center(
-                  child: Text('O aluno já está matriculado nessa modalidade'),
-                )));
-              }
-            }
-          },
-          child: const Text('Salvar Matrícula de modalidade'),
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Center(
+                        child: Text(
+                            'O aluno já está matriculado nessa modalidade'),
+                      )));
+                    }
+                  }
+                },
+          child: buttonSaveMatricula.isloading
+              ? SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(),
+                )
+              : Text('Salvar Matrícula de modalidade'),
         ),
       ],
     );

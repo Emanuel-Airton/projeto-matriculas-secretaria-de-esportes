@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/button_save_aluno_provider.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/image_storage_provider.dart';
 
 class ButtomSalvarDados extends ConsumerStatefulWidget {
@@ -48,72 +49,85 @@ class _ButtomSalvarDadosState extends ConsumerState<ButtomSalvarDados> {
   final key = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(buttonSaveAlunoProvider);
     return ElevatedButton(
-      onPressed: () {
-        if (widget.formKey.currentState!.validate()) {
-          final urlImagemAsync = ref.watch(uploadImageStorage);
-          urlImagemAsync.when(
-              data: (data) async {
-                try {
-                  if (widget.cadastrarNovoAluno) {
-                    if (widget.cpfMae.text.isEmpty || widget.cpf.text.isEmpty) {
-                      debugPrint('itens vazios');
-                      debugPrint(
-                        'itens: telefone:${widget.telefone?.text}, cpfMae:${widget.cpfMae.text}, cpf:${widget.cpf.text}, rgMae:${widget.rgMae.text}, rg:${widget.rg.text}',
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('dados vazios')));
+        onPressed: state.isloading
+            ? null
+            : () {
+                if (widget.formKey.currentState!.validate()) {
+                  final urlImagemAsync = ref.watch(uploadImageStorage);
+                  urlImagemAsync.when(
+                      data: (data) async {
+                        try {
+                          if (widget.cadastrarNovoAluno) {
+                            if (widget.cpfMae.text.isEmpty ||
+                                widget.cpf.text.isEmpty) {
+                              debugPrint('itens vazios');
+                              debugPrint(
+                                'itens: telefone:${widget.telefone?.text}, cpfMae:${widget.cpfMae.text}, cpf:${widget.cpf.text}, rgMae:${widget.rgMae.text}, rg:${widget.rg.text}',
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('dados vazios')));
 
-                      return null;
-                    }
-                    AlunoModel alunoModel = AlunoModel(
-                      nome: widget.nomeAluno,
-                      sexo: widget.valorGenero,
-                      telefone: widget.telefone?.text,
-                      nascimento: widget.dataNascimento!,
-                      rg: widget.rg.text,
-                      cpf: widget.cpf.text,
-                      endereco: widget.endereco,
-                      escola: widget.escola,
-                      turno: widget.turno,
-                      nomeMae: widget.nomeMae,
-                      rgMae: widget.rgMae.text!,
-                      cpfMae: widget.cpfMae.text,
-                      postoSaude: widget.postoSaude,
-                      fotoPerfilUrl: data,
-                    );
-                    debugPrint('alunoModel: ${alunoModel.toJson().toString()}');
-                    debugPrint(widget.cadastrarNovoAluno.toString());
+                              return null;
+                            }
+                            AlunoModel alunoModel = AlunoModel(
+                              nome: widget.nomeAluno,
+                              sexo: widget.valorGenero,
+                              telefone: widget.telefone?.text,
+                              nascimento: widget.dataNascimento!,
+                              rg: widget.rg.text,
+                              cpf: widget.cpf.text,
+                              endereco: widget.endereco,
+                              escola: widget.escola,
+                              turno: widget.turno,
+                              nomeMae: widget.nomeMae,
+                              rgMae: widget.rgMae.text!,
+                              cpfMae: widget.cpfMae.text,
+                              postoSaude: widget.postoSaude,
+                              fotoPerfilUrl: data,
+                            );
+                            // debugPrint( 'alunoModel: ${alunoModel.toJson().toString()}');
+                            //    debugPrint(widget.cadastrarNovoAluno.toString());
+                            await ref
+                                .read(buttonSaveAlunoProvider.notifier)
+                                .saveButton(() async {
+                              await ref
+                                  .read(alunoUseCaseProvider)
+                                  .cadastrarAluno(alunoModel);
+                            });
 
-                    await ref
-                        .read(alunoUseCaseProvider)
-                        .cadastrarAluno(alunoModel);
-                    /*   setState(() {
-                      child = Text('Cadastrado');
-                    });*/
-                    child = Text('Cadastrado');
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Center(
-                          child: Text('Aluno cadastrado com sucesso'),
-                        ),
-                      ),
-                    );
-                    Future.delayed(Duration(seconds: 1))
-                        .then((value) => Navigator.pop(context));
-                  }
-                } catch (erro) {
-                  debugPrint('Erro: $erro');
+                            child = Text('Cadastrado');
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Center(
+                                  child: Text('Aluno cadastrado com sucesso'),
+                                ),
+                              ),
+                            );
+                            /*  Future.delayed(Duration(seconds: 1))
+                              .then((value) => Navigator.pop(context));*/
+                          }
+                        } catch (erro) {
+                          debugPrint('Erro: $erro');
+                        }
+                      },
+                      error: (error, stackTrace) =>
+                          debugPrint('Erro ao carregar imagem: $error'),
+                      loading: () =>
+                          //debugPrint('Carregando imagem...'),
+                          CircularProgressIndicator());
                 }
               },
-              error: (error, stackTrace) =>
-                  debugPrint('Erro ao carregar imagem: $error'),
-              loading: () =>
-                  //debugPrint('Carregando imagem...'),
-                  CircularProgressIndicator());
-        }
-      },
-      child: child,
-    );
+        child: state.isloading
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  // valueColor: AlwaysStoppedAnimation(Colors.white),
+                ),
+              )
+            : const Text('Salvar'));
   }
 }

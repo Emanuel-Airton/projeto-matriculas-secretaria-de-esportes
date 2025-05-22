@@ -50,7 +50,6 @@ class AlunoRepository {
           .map<AlunoModel>((json) => AlunoModel.fromJson(json))
           .toList();
       //debugPrint('tamanho da lista 2: ${listAunoModel.length}');
-
       return listAunoModel;
     } catch (e) {
       throw 'Erro ao buscar aluno: $e';

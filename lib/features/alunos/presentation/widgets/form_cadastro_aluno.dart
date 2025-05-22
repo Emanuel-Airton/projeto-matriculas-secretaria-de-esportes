@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/button_save_aluno_provider.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/buttom_atualizar_dados.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/buttom_salvar_dados.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/custom_container_textFormField.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/custom_textFormField.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/profile_image_widget.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/saveButton.dart';
 import '../providers/image_storage_provider.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 
@@ -63,14 +65,9 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
   DateTime? dataNascimento;
   String dataNascimentoString = "";
   final _key = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(buttonSaveAlunoProvider);
     return Form(
       key: _key,
       child: SingleChildScrollView(
@@ -91,7 +88,6 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                   message: 'Adicionar foto do perfil',
                   child: ProfileImageWidget(urlImage: widget.urlImagem ?? '')),
               SizedBox(height: 15),
-
               // Nome, Gênero e Data de Nascimento
               Row(
                 children: [
@@ -316,12 +312,6 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                   Expanded(
                     flex: 1,
                     child: CustomTextformfield(
-                      /*   validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Insira o telefone';
-                        }
-                        return null;
-                      },*/
                       keyboardType: TextInputType.number,
                       hintText: 'TELEFONE',
                       onChanged: (p0) => widget.json?['telefone'] = p0,
@@ -402,6 +392,9 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                           onPressed: () {
                             Navigator.pop(context);
                             ref.read(mapContentFileInfo.notifier).state = {};
+                            ref
+                                .read(buttonSaveAlunoProvider.notifier)
+                                .resetButtonState();
                           },
                           child: Text('Cancelar'),
                         ),
@@ -424,6 +417,8 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                             formKey: _key),
                       ],
                     ),
+              SizedBox(height: 15),
+              SaveButton(),
             ],
           ),
         ),
