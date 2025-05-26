@@ -38,7 +38,8 @@ class ModalidadesRepository {
     final response = await _supabase
         .from(tabelaMatriculaModalidade)
         .select('id, data_matricula, alunos($buscarAluno), modalidades(nome)')
-        .filter('modalidade_id', 'eq', id);
+        .filter('modalidade_id', 'eq', id)
+        .order('data_matricula', ascending: true);
     list = response.map<MatriculaModalidadesModel>(
       (json) {
         debugPrint('teste filtro: ${json.toString()}');

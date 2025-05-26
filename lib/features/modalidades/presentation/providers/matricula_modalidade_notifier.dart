@@ -23,9 +23,13 @@ class MatriculaModalidadeNotifier
     state = state.where((matricula) => matricula.id != id).toList();
   }
 
-  buscarMatriculasModalidadeFiltro(String value) async {
+  buscarMatriculaModalidadePnomeAluno(String value) async {
     state =
         await _modalidadesUsecase.buscarMatriculaModalidadePnomeAluno(value);
+  }
+
+  buscarMatriculasModalidadeFiltro(int id) async {
+    state = await _modalidadesUsecase.buscarMatriculaModalidadeFiltro(id);
   }
 
   _setupRealTime() {

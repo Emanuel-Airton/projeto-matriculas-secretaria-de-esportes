@@ -145,7 +145,7 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                               onChanged: (value) {
                                 ref
                                     .read(matriculaModalidade.notifier)
-                                    .buscarMatriculasModalidadeFiltro(value);
+                                    .buscarMatriculaModalidadePnomeAluno(value);
                               },
                               controller: controller,
                               decoration: InputDecoration(
@@ -155,14 +155,6 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                               ),
                             ),
                           ),
-                          IconButton(
-                              onPressed: () {
-                                ref
-                                    .read(matriculaModalidade.notifier)
-                                    .buscarMatriculasModalidadeFiltro(
-                                        controller.text);
-                              },
-                              icon: Icon(Icons.search))
                         ],
                       ),
                     ),
