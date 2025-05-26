@@ -17,6 +17,8 @@ class AlunoNotifier extends StateNotifier<List<AlunoModel>> {
   }
 
   deletarAluno(int alunoId) async {
+    await _alunoUseCase.deletarAluno(alunoId);
+    state = state.where((element) => element.id != alunoId).toList();
     state = await _alunoUseCase.deletarAluno(alunoId);
   }
 

@@ -1,3 +1,4 @@
+import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/matricula_modalidades_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/modalidades_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/repositories/modalidades_repository.dart';
 
@@ -19,6 +20,11 @@ class ModalidadesUsecase {
 
   buscarMatriculaModalidadeFiltro(int id) {
     return _repository.buscarMatriculaModalidadeFiltro(id);
+  }
+
+  Future<List<MatriculaModalidadesModel>> buscarMatriculaModalidadePnomeAluno(
+      String nomeAluno) {
+    return _repository.buscarMatriculaModalidadePnomeAluno(nomeAluno);
   }
 
   deletarMatriculaModalidade(int id) {

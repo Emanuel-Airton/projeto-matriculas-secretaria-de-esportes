@@ -93,8 +93,8 @@ class _MyWidgetState extends ConsumerState<AlunosScreen> {
                               Expanded(
                                 child: TextField(
                                   onChanged: (value) {
-                                    ref.read(nomeAlunoProvider.notifier).state =
-                                        value;
+                                    //  ref.read(nomeAlunoProvider.notifier).state =
+                                    //      value;
                                     alunoNotifier.buscarAlunoNome(value);
                                   },
                                   controller: controller,

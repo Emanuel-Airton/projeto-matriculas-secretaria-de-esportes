@@ -17,20 +17,14 @@ class MatriculaFormView extends ConsumerStatefulWidget {
 
 class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
   Map<int, bool> map = {};
-
+  TextEditingController controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final matriculasModalidades = ref.watch(matriculaModalidade);
     final modalidade = ref.watch(buscarModalidade);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Lista de Matriculas',
-          style:
-              TextStyle(fontWeight: FontWeight.bold, color: Colors.grey[700]),
-        ),
-      ),
+      backgroundColor: Colors.grey[200],
       body: Padding(
         padding: EdgeInsets.all(15),
         child: Column(
@@ -52,7 +46,7 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                       padding: EdgeInsets.all(8.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Colors.grey[200],
+                        color: Colors.white,
                       ),
                       child: Text('Modalidade selecionada',
                           style: TextStyle(
@@ -120,101 +114,164 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
             ),
             const SizedBox(height: 15),
             Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: matriculasModalidades.length,
-                itemBuilder: (context, index) {
-                  final isExpanded = map[index] ?? false;
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      padding: EdgeInsets.all(15),
+              child: Container(
+                padding: EdgeInsets.all(15.0),
+                height: MediaQuery.sizeOf(context).height * 0.74,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Lista de matriculas',
+                      style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[500]),
+                    ),
+                    SizedBox(height: 15),
+                    Container(
+                      //width: MediaQuery.sizeOf(context).width * 0.4,
+                      padding: EdgeInsets.all(8.0),
                       decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(color: Colors.grey, offset: Offset(2, 3))
-                        ],
                         borderRadius: BorderRadius.circular(15),
-                        color: Colors.white,
+                        color: Colors.grey[200],
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Row(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'N° da matricula: ${matriculasModalidades[index].id.toString()}',
-                                style: TextStyle(
-                                    color: Colors.grey[600],
-                                    fontWeight: FontWeight.bold),
+                          Expanded(
+                            child: TextField(
+                              onChanged: (value) {
+                                ref
+                                    .read(matriculaModalidade.notifier)
+                                    .buscarMatriculasModalidadeFiltro(value);
+                              },
+                              controller: controller,
+                              decoration: InputDecoration(
+                                hintStyle: TextStyle(color: Colors.grey[500]),
+                                hintText: 'Pesquisar matricula por aluno',
+                                border: InputBorder.none,
                               ),
-                            ],
+                            ),
                           ),
-                          Column(
-                            children: [
-                              ListTile(
-                                title: Text(
-                                  'Aluno: ${matriculasModalidades[index].aluno!.nome.toString()}',
-                                ),
-                                subtitle: Text(
-                                  'Modalidade: ${matriculasModalidades[index].modalidadeNome.toString()}',
-                                ),
-                                trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Tooltip(
-                                      message: 'Excluir matricula',
-                                      child: IconButton(
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertdialogDeleteMatriculaModalidade(
-                                                alunoId:
-                                                    matriculasModalidades[index]
-                                                        .id,
-                                              );
-                                            },
-                                          );
-                                        },
-                                        icon: Icon(
-                                          Icons.delete,
-                                          color: Colors.grey[500],
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 5),
-                                    Tooltip(
-                                      message: 'Visualizar mais informações',
-                                      child: IconButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            map[index] = !isExpanded;
-                                          });
-                                        },
-                                        icon: Icon(
-                                          !isExpanded
-                                              ? Icons.keyboard_arrow_down
-                                              : Icons.keyboard_arrow_up,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              if (isExpanded) ...[
-                                ContainerInfoMatricula(
-                                  matriculasModalidadesModel:
-                                      matriculasModalidades[index],
-                                ),
-                              ],
-                            ],
-                          ),
+                          IconButton(
+                              onPressed: () {
+                                ref
+                                    .read(matriculaModalidade.notifier)
+                                    .buscarMatriculasModalidadeFiltro(
+                                        controller.text);
+                              },
+                              icon: Icon(Icons.search))
                         ],
                       ),
                     ),
-                  );
-                },
+                    SizedBox(height: 15),
+                    Expanded(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: matriculasModalidades.length,
+                        itemBuilder: (context, index) {
+                          final isExpanded = map[index] ?? false;
+                          return Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Container(
+                              padding: EdgeInsets.all(15),
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.grey, offset: Offset(2, 3))
+                                ],
+                                borderRadius: BorderRadius.circular(15),
+                                color: Colors.grey[200],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'N° da matricula: ${matriculasModalidades[index].id.toString()}',
+                                        style: TextStyle(
+                                            color: Colors.grey[600],
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          'Aluno: ${matriculasModalidades[index].aluno!.nome.toString()}',
+                                        ),
+                                        subtitle: Text(
+                                          'Modalidade: ${matriculasModalidades[index].modalidadeNome.toString()}',
+                                        ),
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Tooltip(
+                                              message: 'Excluir matricula',
+                                              child: IconButton(
+                                                onPressed: () {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return AlertdialogDeleteMatriculaModalidade(
+                                                        alunoId:
+                                                            matriculasModalidades[
+                                                                    index]
+                                                                .id,
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                                icon: Icon(
+                                                  Icons.delete,
+                                                  color: Colors.grey[500],
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 5),
+                                            Tooltip(
+                                              message:
+                                                  'Visualizar mais informações',
+                                              child: IconButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    map[index] = !isExpanded;
+                                                  });
+                                                },
+                                                icon: Icon(
+                                                  !isExpanded
+                                                      ? Icons
+                                                          .keyboard_arrow_down
+                                                      : Icons.keyboard_arrow_up,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      if (isExpanded) ...[
+                                        ContainerInfoMatricula(
+                                          matriculasModalidadesModel:
+                                              matriculasModalidades[index],
+                                        ),
+                                      ],
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

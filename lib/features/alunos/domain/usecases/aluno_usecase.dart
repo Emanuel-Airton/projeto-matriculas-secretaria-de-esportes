@@ -46,4 +46,8 @@ class AlunoUseCase {
       List<AlunoModel> listAlunoModel) async {
     return await _repository.quantidadeAlunoPorGenero(listAlunoModel);
   }
+
+  buscarListAlunosPorNome(String nomeAluno) {
+    return _repository.buscarListAlunosPorNome(nomeAluno);
+  }
 }

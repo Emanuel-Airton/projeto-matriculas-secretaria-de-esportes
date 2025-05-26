@@ -113,6 +113,15 @@ class AlunoRepository {
     }
   }
 
+  Future<List<dynamic>> buscarListAlunosPorNome(String nomeAluno) async {
+    final response = await _supabase
+        .from('alunos')
+        .select('id')
+        .like('nome', '%$nomeAluno%');
+    if (response.isEmpty) return [];
+    return response.map((e) => e['id']).toList();
+  }
+
   // Cadastrar aluno
   Future<void> cadastrarAluno(AlunoModel aluno) async {
     await _supabase.from('alunos').insert(aluno.toJson());

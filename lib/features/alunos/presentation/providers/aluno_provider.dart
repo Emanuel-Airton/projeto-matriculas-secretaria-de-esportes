@@ -19,9 +19,7 @@ final listAlunosProvider = StateProvider<List<AlunoModel>?>((ref) => []);
 final quantidadeAlunos = FutureProvider<Map<String, dynamic>?>((ref) async {
   Map<String, dynamic> map = {};
   final recuperaListAlunos = ref.watch(listAlunosProvider);
-  if (recuperaListAlunos != null) {
-    //debugPrint('list: ${recuperaListAlunos.toString()}');
-
+  if (recuperaListAlunos!.isNotEmpty) {
     map = await ref
         .read(alunoUseCaseProvider)
         .quantidadeAlunoPorGenero(recuperaListAlunos);
