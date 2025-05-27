@@ -47,6 +47,7 @@ dependencies:
   window_size: ^0.1.0
   window_manager: ^0.4.3
   dropdown_search: ^6.0.2
+  pdf: ^3.11.3
 
 dev_dependencies:
   flutter_test:
