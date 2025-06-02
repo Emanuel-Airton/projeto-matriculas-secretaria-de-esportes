@@ -1,64 +1,76 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/repositories/aluno_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../data/models/aluno_model.dart';
 import '../../domain/usecases/aluno_usecase.dart';
 
-class AlunoNotifier extends StateNotifier<List<AlunoModel>> {
-  final SupabaseClient _supabase;
+class AlunoNotifier extends StateNotifier<AsyncValue<List<AlunoModel>>> {
+  // final SupabaseClient _supabase;
   final AlunoUseCase _alunoUseCase;
-
-  AlunoNotifier(this._supabase, this._alunoUseCase) : super([]) {
-    _setupRealTime();
+  List<AlunoModel> _cache = <AlunoModel>[];
+  Timer? timer;
+  AlunoNotifier(this._alunoUseCase) : super(AsyncValue.data([])) {
     _fetchAlunos();
   }
-  _fetchAlunos() async {
-    state = await _alunoUseCase.buscarAlunos();
+
+  _fetchAlunos({bool forcedDelay = false}) async {
+    state = AsyncValue.loading();
+    try {
+      if (_cache.isNotEmpty && !forcedDelay) {
+        state = AsyncValue.data(_cache);
+        return; //encerra o metodo aqui sem executar o codigo abaixo
+      }
+      buscarAlunosSalvarCache();
+    } catch (e, stackTrace) {
+      state = AsyncValue.error(e, stackTrace);
+    }
   }
 
-  deletarAluno(int alunoId) async {
-    await _alunoUseCase.deletarAluno(alunoId);
-    state = state.where((element) => element.id != alunoId).toList();
-    state = await _alunoUseCase.deletarAluno(alunoId);
+  buscarAlunosSalvarCache() async {
+    await Future.delayed(Duration(milliseconds: 500));
+    final alunos = await _alunoUseCase.buscarAlunos();
+    _cache = alunos;
+    state = AsyncValue.data(alunos);
+  }
+
+  teste() {}
+  Future<void> deletarAluno(int alunoId) async {
+    try {
+      await _alunoUseCase.deletarAluno(alunoId);
+      _cache = _cache.where((element) => element.id != alunoId).toList();
+      state = AsyncValue.data(_cache);
+      timer = Timer(const Duration(milliseconds: 5000), () => _fetchAlunos());
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  cadastrarAluno(AlunoModel alunoModel) async {
+    try {
+      final aluno = await _alunoUseCase.cadastrarAluno(alunoModel);
+      _cache = [..._cache, aluno];
+      state = AsyncValue.data(_cache);
+      _fetchAlunos(forcedDelay: true);
+    } catch (e) {
+      _fetchAlunos();
+      debugPrint('erro: $e');
+    }
   }
 
   buscarAlunoNome(String nome) async {
-    state = await _alunoUseCase.buscarAlunoNome(nome);
-  }
-
-  /// Escuta eventos do Supabase em tempo real
-  void _setupRealTime() {
-    _supabase
-        .channel('alunos')
-        .onPostgresChanges(
-            event: PostgresChangeEvent.all,
-            table: 'alunos',
-            schema: 'public',
-            callback: (payload) {
-              if (payload.eventType == PostgresChangeEvent.insert) {
-                state = [...state, AlunoModel.fromJson(payload.newRecord)];
-              } else if (payload.eventType == PostgresChangeEvent.update) {
-                state = state.map((aluno) {
-                  return aluno.id == payload.newRecord['id']
-                      ? AlunoModel.fromJson(payload.newRecord)
-                      : aluno;
-                }).toList();
-              } else if (payload.eventType == PostgresChangeEvent.delete) {
-                state = state
-                    .where((aluno) => aluno.id != payload.oldRecord['id'])
-                    .toList();
-              }
-            })
-        .subscribe();
+    _cache = await _alunoUseCase.buscarAlunoNome(nome);
+    state = AsyncValue.data(_cache);
   }
 }
 
 final alunoNotifierProvider =
-    StateNotifierProvider<AlunoNotifier, List<AlunoModel>>((ref) {
-  final supabase = Supabase.instance.client;
-  final alunoRepository = AlunoRepository();
+    StateNotifierProvider<AlunoNotifier, AsyncValue<List<AlunoModel>>>((ref) {
+  //final supabase = Supabase.instance.client;
+  final alunoRepository = AlunoRepository(Supabase.instance.client);
   final alunoUseCase = AlunoUseCase(alunoRepository);
 
-  return AlunoNotifier(supabase, alunoUseCase);
+  return AlunoNotifier(alunoUseCase);
 });
 final nomeAlunoProvider = StateProvider<String>((ref) => '');

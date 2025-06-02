@@ -4,7 +4,25 @@ import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AlunoRepository {
-  final _supabase = Supabase.instance.client;
+  //final _supabase = Supabase.instance.client;
+  // static AlunoRepository? _instance;
+  final SupabaseClient _supabase;
+  late final StreamController<List<AlunoModel>> _controller;
+
+  AlunoRepository(this._supabase) {
+    // _controller = StreamController.broadcast();
+    //  setupRealTime();
+  }
+  /* Stream<List<AlunoModel>> watchAluno() {
+    return _controller.stream;
+  }*/
+
+  /* AlunoRepository._(this._supabase);
+  factory AlunoRepository(SupabaseClient supabase) {
+    _instance ??= AlunoRepository._(supabase);
+    return _instance!;
+  }
+*/
   List<AlunoModel> listAunoModel = [];
   // Buscar todos os alunos
   Future<List<AlunoModel>> buscarAlunos() async {
@@ -14,29 +32,6 @@ class AlunoRepository {
         response.map<AlunoModel>((json) => AlunoModel.fromJson(json)).toList();
     //debugPrint('tamanho da lista 1: ${listAunoModel.length}');
     return listAunoModel;
-  }
-
-  Future<Map<String, dynamic>> quantidadeAlunoPorGenero(
-      List<AlunoModel> listAlunoModel) async {
-    List listMasculino = [];
-    List listFeminino = [];
-
-    final totalAlunos = listAlunoModel.length;
-    for (int index = 0; index < listAlunoModel.length; index++) {
-      if (listAlunoModel[index].sexo == 'masculino') {
-        listMasculino.add(listAlunoModel[index]);
-      } else {
-        listFeminino.add(listAlunoModel[index]);
-      }
-    }
-    //  debugPrint(listMasculino.length.toString());
-    // debugPrint(listFeminino.length.toString());
-
-    return {
-      'total': totalAlunos,
-      'masculino': listMasculino.length,
-      'feminino': listFeminino.length
-    };
   }
 
   Future<List<AlunoModel>> buscarAlunoPNome(String nome) async {
@@ -56,31 +51,109 @@ class AlunoRepository {
     }
   }
 
-  List<AlunoModel> setupRealTime() {
+  Stream<List<AlunoModel>> watchAluno() {
+    final controller = StreamController<List<AlunoModel>>.broadcast();
+    final channel = _supabase
+        .channel('alunos')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          table: 'alunos',
+          schema: 'public',
+          callback: (payload) async {
+            debugPrint('Evento recebido: ${payload.eventType}');
+            // debugPrint('Payload completo: ${payload.newRecord}');
+            List<AlunoModel>? newList;
+            try {
+              //  final newItem = AlunoModel.fromJson(payload.newRecord);
+              //    debugPrint('Item desserializado: ${newItem.toJson()}');
+
+              // Adicione lógica para cada tipo de evento
+              switch (payload.eventType) {
+                case PostgresChangeEvent.insert:
+                  debugPrint('Evento INSERT processado');
+                  break;
+                case PostgresChangeEvent.update:
+                  debugPrint('Evento UPDATE processado');
+                  List<AlunoModel> list = await controller.stream.first;
+                  newList = list.map(
+                    (e) {
+                      return e.id == payload.newRecord['id']
+                          ? AlunoModel.fromJson(payload.newRecord)
+                          : e;
+                    },
+                  ).toList();
+
+                  break;
+                case PostgresChangeEvent.delete:
+                  debugPrint('Evento DELETE processado');
+                  /*  newList = list
+                      .where((element) => element.id != payload.oldRecord['id'])
+                      .toList();*/
+                  break;
+                case PostgresChangeEvent.all:
+                  // TODO: Handle this case.
+                  throw UnimplementedError();
+              }
+            } catch (e) {
+              debugPrint('Erro ao processar evento: $e');
+            }
+            if (!controller.isClosed) {
+              controller.add(newList!);
+              debugPrint('controller: ${controller.stream.first.toString()}');
+            }
+          },
+        )
+        .subscribe();
+
+    controller.onCancel = () {
+      channel.unsubscribe();
+    };
+
+    return controller.stream;
+  }
+
+  /* setupRealTime() {
+    //final controller = StreamController<List<AlunoModel>>();
     _supabase
         .channel('alunos')
         .onPostgresChanges(
             event: PostgresChangeEvent.all,
             table: 'alunos',
             schema: 'public',
-            callback: (payload) {
-              debugPrint('tamanho da lista 3: ${listAunoModel.length}');
-
+            callback: (payload) async {
+              debugPrint(payload.eventType.name);
+              List<AlunoModel> currentList =
+                  _controller.isClosed ? [] : await _controller.stream.first;
+              List<AlunoModel>? newList;
+              
               if (payload.eventType == PostgresChangeEvent.insert) {
-                listAunoModel.add(AlunoModel.fromJson(payload.newRecord));
+                newList = [
+                  ...currentList,
+                  AlunoModel.fromJson(payload.newRecord)
+                ];
               } else if (payload.eventType == PostgresChangeEvent.update) {
-                int index = listAunoModel.indexWhere(
-                    (element) => element.id == payload.newRecord['id']);
-                listAunoModel[index] = AlunoModel.fromJson(payload.newRecord);
-                debugPrint('aluno atualizado: ${listAunoModel[index].nome}');
-              } else {
-                debugPrint('Evento não tratado: ${payload.eventType}');
+                newList = currentList.map((aluno) {
+                  return aluno.id == payload.newRecord['id']
+                      ? AlunoModel.fromJson(payload.newRecord)
+                      : aluno;
+                }).toList();
+              } else if (payload.eventType == PostgresChangeEvent.delete) {
+                newList = currentList
+                    .where((aluno) => aluno.id != payload.oldRecord['id'])
+                    .toList();
+              }
+              if (!_controller.isClosed) {
+                _controller.add(newList!);
               }
             })
         .subscribe();
-    listAunoModel.forEach((element) => debugPrint(element.nomeMae));
-    return listAunoModel;
-  }
+    //listAunoModel.forEach((element) => debugPrint(element.nomeMae));
+    // Fecha o stream quando não for mais necessário
+    /*_controller.onCancel = () {
+      channel.unsubscribe();
+    };*/
+    // return _controller.stream;
+  }*/
 
   Stream<List<AlunoModel>> buscarAlunosListen(int count) {
     try {
@@ -123,8 +196,9 @@ class AlunoRepository {
   }
 
   // Cadastrar aluno
-  Future<void> cadastrarAluno(AlunoModel aluno) async {
+  Future<AlunoModel> cadastrarAluno(AlunoModel aluno) async {
     await _supabase.from('alunos').insert(aluno.toJson());
+    return aluno;
   }
 
   Future<void> atualizarAluno(int alunoId, Map<String, dynamic> json) async {
@@ -133,9 +207,12 @@ class AlunoRepository {
 
   Future<void> deletarAluno(int alunoId) async {
     try {
+      if (alunoId == 999) {
+        throw Exception('erro id invalido');
+      }
       await _supabase.from('alunos').delete().eq('id', alunoId);
     } catch (e) {
-      throw 'Erro ao deletar aluno';
+      rethrow;
     }
   }
 }

@@ -14,8 +14,8 @@ class AlunoUseCase {
     return _repository.listAunoModel;
   }
 
-  List<AlunoModel> setupRealTime() {
-    return _repository.setupRealTime();
+  Stream<List<AlunoModel>> setupRealTime() {
+    return _repository.watchAluno();
   }
 
   Future<List<AlunoModel>> buscarAlunoNome(String nome) {
@@ -26,7 +26,7 @@ class AlunoUseCase {
     return _repository.buscarAlunosListen(count);
   }
 
-  Future<void> cadastrarAluno(AlunoModel aluno) {
+  Future<AlunoModel> cadastrarAluno(AlunoModel aluno) {
     return _repository.cadastrarAluno(aluno);
   }
 
@@ -40,11 +40,6 @@ class AlunoUseCase {
 
   Stream<List<AlunoModel>> buscarAlunoPorNomeStream(String nomeAluno) {
     return _repository.buscarAlunoPorNomeStream(nomeAluno);
-  }
-
-  Future<Map<String, dynamic>> quantidadeAlunoPorGenero(
-      List<AlunoModel> listAlunoModel) async {
-    return await _repository.quantidadeAlunoPorGenero(listAlunoModel);
   }
 
   buscarListAlunosPorNome(String nomeAluno) {

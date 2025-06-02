@@ -67,7 +67,9 @@ class ModalidadesRepository {
 
   Future<List<MatriculaModalidadesModel>> buscarMatriculaModalidadePnomeAluno(
       String nomeAluno) async {
-    AlunoRepository alunoRepository = AlunoRepository();
+    var alunoRepository = AlunoRepository(Supabase.instance.client);
+    var alunoRepository2 = AlunoRepository(Supabase.instance.client);
+    debugPrint(identical(alunoRepository, alunoRepository2).toString());
     AlunoUseCase alunoUseCase = AlunoUseCase(alunoRepository);
     final ids = await alunoUseCase.buscarListAlunosPorNome(nomeAluno);
     final response = await _supabase

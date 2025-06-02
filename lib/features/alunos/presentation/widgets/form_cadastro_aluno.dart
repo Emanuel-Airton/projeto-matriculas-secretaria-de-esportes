@@ -7,7 +7,6 @@ import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widg
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/custom_container_textFormField.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/custom_textFormField.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/profile_image_widget.dart';
-import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/saveButton.dart';
 import '../providers/image_storage_provider.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 
@@ -67,7 +66,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
   final _key = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(buttonSaveAlunoProvider);
+    ref.watch(buttonSaveAlunoProvider);
     return Form(
       key: _key,
       child: SingleChildScrollView(
@@ -333,7 +332,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                         }
                         return null;
                       },
-                      hintText: 'RG DA MÃE',
+                      hintText: 'RG DO RESPONSÁVEL',
                       onChanged: (p0) => widget.json?['rg_mae'] = p0,
                       enabled: widget.enabled,
                       maxLength: 10,
@@ -356,7 +355,7 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                         }
                         return null;
                       },
-                      hintText: 'CPF DA MÃE',
+                      hintText: 'CPF DO RESPONSÁVEL',
                       onChanged: (p0) => widget.json?['cpf_mae'] = p0,
                       enabled: widget.enabled,
                       controller: widget.controllerCpfMae =
@@ -418,7 +417,6 @@ class _FormCadastroAlunoState extends ConsumerState<FormCadastroAluno> {
                       ],
                     ),
               SizedBox(height: 15),
-              SaveButton(),
             ],
           ),
         ),

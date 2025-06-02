@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/data/repositories/aluno_repository.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
 import 'package:projeto_secretaria_de_esportes/splashScreen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -29,7 +31,10 @@ void main() async {
     await windowManager.maximize(); // Maximiza a janela
   });
 
-  runApp(ProviderScope(child: MyApp()));
+  runApp(ProviderScope(overrides: [
+    alunoRepositoryProvider
+        .overrideWithValue(AlunoRepository(Supabase.instance.client))
+  ], child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

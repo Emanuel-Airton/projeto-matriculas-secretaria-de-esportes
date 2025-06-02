@@ -28,6 +28,7 @@ class ButtonNotifier extends StateNotifier<ButtonState> {
       await function();
     } catch (e) {
       state = state.copyWith(isloading: false, messageError: e.toString());
+      throw Exception(e);
     }
   }
 

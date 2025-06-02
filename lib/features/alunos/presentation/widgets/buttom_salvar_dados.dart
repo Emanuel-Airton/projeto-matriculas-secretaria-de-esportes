@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno_model.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/alunoNotifier.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/button_save_aluno_provider.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/image_storage_provider.dart';
@@ -92,8 +93,11 @@ class _ButtomSalvarDadosState extends ConsumerState<ButtomSalvarDados> {
                             await ref
                                 .read(buttonSaveAlunoProvider.notifier)
                                 .saveButton(() async {
-                              await ref
+                              /*    await ref
                                   .read(alunoUseCaseProvider)
+                                  .cadastrarAluno(alunoModel);*/
+                              await ref
+                                  .read(alunoNotifierProvider.notifier)
                                   .cadastrarAluno(alunoModel);
                             });
 

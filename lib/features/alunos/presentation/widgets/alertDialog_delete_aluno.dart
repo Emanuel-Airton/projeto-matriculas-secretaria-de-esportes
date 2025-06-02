@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/alunoNotifier.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/buttom_delete_aluno_provider.dart';
 import '../providers/aluno_provider.dart';
 
 class AlertdialogDeleteAluno extends ConsumerStatefulWidget {
@@ -36,31 +37,38 @@ class _AlertdialogDeleteAlunoState
                 backgroundColor: WidgetStatePropertyAll(Colors.white)),
             child: Text('cancelar')),
         TextButton(
-          onPressed: () {
-            try {
-              /* ref.read(alunoUseCaseProvider).deletarAluno(widget.alunoId);
-              debugPrint('Aluno deletado com sucesso');*/
-              ref
-                  .read(alunoNotifierProvider.notifier)
-                  .deletarAluno(widget.alunoId);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                  content: Center(
-                child: Text('Registro de aluno excluido com sucesso'),
-              )));
-            } catch (erro) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  //  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                  content: Center(
-                child: Text('Erro ao excluir aluno'),
-              )));
-            }
-            Navigator.pop(context);
+          onPressed: () async {
+            ref.read(buttonDeleteAlunoProvider.notifier).saveButton(() async {
+              try {
+                await ref
+                    .read(alunoNotifierProvider.notifier)
+                    .deletarAluno(widget.alunoId);
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Center(
+                  child: Text('Registro de aluno deletado com sucesso'),
+                )));
+                Navigator.pop(context);
+              } catch (e) {
+                debugPrint('ERRO: ${e.toString()}');
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Center(
+                  child: Text('Erro ao excluir registro de aluno'),
+                )));
+              }
+            });
+
+            //Navigator.pop(context);
           },
           style: ButtonStyle(
               backgroundColor: WidgetStatePropertyAll(
                   Theme.of(context).colorScheme.primary)),
-          child: Text('Excluir', style: TextStyle(color: Colors.white)),
+          child: ref.watch(buttonDeleteAlunoProvider).isloading
+              ? SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                      color: Colors.white, strokeWidth: 2))
+              : Text('Excluir', style: TextStyle(color: Colors.white)),
         ),
       ],
     );

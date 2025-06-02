@@ -20,7 +20,7 @@ class _MyWidgetState extends ConsumerState<AlunosScreen> {
   int totalMeninas = 0;
   TextEditingController controller = TextEditingController();
   AsyncValue<List<AlunoModel?>>? alunosAsync;
-  AlunoRepository alunoRepository = AlunoRepository();
+  //AlunoRepository alunoRepository = AlunoRepository();
   String? teste;
 
   @override
