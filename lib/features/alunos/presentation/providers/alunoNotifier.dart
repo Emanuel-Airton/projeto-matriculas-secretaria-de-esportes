@@ -35,7 +35,6 @@ class AlunoNotifier extends StateNotifier<AsyncValue<List<AlunoModel>>> {
     state = AsyncValue.data(alunos);
   }
 
-  teste() {}
   Future<void> deletarAluno(int alunoId) async {
     try {
       await _alunoUseCase.deletarAluno(alunoId);

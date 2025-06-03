@@ -89,7 +89,7 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                               builder: (context) {
                                 return PdfPreviewListaMatriculas(
                                     listMatriculasModalidade:
-                                        matriculasModalidades);
+                                        matriculasModalidades.value ?? []);
                               });
                         },
                         label: Text('Vizualizar lista de matriculas'))
@@ -159,109 +159,128 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                       ),
                     ),
                     SizedBox(height: 15),
-                    Expanded(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: matriculasModalidades.length,
-                        itemBuilder: (context, index) {
-                          final isExpanded = map[index] ?? false;
-                          return Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Container(
-                              padding: EdgeInsets.all(15),
-                              decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.grey, offset: Offset(2, 3))
-                                ],
-                                borderRadius: BorderRadius.circular(15),
-                                color: Colors.grey[200],
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'N° da matricula: ${matriculasModalidades[index].id.toString()}',
-                                        style: TextStyle(
-                                            color: Colors.grey[600],
-                                            fontWeight: FontWeight.bold),
-                                      ),
+                    matriculasModalidades.when(
+                      data: (data) {
+                        return Expanded(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: data.length,
+                            itemBuilder: (context, index) {
+                              final isExpanded = map[index] ?? false;
+                              return Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Container(
+                                  padding: EdgeInsets.all(15),
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.grey,
+                                          offset: Offset(2, 3))
                                     ],
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.grey[200],
                                   ),
-                                  Column(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      ListTile(
-                                        title: Text(
-                                          'Aluno: ${matriculasModalidades[index].aluno!.nome.toString()}',
-                                        ),
-                                        subtitle: Text(
-                                          'Modalidade: ${matriculasModalidades[index].modalidadeNome.toString()}',
-                                        ),
-                                        trailing: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Tooltip(
-                                              message: 'Excluir matricula',
-                                              child: IconButton(
-                                                onPressed: () {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return AlertdialogDeleteMatriculaModalidade(
-                                                        alunoId:
-                                                            matriculasModalidades[
-                                                                    index]
-                                                                .id,
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'N° da matricula: ${data[index].id.toString()}',
+                                            style: TextStyle(
+                                                color: Colors.grey[600],
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        children: [
+                                          ListTile(
+                                            title: Text(
+                                              'Aluno: ${data[index].aluno!.nome.toString()}',
+                                            ),
+                                            subtitle: Text(
+                                              'Modalidade: ${data[index].modalidadeNome.toString()}',
+                                            ),
+                                            trailing: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Tooltip(
+                                                  message: 'Excluir matricula',
+                                                  child: IconButton(
+                                                    onPressed: () {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return AlertdialogDeleteMatriculaModalidade(
+                                                            alunoId:
+                                                                data[index].id,
+                                                          );
+                                                        },
                                                       );
                                                     },
-                                                  );
-                                                },
-                                                icon: Icon(
-                                                  Icons.delete,
-                                                  color: Colors.grey[500],
+                                                    icon: Icon(
+                                                      Icons.delete,
+                                                      color: Colors.grey[500],
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
+                                                SizedBox(width: 5),
+                                                Tooltip(
+                                                  message:
+                                                      'Visualizar mais informações',
+                                                  child: IconButton(
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        map[index] =
+                                                            !isExpanded;
+                                                      });
+                                                    },
+                                                    icon: Icon(
+                                                      !isExpanded
+                                                          ? Icons
+                                                              .keyboard_arrow_down
+                                                          : Icons
+                                                              .keyboard_arrow_up,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            SizedBox(width: 5),
-                                            Tooltip(
-                                              message:
-                                                  'Visualizar mais informações',
-                                              child: IconButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                    map[index] = !isExpanded;
-                                                  });
-                                                },
-                                                icon: Icon(
-                                                  !isExpanded
-                                                      ? Icons
-                                                          .keyboard_arrow_down
-                                                      : Icons.keyboard_arrow_up,
-                                                ),
-                                              ),
+                                          ),
+                                          if (isExpanded) ...[
+                                            ContainerInfoMatricula(
+                                              matriculasModalidadesModel:
+                                                  data[index],
                                             ),
                                           ],
-                                        ),
+                                        ],
                                       ),
-                                      if (isExpanded) ...[
-                                        ContainerInfoMatricula(
-                                          matriculasModalidadesModel:
-                                              matriculasModalidades[index],
-                                        ),
-                                      ],
                                     ],
                                   ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      error: (error, stackTrace) {
+                        return Center(
+                            child: Text(error.toString(),
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w500)));
+                      },
+                      loading: () {
+                        return Center(
+                            child:
+                                CircularProgressIndicator(color: Colors.red));
+                      },
+                    )
                   ],
                 ),
               ),

@@ -7,8 +7,8 @@ import 'package:pdf/pdf.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/matricula_modalidades_model.dart';
 
 class GeneratedPdfListaMatriculas {
-  Future carregarImagem() async {
-    final image = await rootBundle.load('assets/images/logo.jpeg');
+  Future carregarImagem(String imagePath) async {
+    final image = await rootBundle.load(imagePath);
     final imageByte = image.buffer.asUint8List();
     pw.Image imagem = pw.Image(pw.MemoryImage(imageByte), height: 100);
     return imagem;
@@ -18,24 +18,22 @@ class GeneratedPdfListaMatriculas {
   Future<Uint8List> gerarPdfListaMatriculas(
       List<MatriculaModalidadesModel> listaMatricula) async {
     final pdf = pw.Document();
-    pw.Image image = await carregarImagem();
+    pw.Image image1 = await carregarImagem('assets/images/logo.jpeg');
+    pw.Image image2 = await carregarImagem('assets/images/adl10.png');
+
     const totalItens = 25;
     //verifica se a lista tem mais que 25 itens, se tiver, adiciona uma nova pagina
-    for (int i = 1; i <= listaMatricula.length; i++) {
-      // debugPrint(i.toString());
-    }
     if (listaMatricula.length > totalItens) {
-      double indice = (listaMatricula.length) / totalItens;
-      debugPrint(listaMatricula.length.toString());
-      int valor = indice.toInt();
-      for (int indiceLista = 0; indiceLista <= valor; indiceLista++) {
-        debugPrint(indiceLista.toString());
+      int numeroPaginas = ((listaMatricula.length) / totalItens).toInt();
+      for (int indiceLista = 0; indiceLista <= numeroPaginas; indiceLista++) {
         pdf.addPage(pw.MultiPage(
           margin: pw.EdgeInsets.only(left: 20, right: 20, top: 50, bottom: 15),
           build: (context) {
             return [
               pw.Column(children: [
-                pw.Center(child: image),
+                pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.center,
+                    children: [image1, image2]),
                 criarTabelaLinha(listaMatricula, indiceLista),
               ])
             ];
@@ -48,7 +46,9 @@ class GeneratedPdfListaMatriculas {
         margin: pw.EdgeInsets.only(left: 20, right: 20, top: 50, bottom: 15),
         build: (context) {
           return pw.Column(children: [
-            pw.Center(child: image),
+            pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.center,
+                children: [image1, image2]),
             criarTabelaLinha(listaMatricula, 0),
           ]);
         },

@@ -20,7 +20,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final authViewModel = ref.watch(authViewModelProvider);
     return Scaffold(
-      backgroundColor: Colors.red,
+      backgroundColor: Theme.of(context).colorScheme.primary,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(

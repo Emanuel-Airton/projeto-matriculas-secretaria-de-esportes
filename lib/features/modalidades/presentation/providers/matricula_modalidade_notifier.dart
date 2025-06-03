@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/matricula_modalidades_model.dart';
@@ -6,33 +7,70 @@ import 'package:projeto_secretaria_de_esportes/features/modalidades/domain/useca
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MatriculaModalidadeNotifier
-    extends StateNotifier<List<MatriculaModalidadesModel>> {
-  final SupabaseClient _supabase;
+    extends StateNotifier<AsyncValue<List<MatriculaModalidadesModel>>> {
+  // final SupabaseClient _supabase;
   final ModalidadesUsecase _modalidadesUsecase;
-  MatriculaModalidadeNotifier(this._supabase, this._modalidadesUsecase)
-      : super([]) {
-    _setupRealTime();
-    buscarMatriculasModalidade();
+  List<MatriculaModalidadesModel> cache = [];
+  Timer? _timer;
+  MatriculaModalidadeNotifier(this._modalidadesUsecase)
+      : super(AsyncValue.data([])) {
+    //_setupRealTime();
+    _fetchMatriculasModalidade();
   }
+
+  _fetchMatriculasModalidade({bool forcarBusca = false}) {
+    state = AsyncValue.loading();
+    try {
+      if (cache.isNotEmpty && !forcarBusca) {
+        state = AsyncValue.data(cache);
+        debugPrint('cache contem dados');
+        return;
+      }
+      buscarMatriculasModalidade();
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
   buscarMatriculasModalidade() async {
-    state = await _modalidadesUsecase.buscarMatriculaModalidade();
+    Future.delayed(Duration(milliseconds: 500));
+    cache = await _modalidadesUsecase.buscarMatriculaModalidade();
+    state = AsyncValue.data(cache);
   }
 
   deletarMatriculaModalidade(int id) async {
-    await _modalidadesUsecase.deletarMatriculaModalidade(id);
-    state = state.where((matricula) => matricula.id != id).toList();
+    try {
+      await _modalidadesUsecase.deletarMatriculaModalidade(id);
+      cache = cache.where((matricula) => matricula.id != id).toList();
+      state = AsyncValue.data(cache);
+      _timer = Timer(Duration(milliseconds: 500),
+          () => _fetchMatriculasModalidade(forcarBusca: true));
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 
   buscarMatriculaModalidadePnomeAluno(String value) async {
-    state =
-        await _modalidadesUsecase.buscarMatriculaModalidadePnomeAluno(value);
+    try {
+      cache =
+          await _modalidadesUsecase.buscarMatriculaModalidadePnomeAluno(value);
+      state = AsyncValue.data(cache);
+      if (state.value!.isEmpty) {
+        throw 'Aluno não encontrado!';
+      }
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
   }
 
   buscarMatriculasModalidadeFiltro(int id) async {
-    state = await _modalidadesUsecase.buscarMatriculaModalidadeFiltro(id);
+    state = AsyncValue.loading();
+    Future.delayed(Duration(milliseconds: 500));
+    cache = await _modalidadesUsecase.buscarMatriculaModalidadeFiltro(id);
+    state = AsyncValue.data(cache);
   }
 
-  _setupRealTime() {
+  /*_setupRealTime() {
     _supabase
         .channel('matricula_modalidade')
         .onPostgresChanges(
@@ -72,17 +110,17 @@ class MatriculaModalidadeNotifier
               }
             })
         .subscribe();
-  }
+  }*/
 }
 
 final matriculaModalidade = StateNotifierProvider<MatriculaModalidadeNotifier,
-    List<MatriculaModalidadesModel>>(
+    AsyncValue<List<MatriculaModalidadesModel>>>(
   (ref) {
     final supabase = Supabase.instance.client;
     final modalidadesRepository = ModalidadesRepository();
     final matriculaModalidadeUseCase =
         ModalidadesUsecase(modalidadesRepository);
-    return MatriculaModalidadeNotifier(supabase, matriculaModalidadeUseCase);
+    return MatriculaModalidadeNotifier(matriculaModalidadeUseCase);
   },
 );
 final matriculaModalidadeProvider = StateProvider<int?>((ref) => null);

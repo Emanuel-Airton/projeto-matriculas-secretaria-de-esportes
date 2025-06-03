@@ -100,7 +100,7 @@ class _ButtomSalvarDadosState extends ConsumerState<ButtomSalvarDados> {
                                   .read(alunoNotifierProvider.notifier)
                                   .cadastrarAluno(alunoModel);
                             });
-
+                            Navigator.pop(context);
                             child = Text('Cadastrado');
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
