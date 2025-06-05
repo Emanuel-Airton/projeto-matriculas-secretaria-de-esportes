@@ -35,14 +35,9 @@ class _HomePageState extends ConsumerState<HomePage> {
             child: Column(
               children: [
                 Padding(
-                    padding: const EdgeInsets.all(30.0),
-                    child: Text(
-                      'Menu',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20),
-                    )),
+                    padding: const EdgeInsets.all(15.0),
+                    child: Image.asset('assets/images/adl10 white.png',
+                        height: MediaQuery.sizeOf(context).height * 0.2)),
                 SizedBox(height: 15),
                 Container(
                   decoration: BoxDecoration(

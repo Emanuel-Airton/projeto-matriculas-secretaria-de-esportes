@@ -51,6 +51,7 @@ class ModalidadesRepository {
 
   //retorna a lista de todas as matriculas
   Future<List<MatriculaModalidadesModel>> buscarMatriculaModalidade() async {
+    debugPrint('teste: ');
     final response = await _supabase
         .from(tabelaMatriculaModalidade)
         .select(
@@ -58,32 +59,43 @@ class ModalidadesRepository {
         .order('data_matricula', ascending: true);
     list = response.map<MatriculaModalidadesModel>(
       (json) {
-        debugPrint('teste: ${json.toString()}');
+        // debugPrint('teste: ${json.toString()}');
         return MatriculaModalidadesModel.fromJson(json);
       },
     ).toList();
     return list;
   }
 
-  Future<List<MatriculaModalidadesModel>> buscarMatriculaModalidadePnomeAluno(
-      String nomeAluno) async {
+  buscarIdsAlunos(String nomeAluno) async {
     var alunoRepository = AlunoRepository(Supabase.instance.client);
-    var alunoRepository2 = AlunoRepository(Supabase.instance.client);
-    debugPrint(identical(alunoRepository, alunoRepository2).toString());
+
     AlunoUseCase alunoUseCase = AlunoUseCase(alunoRepository);
-    final ids = await alunoUseCase.buscarListAlunosPorNome(nomeAluno);
-    final response = await _supabase
+    final idsAlunos = await alunoUseCase.buscarListAlunosPorNome(nomeAluno);
+    return idsAlunos;
+  }
+
+  Future<List<Map<String, dynamic>>> buscarSemIdModalidade(
+      String nomeAluno, dynamic idsAlunos) async {
+    List<Map<String, dynamic>> response = await _supabase
         .from(tabelaMatriculaModalidade)
         .select(
             'id, data_matricula, aluno_id, alunos($buscarAluno), modalidades(nome)')
-        .inFilter('aluno_id', ids)
+        .inFilter('aluno_id', idsAlunos)
         .order('data_matricula', ascending: true);
+    return response;
+  }
 
-    list = response.map<MatriculaModalidadesModel>((json) {
-      debugPrint('TESTE2: ${json.toString()}');
-      return MatriculaModalidadesModel.fromJson(json);
-    }).toList();
-    return list;
+  Future<List<Map<String, dynamic>>> buscarComIdModalidade(
+      String nomeAluno, int idModalidade, dynamic idsAlunos) async {
+    // debugPrint('buscarComIdModalidade');
+    List<Map<String, dynamic>> response = await _supabase
+        .from(tabelaMatriculaModalidade)
+        .select(
+            'id, data_matricula, aluno_id, alunos($buscarAluno), modalidades(nome)')
+        .filter('modalidade_id', 'eq', idModalidade)
+        .inFilter('aluno_id', idsAlunos)
+        .order('data_matricula', ascending: true);
+    return response;
   }
 
   deletarMatriculaModalidade(int id) async {

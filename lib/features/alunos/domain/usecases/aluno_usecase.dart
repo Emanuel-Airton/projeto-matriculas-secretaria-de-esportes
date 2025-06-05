@@ -45,4 +45,8 @@ class AlunoUseCase {
   buscarListAlunosPorNome(String nomeAluno) {
     return _repository.buscarListAlunosPorNome(nomeAluno);
   }
+
+  Future<List<AlunoModel>> buscarAlunoPNome(String nomeAluno) {
+    return _repository.buscarAlunoPNome(nomeAluno);
+  }
 }

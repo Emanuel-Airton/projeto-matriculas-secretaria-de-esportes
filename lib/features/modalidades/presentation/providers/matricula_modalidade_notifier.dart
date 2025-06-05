@@ -50,13 +50,16 @@ class MatriculaModalidadeNotifier
     }
   }
 
-  buscarMatriculaModalidadePnomeAluno(String value) async {
+  buscarMatriculaModalidadePnomeAluno(String nomeAluno,
+      {int? idModalidade}) async {
+    debugPrint('id: ${idModalidade.toString()}');
     try {
-      cache =
-          await _modalidadesUsecase.buscarMatriculaModalidadePnomeAluno(value);
+      cache = await _modalidadesUsecase.buscarMatriculaModalidadePnomeAluno(
+          nomeAluno,
+          idModalidade: idModalidade);
       state = AsyncValue.data(cache);
       if (state.value!.isEmpty) {
-        throw 'Aluno não encontrado!';
+        throw 'Matricula de aluno não encontrada!';
       }
     } catch (e, st) {
       state = AsyncValue.error(e, st);

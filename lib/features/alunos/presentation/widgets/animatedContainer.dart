@@ -15,8 +15,10 @@ class Animatedcontainer extends ConsumerWidget {
     final listAlunos = ref.watch(alunoNotifierProvider);
     Future.delayed(Duration(milliseconds: 500)).then((value) {
       debugPrint('lista atualizada');
-      ref.read(listAlunosProvider.notifier).state = listAlunos.value;
-      //ref.read(quantidadeAlunos);
+      if (listAlunos.hasError == false) {
+        ref.read(listAlunosProvider.notifier).state = listAlunos.value;
+        ref.read(quantidadeAlunos);
+      }
     });
     final expandedState = ref.watch(expandedStateProvider);
     //  return ref.watch(alunoNotifierProvider.notifier).loading
@@ -109,16 +111,12 @@ class Animatedcontainer extends ConsumerWidget {
             ),
           );
         },
-        error: (error, stackTrace) {
-          debugPrint(stackTrace.runtimeType.toString());
-          debugPrint(error.toString());
-
-          return Center(child: Text('ERRO!!! $error'));
-        },
+        error: (error, stackTrace) => Center(
+            child: Text(error.toString(),
+                style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500))),
         loading: () => Center(child: CircularProgressIndicator()));
-
-    // return Center(child: Text('NENHUM ALUNO ENCONTRADO'));
-
-    // return const Center(child: CircularProgressIndicator());
   }
 }

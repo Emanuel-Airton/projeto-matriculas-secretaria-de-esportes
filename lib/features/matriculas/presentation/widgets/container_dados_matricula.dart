@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ContainerDadosMatricula extends StatelessWidget {
-  final String textoTopo;
-  final String textoDados;
+  final String? textoTopo;
+  final String? textoDados;
   final Widget? widget;
   const ContainerDadosMatricula(
-      {super.key,
-      required this.textoTopo,
-      required this.textoDados,
-      this.widget});
+      {super.key, this.textoTopo, this.textoDados, this.widget});
 
   @override
   Widget build(BuildContext context) {
@@ -22,14 +19,19 @@ class ContainerDadosMatricula extends StatelessWidget {
           Align(
             alignment: Alignment.topLeft,
             child: Text(
-              textoTopo,
+              textoTopo!,
               style: TextStyle(
                   color: Colors.grey[700], fontWeight: FontWeight.w600),
             ),
           ),
-          Row(
-            children: [Text(textoDados), widget ?? Container()],
-          ),
+          textoDados != null
+              ? Row(
+                  children: [
+                    Text(textoDados!, style: TextStyle(color: Colors.grey)),
+                    widget ?? Container()
+                  ],
+                )
+              : widget ?? Container()
         ],
       ),
     );

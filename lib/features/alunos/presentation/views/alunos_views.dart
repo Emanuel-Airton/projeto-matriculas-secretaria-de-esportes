@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/container_info_alunos.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/dialog_cadastro_aluno.dart';
+import 'package:projeto_secretaria_de_esportes/shared/widgets/containers/container_search.dart';
 import '../../data/models/aluno_model.dart';
-import '../../data/repositories/aluno_repository.dart';
 import '../providers/alunoNotifier.dart';
 import '../widgets/animatedContainer.dart';
 
@@ -28,7 +28,7 @@ class _MyWidgetState extends ConsumerState<AlunosScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       floatingActionButton: FloatingActionButton.extended(
-        icon: Icon(Icons.add),
+        icon: Icon(Icons.add, color: Theme.of(context).colorScheme.primary),
         onPressed: () {
           showDialog(
             context: context,
@@ -37,7 +37,8 @@ class _MyWidgetState extends ConsumerState<AlunosScreen> {
             },
           );
         },
-        label: Text('Adicionar aluno'),
+        label: Text('Adicionar aluno',
+            style: TextStyle(color: Theme.of(context).colorScheme.primary)),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -54,7 +55,6 @@ class _MyWidgetState extends ConsumerState<AlunosScreen> {
   }
 
   Widget _buildWideLayout(BuildContext context) {
-    final alunoNotifier = ref.read(alunoNotifierProvider.notifier);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -81,41 +81,18 @@ class _MyWidgetState extends ConsumerState<AlunosScreen> {
                   SizedBox(height: 15),
                   Row(
                     children: [
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Colors.grey[200],
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  onChanged: (value) {
-                                    //  ref.read(nomeAlunoProvider.notifier).state =
-                                    //      value;
-                                    alunoNotifier.buscarAlunoNome(value);
-                                  },
-                                  controller: controller,
-                                  decoration: InputDecoration(
-                                    hintStyle:
-                                        TextStyle(color: Colors.grey[500]),
-                                    hintText: 'Pesquisar aluno por nome',
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  // ref.watch(nomeAluno.notifier).state = controller.text;
-                                  // alunosAsync = ref.watch(alunoListProviderListen);
-                                },
-                                icon: Icon(Icons.search),
-                              ),
-                            ],
-                          ),
-                        ),
+                      ContainerSearch(
+                        controller: controller,
+                        texto: 'Pesquisar aluno por nome...',
+                        function: (p0) {
+                          try {
+                            ref
+                                .read(alunoNotifierProvider.notifier)
+                                .buscarAlunoNome(p0);
+                          } catch (e) {
+                            debugPrint(e.toString());
+                          }
+                        },
                       ),
                     ],
                   ),

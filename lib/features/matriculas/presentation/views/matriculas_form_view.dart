@@ -5,6 +5,7 @@ import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/
 import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/container_info_matricula.dart';
 import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/pdf_preview_lista_matriculas.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/presentation/providers/matricula_modalidade_notifier.dart';
+import 'package:projeto_secretaria_de_esportes/shared/widgets/containers/container_search.dart';
 import '../../../modalidades/presentation/providers/modalidades_provider.dart';
 import '../../../modalidades/presentation/widgets/row_containers_select_modalidade.dart';
 
@@ -17,6 +18,7 @@ class MatriculaFormView extends ConsumerStatefulWidget {
 
 class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
   Map<int, bool> map = {};
+  int? idModalidade;
   TextEditingController controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -62,6 +64,10 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                       ),
                       child: modalidade.when(
                         data: (data) {
+                          if (data != null) {
+                            debugPrint('da.id: ${data.id.toString()}');
+                            idModalidade = data.id;
+                          }
                           return Center(
                             child: Text(
                                 data != null ? data.nome! : 'Todas modalidades',
@@ -75,7 +81,7 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                         },
                         loading: () {
                           return CircularProgressIndicator(
-                            color: Colors.black,
+                            color: Theme.of(context).colorScheme.primary,
                           );
                         },
                       ),
@@ -131,32 +137,15 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                           color: Colors.grey[500]),
                     ),
                     SizedBox(height: 15),
-                    Container(
-                      //width: MediaQuery.sizeOf(context).width * 0.4,
-                      padding: EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: Colors.grey[200],
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              onChanged: (value) {
-                                ref
-                                    .read(matriculaModalidade.notifier)
-                                    .buscarMatriculaModalidadePnomeAluno(value);
-                              },
-                              controller: controller,
-                              decoration: InputDecoration(
-                                hintStyle: TextStyle(color: Colors.grey[500]),
-                                hintText: 'Pesquisar matricula por aluno',
-                                border: InputBorder.none,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                    ContainerSearch(
+                      controller: controller,
+                      texto: 'Pesquisar matricula por aluno...',
+                      function: (value) {
+                        ref
+                            .read(matriculaModalidade.notifier)
+                            .buscarMatriculaModalidadePnomeAluno(value,
+                                idModalidade: idModalidade);
+                      },
                     ),
                     SizedBox(height: 15),
                     matriculasModalidades.when(
@@ -201,9 +190,13 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                                           ListTile(
                                             title: Text(
                                               'Aluno: ${data[index].aluno!.nome.toString()}',
+                                              style: TextStyle(
+                                                  color: Colors.grey[700]),
                                             ),
                                             subtitle: Text(
                                               'Modalidade: ${data[index].modalidadeNome.toString()}',
+                                              style: TextStyle(
+                                                  color: Colors.grey[700]),
                                             ),
                                             trailing: Row(
                                               mainAxisSize: MainAxisSize.min,

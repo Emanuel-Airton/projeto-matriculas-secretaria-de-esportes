@@ -59,8 +59,15 @@ class AlunoNotifier extends StateNotifier<AsyncValue<List<AlunoModel>>> {
   }
 
   buscarAlunoNome(String nome) async {
-    _cache = await _alunoUseCase.buscarAlunoNome(nome);
-    state = AsyncValue.data(_cache);
+    try {
+      _cache = await _alunoUseCase.buscarAlunoPNome(nome);
+      state = AsyncValue.data(_cache);
+      if (state.value!.isEmpty) {
+        throw 'Aluno não encontrado!';
+      }
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
   }
 }
 
