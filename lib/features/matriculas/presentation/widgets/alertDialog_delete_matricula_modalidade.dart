@@ -4,8 +4,9 @@ import 'package:projeto_secretaria_de_esportes/features/modalidades/presentation
 
 class AlertdialogDeleteMatriculaModalidade extends ConsumerStatefulWidget {
   final int? alunoId;
+  final int? modalidadeID;
   const AlertdialogDeleteMatriculaModalidade(
-      {super.key, required this.alunoId});
+      {super.key, required this.alunoId, this.modalidadeID});
 
   @override
   ConsumerState<AlertdialogDeleteMatriculaModalidade> createState() =>
@@ -34,24 +35,25 @@ class _AlertdialogDeleteMatriculaModalidadeState
                 backgroundColor: WidgetStatePropertyAll(Colors.white)),
             child: Text('cancelar')),
         TextButton(
-          onPressed: () {
+          onPressed: () async {
             try {
               /*   ref.read(selectMatriculaModalidadeId.notifier).state =
                   widget.alunoId;
               ref.read(deletarMatriculaModalidade);*/
 
-              ref
+              await ref
                   .read(matriculaModalidade.notifier)
-                  .deletarMatriculaModalidade(widget.alunoId!);
+                  .deletarMatriculaModalidade(widget.alunoId!,
+                      idModalidade: widget.modalidadeID);
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Center(
                 child: Text('Matricula excluida com sucesso'),
               )));
             } catch (erro) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   content: Center(
-                    child: Text('Erro ao excluir matricula'),
+                    child: Text('Erro ao excluir matricula!'),
                   )));
             }
             Navigator.pop(context);

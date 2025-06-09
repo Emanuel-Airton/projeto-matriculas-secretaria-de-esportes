@@ -88,7 +88,7 @@ class _MyWidgetState extends ConsumerState<AlunosScreen> {
                           try {
                             ref
                                 .read(alunoNotifierProvider.notifier)
-                                .buscarAlunoNome(p0);
+                                .buscarAlunoPorNome(p0);
                           } catch (e) {
                             debugPrint(e.toString());
                           }

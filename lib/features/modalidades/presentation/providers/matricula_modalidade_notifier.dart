@@ -12,13 +12,14 @@ class MatriculaModalidadeNotifier
   final ModalidadesUsecase _modalidadesUsecase;
   List<MatriculaModalidadesModel> cache = [];
   Timer? _timer;
+
   MatriculaModalidadeNotifier(this._modalidadesUsecase)
       : super(AsyncValue.data([])) {
     //_setupRealTime();
     _fetchMatriculasModalidade();
   }
 
-  _fetchMatriculasModalidade({bool forcarBusca = false}) {
+  _fetchMatriculasModalidade({bool forcarBusca = false, int? idModalidade}) {
     state = AsyncValue.loading();
     try {
       if (cache.isNotEmpty && !forcarBusca) {
@@ -26,7 +27,12 @@ class MatriculaModalidadeNotifier
         debugPrint('cache contem dados');
         return;
       }
-      buscarMatriculasModalidade();
+      if (idModalidade != null) {
+        buscarMatriculasModalidadeFiltro(idModalidade);
+        return;
+      } else {
+        buscarMatriculasModalidade();
+      }
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
@@ -38,13 +44,19 @@ class MatriculaModalidadeNotifier
     state = AsyncValue.data(cache);
   }
 
-  deletarMatriculaModalidade(int id) async {
+  deletarMatriculaModalidade(int idMatriculaModalidade,
+      {int? idModalidade}) async {
     try {
-      await _modalidadesUsecase.deletarMatriculaModalidade(id);
-      cache = cache.where((matricula) => matricula.id != id).toList();
+      await _modalidadesUsecase
+          .deletarMatriculaModalidade(idMatriculaModalidade);
+      cache = cache
+          .where((matricula) => matricula.id != idMatriculaModalidade)
+          .toList();
       state = AsyncValue.data(cache);
-      _timer = Timer(Duration(milliseconds: 500),
-          () => _fetchMatriculasModalidade(forcarBusca: true));
+      _timer = Timer(
+          Duration(milliseconds: 500),
+          () => _fetchMatriculasModalidade(
+              forcarBusca: true, idModalidade: idModalidade));
     } catch (e) {
       throw Exception(e);
     }

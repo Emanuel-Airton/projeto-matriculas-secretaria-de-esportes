@@ -7,7 +7,6 @@ import '../../data/models/aluno_model.dart';
 import '../../domain/usecases/aluno_usecase.dart';
 
 class AlunoNotifier extends StateNotifier<AsyncValue<List<AlunoModel>>> {
-  // final SupabaseClient _supabase;
   final AlunoUseCase _alunoUseCase;
   List<AlunoModel> _cache = <AlunoModel>[];
   Timer? timer;
@@ -20,7 +19,7 @@ class AlunoNotifier extends StateNotifier<AsyncValue<List<AlunoModel>>> {
     try {
       if (_cache.isNotEmpty && !forcedDelay) {
         state = AsyncValue.data(_cache);
-        return; //encerra o metodo aqui sem executar o codigo abaixo
+        return;
       }
       buscarAlunosSalvarCache();
     } catch (e, stackTrace) {
@@ -58,7 +57,7 @@ class AlunoNotifier extends StateNotifier<AsyncValue<List<AlunoModel>>> {
     }
   }
 
-  buscarAlunoNome(String nome) async {
+  buscarAlunoPorNome(String nome) async {
     try {
       _cache = await _alunoUseCase.buscarAlunoPNome(nome);
       state = AsyncValue.data(_cache);

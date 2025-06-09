@@ -59,7 +59,6 @@ class ModalidadesRepository {
         .order('data_matricula', ascending: true);
     list = response.map<MatriculaModalidadesModel>(
       (json) {
-        // debugPrint('teste: ${json.toString()}');
         return MatriculaModalidadesModel.fromJson(json);
       },
     ).toList();
@@ -68,7 +67,6 @@ class ModalidadesRepository {
 
   buscarIdsAlunos(String nomeAluno) async {
     var alunoRepository = AlunoRepository(Supabase.instance.client);
-
     AlunoUseCase alunoUseCase = AlunoUseCase(alunoRepository);
     final idsAlunos = await alunoUseCase.buscarListAlunosPorNome(nomeAluno);
     return idsAlunos;
@@ -87,7 +85,6 @@ class ModalidadesRepository {
 
   Future<List<Map<String, dynamic>>> buscarComIdModalidade(
       String nomeAluno, int idModalidade, dynamic idsAlunos) async {
-    // debugPrint('buscarComIdModalidade');
     List<Map<String, dynamic>> response = await _supabase
         .from(tabelaMatriculaModalidade)
         .select(

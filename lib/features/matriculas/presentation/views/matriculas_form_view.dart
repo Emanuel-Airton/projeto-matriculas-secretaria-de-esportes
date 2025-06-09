@@ -18,13 +18,13 @@ class MatriculaFormView extends ConsumerStatefulWidget {
 
 class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
   Map<int, bool> map = {};
-  int? idModalidade;
+
   TextEditingController controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final matriculasModalidades = ref.watch(matriculaModalidade);
     final modalidade = ref.watch(buscarModalidade);
-
+    debugPrint('id: ${modalidade.value?.id.toString()}');
     return Scaffold(
       backgroundColor: Colors.grey[200],
       body: Padding(
@@ -64,10 +64,6 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                       ),
                       child: modalidade.when(
                         data: (data) {
-                          if (data != null) {
-                            debugPrint('da.id: ${data.id.toString()}');
-                            idModalidade = data.id;
-                          }
                           return Center(
                             child: Text(
                                 data != null ? data.nome! : 'Todas modalidades',
@@ -144,7 +140,7 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                         ref
                             .read(matriculaModalidade.notifier)
                             .buscarMatriculaModalidadePnomeAluno(value,
-                                idModalidade: idModalidade);
+                                idModalidade: modalidade.value?.id);
                       },
                     ),
                     SizedBox(height: 15),
@@ -211,6 +207,9 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                                                           return AlertdialogDeleteMatriculaModalidade(
                                                             alunoId:
                                                                 data[index].id,
+                                                            modalidadeID:
+                                                                modalidade
+                                                                    .value?.id,
                                                           );
                                                         },
                                                       );
