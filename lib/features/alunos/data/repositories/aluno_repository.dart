@@ -5,7 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AlunoRepository {
   //final _supabase = Supabase.instance.client;
-  // static AlunoRepository? _instance;
+  static AlunoRepository? _instance;
   final SupabaseClient _supabase;
   late final StreamController<List<AlunoModel>> _controller;
 
@@ -21,8 +21,8 @@ class AlunoRepository {
   factory AlunoRepository(SupabaseClient supabase) {
     _instance ??= AlunoRepository._(supabase);
     return _instance!;
-  }
-*/
+  }*/
+
   List<AlunoModel> listAunoModel = [];
   // Buscar todos os alunos
   Future<List<AlunoModel>> buscarAlunos() async {

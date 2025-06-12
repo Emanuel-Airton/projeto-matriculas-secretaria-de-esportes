@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno_model.dart';
-import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/views/pdfPreview.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/alertDialog/alertDialog_pdfPreview.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/form_cadastro_aluno.dart';
 
 class ContainerFormAluno extends ConsumerStatefulWidget {
@@ -106,7 +106,7 @@ class _ContainerFormAlunoState extends ConsumerState<ContainerFormAluno> {
                             showDialog(
                                 context: context,
                                 builder: (context) {
-                                  return Pdfpreview(
+                                  return AlertdialogPdfpreview(
                                       alunoModel: widget.alunoModel);
                                 });
                           },

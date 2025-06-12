@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:projeto_secretaria_de_esportes/features/matriculas/core/utils/whatsApp_launcher.dart';
 import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/views/pdf_preview.dart';
-import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/container_dados_matricula.dart';
+import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/containers/container_dados_matricula.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/matricula_modalidades_model.dart';
 
 class ContainerInfoMatricula extends StatefulWidget {

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_secretaria_de_esportes/features/alunos/data/repositories/aluno_repository.dart';
-import 'package:projeto_secretaria_de_esportes/features/alunos/domain/usecases/aluno_usecase.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/modalidades_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/matricula_modalidades_model.dart';
@@ -16,11 +14,9 @@ class ModalidadesRepository {
   Future<ModalidadesModel> buscarModalidade(int id) async {
     final response =
         await _supabase.from(tabelaModalidade).select().eq('id', id);
-    Map<String, dynamic> map = {};
-    for (var item in response) {
-      map = item;
-    }
-    return ModalidadesModel.fromJson(map);
+    return response
+        .map<ModalidadesModel>((json) => ModalidadesModel.fromJson(json))
+        .single;
   }
 
   Future<List<ModalidadesModel>> buscarListaModalidade() async {
@@ -51,7 +47,6 @@ class ModalidadesRepository {
 
   //retorna a lista de todas as matriculas
   Future<List<MatriculaModalidadesModel>> buscarMatriculaModalidade() async {
-    debugPrint('teste: ');
     final response = await _supabase
         .from(tabelaMatriculaModalidade)
         .select(
@@ -63,13 +58,6 @@ class ModalidadesRepository {
       },
     ).toList();
     return list;
-  }
-
-  buscarIdsAlunos(String nomeAluno) async {
-    var alunoRepository = AlunoRepository(Supabase.instance.client);
-    AlunoUseCase alunoUseCase = AlunoUseCase(alunoRepository);
-    final idsAlunos = await alunoUseCase.buscarListAlunosPorNome(nomeAluno);
-    return idsAlunos;
   }
 
   Future<List<Map<String, dynamic>>> buscarSemIdModalidade(

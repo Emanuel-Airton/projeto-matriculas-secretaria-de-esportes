@@ -1,12 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/matricula_modalidades_model.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/modalidades_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/repositories/modalidades_repository.dart';
+import 'package:projeto_secretaria_de_esportes/features/modalidades/data/services/matricula_modalidade_sevices.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/domain/usecases/modalidades_usecase.dart';
 
 final modalidadeRepository = Provider((ref) => ModalidadesRepository());
-final modalidadeUsecaseProvider =
-    Provider((ref) => ModalidadesUsecase(ref.read(modalidadeRepository)));
+
+final matriculaModalidadeSevices = Provider((ref) => MatriculaModalidadeSevices(
+    ref.read(modalidadeRepository), ref.read(alunoRepositoryProvider)));
+
+final modalidadeUsecaseProvider = Provider((ref) => ModalidadesUsecase(
+    ref.read(modalidadeRepository), ref.read(matriculaModalidadeSevices)));
 
 final listModalidadeProvider = FutureProvider<List<ModalidadesModel>>(
   (ref) {
@@ -24,7 +29,7 @@ final buscarModalidade = FutureProvider<ModalidadesModel?>((ref) {
   return null;
 });
 
-final listMatriculaModalidadeProvider =
+/*final listMatriculaModalidadeProvider =
     FutureProvider<List<MatriculaModalidadesModel>>(
   (ref) {
     final modalidadeId = ref.watch(selectedModalidadeIdProvider);
@@ -37,14 +42,4 @@ final listMatriculaModalidadeProvider =
           modalidadeId.id!); // Retorna filtrado por ID
     }
   },
-);
-
-final selectMatriculaModalidadeId = StateProvider<int?>((ref) => null);
-final deletarMatriculaModalidade = Provider((ref) {
-  final idAluno = ref.read(selectMatriculaModalidadeId);
-  if (idAluno != null) {
-    return ref
-        .read(modalidadeUsecaseProvider)
-        .deletarMatriculaModalidade(idAluno);
-  }
-});
+);*/

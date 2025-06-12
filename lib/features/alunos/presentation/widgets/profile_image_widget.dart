@@ -19,8 +19,7 @@ class _MyWidgetState extends ConsumerState<ProfileImageWidget> {
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
-      //backgroundImage: NetworkImage(imageUrl),
-      radius: 50,
+      radius: 40,
       backgroundImage: file != null
           ? FileImage(file!)
           : widget.urlImage != ''

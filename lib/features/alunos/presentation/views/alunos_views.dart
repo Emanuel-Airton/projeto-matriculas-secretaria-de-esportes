@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/container_info_alunos.dart';
-import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/dialog_cadastro_aluno.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/containers/container_info_alunos.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/alertDialog/alertDialog_cadastro_aluno.dart';
 import 'package:projeto_secretaria_de_esportes/shared/widgets/containers/container_search.dart';
 import '../../data/models/aluno_model.dart';
 import '../providers/alunoNotifier.dart';
-import '../widgets/animatedContainer.dart';
+import '../widgets/containers/animatedContainer.dart';
 
 class AlunosScreen extends ConsumerStatefulWidget {
   const AlunosScreen({super.key});

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/alunoNotifier.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/buttom_delete_aluno_provider.dart';
-import '../providers/aluno_provider.dart';
 
 class AlertdialogDeleteAluno extends ConsumerStatefulWidget {
   final int alunoId;
@@ -56,8 +55,6 @@ class _AlertdialogDeleteAlunoState
                 )));
               }
             });
-
-            //Navigator.pop(context);
           },
           style: ButtonStyle(
               backgroundColor: WidgetStatePropertyAll(

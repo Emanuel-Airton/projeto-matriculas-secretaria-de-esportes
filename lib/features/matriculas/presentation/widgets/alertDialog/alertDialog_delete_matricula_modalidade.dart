@@ -37,10 +37,6 @@ class _AlertdialogDeleteMatriculaModalidadeState
         TextButton(
           onPressed: () async {
             try {
-              /*   ref.read(selectMatriculaModalidadeId.notifier).state =
-                  widget.alunoId;
-              ref.read(deletarMatriculaModalidade);*/
-
               await ref
                   .read(matriculaModalidade.notifier)
                   .deletarMatriculaModalidade(widget.alunoId!,

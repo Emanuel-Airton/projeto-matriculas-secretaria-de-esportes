@@ -4,8 +4,7 @@ import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/alunoNotifier.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
 import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/providers/button_save_matricula_provider.dart';
-import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/providers/matricula_provider.dart';
-import 'package:projeto_secretaria_de_esportes/features/modalidades/presentation/providers/matricula_modalidade_notifier.dart';
+import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/buttons/elevatedButton_salvar_matricula.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/presentation/providers/modalidades_provider.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
@@ -36,11 +35,8 @@ class _AlertdialogCadastroMatriculaState
 
   @override
   Widget build(BuildContext context) {
-    final alunosAsync = ref.refresh(alunoListProvider);
-    // final listAlunos = ref.watch(alunoNotifierProvider);
-    final buttonSaveMatricula = ref.watch(buttonSaveMatriculaProvider);
+    final alunosAsync = ref.watch(alunoNotifierProvider);
     final modalidadesAsync = ref.watch(listModalidadeProvider);
-
     return AlertDialog(
       title: Text(
         'Cadastro de matricula',
@@ -60,13 +56,11 @@ class _AlertdialogCadastroMatriculaState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Campo de pesquisa para alunos
-
                 alunosAsync.when(
                   data: (alunos) {
                     if (filteredAlunos.isEmpty && alunos.isNotEmpty) {
                       filteredAlunos = alunos;
                     }
-
                     return Column(
                       children: [
                         SizedBox(
@@ -119,7 +113,6 @@ class _AlertdialogCadastroMatriculaState
                                 debugPrint(
                                     'id do aluno: ${alunoSelecionado.toString()}');
                               });
-
                               //  alunoNome = value;
                             },
                           ),
@@ -193,8 +186,6 @@ class _AlertdialogCadastroMatriculaState
                   error: (err, stack) => Text('Erro: $err'),
                 ),
                 const SizedBox(height: 16),
-
-                // Restante do seu código...
                 modalidadesAsync.when(
                   data: (modalidades) {
                     return Column(
@@ -250,53 +241,9 @@ class _AlertdialogCadastroMatriculaState
               alunosAsync.value?.clear();
             },
             child: Text('Cancelar')),
-        ElevatedButton(
-          onPressed: buttonSaveMatricula.isloading
-              ? null
-              : () async {
-                  if (alunoSelecionado != null &&
-                      modalidadesSelecionadas.isNotEmpty) {
-                    try {
-                      await ref
-                          .read(buttonSaveMatriculaProvider.notifier)
-                          .saveButton(() async {
-                        await ref
-                            .read(matriculaUseCaseProvider)
-                            .cadastrarMatriculaComModalidades(
-                              alunoSelecionado!,
-                              modalidadesSelecionadas,
-                            );
-                        ref.read(selectedModalidadeIdProvider.notifier).state =
-                            null;
-                        await ref
-                            .read(matriculaModalidade.notifier)
-                            .buscarMatriculasModalidade();
-                      });
-
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Center(
-                        child: Text('Matricula realizada com sucesso'),
-                      )));
-                      Navigator.pop(context);
-                    } catch (erro) {
-                      debugPrint('Erro: $erro');
-
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Center(
-                        child: Text(
-                            'O aluno já está matriculado nessa modalidade'),
-                      )));
-                    }
-                  }
-                },
-          child: buttonSaveMatricula.isloading
-              ? SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(),
-                )
-              : Text('Salvar Matrícula de modalidade'),
-        ),
+        ElevatedbuttonSalvarMatricula(
+            alunoSelecionado: alunoSelecionado,
+            modalidadesSelecionadas: modalidadesSelecionadas),
       ],
     );
   }

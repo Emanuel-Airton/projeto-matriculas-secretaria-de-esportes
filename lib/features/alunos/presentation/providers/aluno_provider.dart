@@ -7,16 +7,13 @@ import 'package:projeto_secretaria_de_esportes/features/alunos/domain/usecases/a
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Criar o repositório e use case como providers
+
 final alunoRepositoryProvider =
     Provider((ref) => AlunoRepository(Supabase.instance.client));
 final alunoUseCaseProvider =
     Provider((ref) => AlunoUseCase(ref.read(alunoRepositoryProvider)));
 final alunoServices = Provider((ref) => AlunoService());
 // Estado dos alunos
-final alunoListProvider = FutureProvider<List<AlunoModel>>((ref) {
-  //final contador = ref.watch(count);
-  return ref.read(alunoUseCaseProvider).buscarAlunos();
-});
 
 final listAlunosProvider = StateProvider<List<AlunoModel>?>((ref) => []);
 final quantidadeAlunos = FutureProvider<Map<String, dynamic>?>((ref) async {
@@ -37,11 +34,6 @@ final pegarLista = StateProvider<List<AlunoModel>>(
   },
 );
 
-/*final setupRealTime = FutureProvider<List<AlunoModel?>>(
-  (ref) async {
-    return ref.watch(alunoUseCaseProvider).setupRealTime();
-  },
-);*/
 final count = StateProvider<int?>((ref) => 5);
 final countListenable = Provider((ref) => ref.read(count));
 final nomeAluno = StateProvider<String?>((ref) => '');

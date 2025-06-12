@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/alertDialog_cadastro_matricula.dart';
-import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/alertDialog_delete_matricula_modalidade.dart';
-import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/container_info_matricula.dart';
-import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/pdf_preview_lista_matriculas.dart';
+import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/alertDialog/alertDialog_cadastro_matricula.dart';
+import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/alertDialog/alertDialog_delete_matricula_modalidade.dart';
+import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/containers/container_info_matricula.dart';
+import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/alertDialog/alertDialog_pdfPreview_lista_matriculas.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/presentation/providers/matricula_modalidade_notifier.dart';
 import 'package:projeto_secretaria_de_esportes/shared/widgets/containers/container_search.dart';
 import '../../../modalidades/presentation/providers/modalidades_provider.dart';

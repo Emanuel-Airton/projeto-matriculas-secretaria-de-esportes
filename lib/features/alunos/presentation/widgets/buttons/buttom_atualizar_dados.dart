@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/aluno_provider.dart';
-import '../providers/image_storage_provider.dart';
+import '../../providers/aluno_provider.dart';
+import '../../providers/image_storage_provider.dart';
 
 class ButtomAtualizarDados extends ConsumerStatefulWidget {
   final int id;

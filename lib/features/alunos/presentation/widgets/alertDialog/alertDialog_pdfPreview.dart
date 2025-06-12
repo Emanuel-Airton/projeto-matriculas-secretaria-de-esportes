@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:printing/printing.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno_model.dart';
-import '../../core/utils/generate_pdf.dart';
-import '../../domain/usecases/generate_pdf_usecase.dart';
+import '../../../core/utils/generate_pdf.dart';
+import '../../../domain/usecases/generate_pdf_usecase.dart';
 
-class Pdfpreview extends StatelessWidget {
+class AlertdialogPdfpreview extends StatelessWidget {
   final AlunoModel alunoModel;
   final GeneratePdfUsecase _generatePdfUsecase;
-  Pdfpreview({super.key, required this.alunoModel})
+  AlertdialogPdfpreview({super.key, required this.alunoModel})
       : _generatePdfUsecase = GeneratePdfUsecase(GeneratePdf());
   Uint8List? bytes;
   @override

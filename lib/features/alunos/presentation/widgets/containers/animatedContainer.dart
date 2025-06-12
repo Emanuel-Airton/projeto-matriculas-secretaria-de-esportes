@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
-import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/alertDialog_delete_aluno.dart';
-import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/container_form_aluno.dart';
-import '../providers/alunoNotifier.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/alertDialog/alertDialog_delete_aluno.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/widgets/containers/container_form_aluno.dart';
+import '../../providers/alunoNotifier.dart';
 
 final expandedStateProvider = StateProvider<Map<int, bool>>((ref) => {});
 
