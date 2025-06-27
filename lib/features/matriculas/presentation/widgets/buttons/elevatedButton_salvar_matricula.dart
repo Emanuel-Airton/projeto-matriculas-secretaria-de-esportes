@@ -32,11 +32,10 @@ class ElevatedbuttonSalvarMatricula extends ConsumerWidget {
                           alunoSelecionado!,
                           modalidadesSelecionadas,
                         );
-                    ref.read(selectedModalidadeIdProvider.notifier).state =
-                        null;
+                    ref.read(selectedModalidadeProvider.notifier).state = null;
                     await ref
                         .read(matriculaModalidade.notifier)
-                        .buscarMatriculasModalidade();
+                        .fetchMatriculasModalidade();
                   });
 
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(

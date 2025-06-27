@@ -14,9 +14,9 @@ class AlunoUseCase {
     return _repository.listAunoModel;
   }
 
-  Stream<List<AlunoModel>> setupRealTime() {
+  /*Stream<List<AlunoModel>> setupRealTime() {
     return _repository.watchAluno();
-  }
+  }*/
 
   Future<List<AlunoModel>> buscarAlunoNome(String nome) {
     return _repository.buscarAlunoPNome(nome);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/modalidades_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/presentation/providers/matricula_modalidade_notifier.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../providers/modalidades_provider.dart';
 
 class RowContainersSelectModalidade extends ConsumerWidget {
@@ -12,7 +13,7 @@ class RowContainersSelectModalidade extends ConsumerWidget {
     final listItens = [
       {
         'nome': 'Todas modalidades',
-        'id': 10,
+        'id': null,
         'image': 'assets/images/adl10.png'
       },
       {'nome': 'Atletismo', 'id': 8, 'image': 'assets/images/runner.png'},
@@ -37,7 +38,7 @@ class RowContainersSelectModalidade extends ConsumerWidget {
         itemBuilder: (context, index) {
           Map<String, dynamic> item = listItens[index];
           var isSelected =
-              ref.watch(selectedModalidadeIdProvider)?.id == item['id'];
+              ref.watch(selectedModalidadeProvider)?.id == item['id'];
 
           return Padding(
             padding: const EdgeInsets.all(8.0),
@@ -54,19 +55,19 @@ class RowContainersSelectModalidade extends ConsumerWidget {
                   ),
                 ),
                 onPressed: () {
-                  if (item['id'] == 10) {
+                  if (item['id'] == null) {
                     ref
                         .read(matriculaModalidade.notifier)
-                        .buscarMatriculasModalidade();
-                    ref.read(selectedModalidadeIdProvider.notifier).state =
-                        null;
+                        .fetchMatriculasModalidade(forcarBusca: true);
+                    ref.read(selectedModalidadeProvider.notifier).state = null;
                   } else {
-                    ref.read(matriculaModalidadeProvider.notifier).state =
-                        item['id'];
+                    ref.read(selectedModalidadeProvider.notifier).state =
+                        ModalidadesModel.fromJson(item);
                     ref
                         .read(matriculaModalidade.notifier)
-                        .buscarMatriculasModalidadeFiltro(item['id']);
-                    ref.read(selectedModalidadeIdProvider.notifier).state =
+                        .fetchMatriculasModalidade(
+                            idModalidade: item['id'], forcarBusca: true);
+                    ref.read(selectedModalidadeProvider.notifier).state =
                         ModalidadesModel.fromJson(item);
                   }
                 },

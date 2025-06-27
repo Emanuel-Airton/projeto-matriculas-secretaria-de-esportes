@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/repositories/aluno_repository.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../data/models/aluno_model.dart';
 import '../../domain/usecases/aluno_usecase.dart';
 

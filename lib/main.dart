@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/repositories/aluno_repository.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/data/services/aluno_remote_service.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
 import 'package:projeto_secretaria_de_esportes/splashScreen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -32,8 +33,8 @@ void main() async {
   });
 
   runApp(ProviderScope(overrides: [
-    alunoRepositoryProvider
-        .overrideWithValue(AlunoRepository(Supabase.instance.client))
+    alunoServices
+        .overrideWithValue(AlunoRemoteService(Supabase.instance.client))
   ], child: MyApp()));
 }
 

@@ -5,8 +5,8 @@ import 'package:projeto_secretaria_de_esportes/features/modalidades/data/service
 
 class ModalidadesUsecase {
   final ModalidadesRepository _repository;
-  final MatriculaModalidadeSevices _matriculaModalidadeSevices;
-  ModalidadesUsecase(this._repository, this._matriculaModalidadeSevices);
+
+  ModalidadesUsecase(this._repository);
 
   Future<List<ModalidadesModel>> buscarListaModalidade() {
     return _repository.buscarListaModalidade();
@@ -27,8 +27,7 @@ class ModalidadesUsecase {
   Future<List<MatriculaModalidadesModel>> buscarMatriculaModalidadePnomeAluno(
       String nomeAluno,
       {int? idModalidade}) {
-    return _matriculaModalidadeSevices.buscarMatriculaModalidadePnomeAluno(
-        nomeAluno,
+    return _repository.buscarMatriculaModalidadePnomeAluno(nomeAluno,
         idModalidade: idModalidade);
   }
 

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/matricula_modalidades_model.dart';
-import 'package:projeto_secretaria_de_esportes/features/modalidades/data/repositories/modalidades_repository.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/domain/usecases/modalidades_usecase.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/presentation/providers/modalidades_provider.dart';
 
@@ -14,29 +13,28 @@ class MatriculaModalidadeNotifier
 
   MatriculaModalidadeNotifier(this._modalidadesUsecase)
       : super(AsyncValue.data([])) {
-    _fetchMatriculasModalidade();
+    fetchMatriculasModalidade();
   }
 
-  _fetchMatriculasModalidade({bool forcarBusca = false, int? idModalidade}) {
+  fetchMatriculasModalidade({bool forcarBusca = false, int? idModalidade}) {
     state = AsyncValue.loading();
-    try {
-      if (cache.isNotEmpty && !forcarBusca) {
-        state = AsyncValue.data(cache);
-        debugPrint('cache contem dados');
-        return;
-      }
-      if (idModalidade != null) {
-        buscarMatriculasModalidadeFiltro(idModalidade);
-        return;
-      } else {
-        buscarMatriculasModalidade();
-      }
-    } catch (e, st) {
-      state = AsyncValue.error(e, st);
+
+    if (cache.isNotEmpty && !forcarBusca) {
+      debugPrint('cache contem dados ${forcarBusca.toString()}');
+      state = AsyncValue.data(cache);
+      return;
+    }
+    if (idModalidade != null) {
+      debugPrint('cache ${forcarBusca.toString()}');
+      _buscarMatriculasModalidadeFiltro(idModalidade);
+      return;
+    } else {
+      debugPrint('cache não contem dados ${forcarBusca.toString()}');
+      _buscarMatriculasModalidade();
     }
   }
 
-  buscarMatriculasModalidade() async {
+  _buscarMatriculasModalidade() async {
     Future.delayed(Duration(milliseconds: 500));
     cache = await _modalidadesUsecase.buscarMatriculaModalidade();
     state = AsyncValue.data(cache);
@@ -53,7 +51,7 @@ class MatriculaModalidadeNotifier
       state = AsyncValue.data(cache);
       _timer = Timer(
           Duration(milliseconds: 500),
-          () => _fetchMatriculasModalidade(
+          () => fetchMatriculasModalidade(
               forcarBusca: true, idModalidade: idModalidade));
     } catch (e) {
       throw Exception(e);
@@ -76,11 +74,15 @@ class MatriculaModalidadeNotifier
     }
   }
 
-  buscarMatriculasModalidadeFiltro(int id) async {
-    state = AsyncValue.loading();
-    Future.delayed(Duration(milliseconds: 500));
-    cache = await _modalidadesUsecase.buscarMatriculaModalidadeFiltro(id);
-    state = AsyncValue.data(cache);
+  _buscarMatriculasModalidadeFiltro(int id) async {
+    try {
+      state = AsyncValue.loading();
+      Future.delayed(Duration(milliseconds: 500));
+      cache = await _modalidadesUsecase.buscarMatriculaModalidadeFiltro(id);
+      state = AsyncValue.data(cache);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
   }
 }
 
@@ -92,4 +94,4 @@ final matriculaModalidade = StateNotifierProvider<MatriculaModalidadeNotifier,
     return MatriculaModalidadeNotifier(ref.read(modalidadeUsecaseProvider));
   },
 );
-final matriculaModalidadeProvider = StateProvider<int?>((ref) => null);
+//final matriculaModalidadeProvider = StateProvider<int?>((ref) => null);

@@ -261,7 +261,8 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                       },
                       error: (error, stackTrace) {
                         return Center(
-                            child: Text(error.toString(),
+                            child: Text(
+                                'Erro ao buscar os dados! Tente novamente mais tarde!',
                                 style: TextStyle(
                                     fontSize: 18,
                                     color: Colors.grey,

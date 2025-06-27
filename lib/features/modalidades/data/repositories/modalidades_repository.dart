@@ -1,93 +1,52 @@
-import 'package:flutter/material.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/data/repositories/aluno_repository.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/modalidades_model.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:projeto_secretaria_de_esportes/features/modalidades/data/services/matricula_modalidade_sevices.dart';
 import '../models/matricula_modalidades_model.dart';
 
 class ModalidadesRepository {
-  final _supabase = Supabase.instance.client;
-  List<MatriculaModalidadesModel> list = [];
-  static const String tabelaMatriculaModalidade = 'matricula_modalidade';
-  static const String tabelaModalidade = 'modalidades';
-  static const String buscarAluno =
-      'nome, telefone, cpf, sexo, nascimento, rg, cpf, escola, turno, endereço, nome_mae, cpf_mae ';
+  final MatriculaModalidadeSevices _matriculaModalidadeSevices;
+  final AlunoRepository _alunoRepository;
+  ModalidadesRepository(
+      this._matriculaModalidadeSevices, this._alunoRepository);
 
   Future<ModalidadesModel> buscarModalidade(int id) async {
-    final response =
-        await _supabase.from(tabelaModalidade).select().eq('id', id);
-    return response
-        .map<ModalidadesModel>((json) => ModalidadesModel.fromJson(json))
-        .single;
+    return _matriculaModalidadeSevices.buscarModalidade(id);
   }
 
   Future<List<ModalidadesModel>> buscarListaModalidade() async {
-    buscarModalidade(1);
-    final response = await _supabase.from(tabelaModalidade).select();
-    return response.map<ModalidadesModel>((json) {
-      debugPrint(json.toString());
-      return ModalidadesModel.fromJson(json);
-    }).toList();
+    return _matriculaModalidadeSevices.buscarListaModalidade();
   }
 
   //retorna a lista de todas as matriculas de acordo com o ID da modalidade
   Future<List<MatriculaModalidadesModel>> buscarMatriculaModalidadeFiltro(
       int id) async {
-    final response = await _supabase
-        .from(tabelaMatriculaModalidade)
-        .select('id, data_matricula, alunos($buscarAluno), modalidades(nome)')
-        .filter('modalidade_id', 'eq', id)
-        .order('data_matricula', ascending: true);
-    list = response.map<MatriculaModalidadesModel>(
-      (json) {
-        debugPrint('teste filtro: ${json.toString()}');
-        return MatriculaModalidadesModel.fromJson(json);
-      },
-    ).toList();
-    return list;
+    return _matriculaModalidadeSevices.buscarMatriculaModalidadeFiltro(id);
   }
 
   //retorna a lista de todas as matriculas
   Future<List<MatriculaModalidadesModel>> buscarMatriculaModalidade() async {
-    final response = await _supabase
-        .from(tabelaMatriculaModalidade)
-        .select(
-            'id, data_matricula, aluno_id, alunos($buscarAluno), modalidades(nome)')
-        .order('data_matricula', ascending: true);
-    list = response.map<MatriculaModalidadesModel>(
-      (json) {
-        return MatriculaModalidadesModel.fromJson(json);
-      },
-    ).toList();
-    return list;
+    return _matriculaModalidadeSevices.buscarMatriculaModalidade();
   }
 
-  Future<List<Map<String, dynamic>>> buscarSemIdModalidade(
-      String nomeAluno, dynamic idsAlunos) async {
-    List<Map<String, dynamic>> response = await _supabase
-        .from(tabelaMatriculaModalidade)
-        .select(
-            'id, data_matricula, aluno_id, alunos($buscarAluno), modalidades(nome)')
-        .inFilter('aluno_id', idsAlunos)
-        .order('data_matricula', ascending: true);
-    return response;
-  }
-
-  Future<List<Map<String, dynamic>>> buscarComIdModalidade(
-      String nomeAluno, int idModalidade, dynamic idsAlunos) async {
-    List<Map<String, dynamic>> response = await _supabase
-        .from(tabelaMatriculaModalidade)
-        .select(
-            'id, data_matricula, aluno_id, alunos($buscarAluno), modalidades(nome)')
-        .filter('modalidade_id', 'eq', idModalidade)
-        .inFilter('aluno_id', idsAlunos)
-        .order('data_matricula', ascending: true);
-    return response;
+  //Busca as matriculas de acordo com o nome digitado
+  Future<List<MatriculaModalidadesModel>> buscarMatriculaModalidadePnomeAluno(
+      String nomeAluno,
+      {int? idModalidade}) async {
+    List<Map<String, dynamic>> response = [];
+    final idsAlunos = await _alunoRepository.buscarListAlunosPorNome(nomeAluno);
+    if (idModalidade != null) {
+      response = await _matriculaModalidadeSevices.buscarComIdModalidade(
+          nomeAluno, idModalidade, idsAlunos);
+    } else {
+      response = await _matriculaModalidadeSevices.buscarSemIdModalidade(
+          nomeAluno, idsAlunos);
+    }
+    return response.map<MatriculaModalidadesModel>((json) {
+      return MatriculaModalidadesModel.fromJson(json);
+    }).toList();
   }
 
   deletarMatriculaModalidade(int id) async {
-    try {
-      await _supabase.from(tabelaMatriculaModalidade).delete().eq('id', id);
-    } catch (erro) {
-      throw 'Erro ao deletar matricula $erro';
-    }
+    return _matriculaModalidadeSevices.deletarMatriculaModalidade(id);
   }
 }

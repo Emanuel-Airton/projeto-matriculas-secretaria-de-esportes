@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/repositories/aluno_repository.dart';
-import 'package:projeto_secretaria_de_esportes/features/alunos/data/services/aluno_service.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/data/services/aluno_remote_service.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/domain/usecases/aluno_usecase.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Criar o repositório e use case como providers
 
+final alunoServices =
+    Provider((ref) => AlunoRemoteService(Supabase.instance.client));
 final alunoRepositoryProvider =
-    Provider((ref) => AlunoRepository(Supabase.instance.client));
+    Provider((ref) => AlunoRepository(ref.read(alunoServices)));
 final alunoUseCaseProvider =
     Provider((ref) => AlunoUseCase(ref.read(alunoRepositoryProvider)));
-final alunoServices = Provider((ref) => AlunoService());
 // Estado dos alunos
 
 final listAlunosProvider = StateProvider<List<AlunoModel>?>((ref) => []);
