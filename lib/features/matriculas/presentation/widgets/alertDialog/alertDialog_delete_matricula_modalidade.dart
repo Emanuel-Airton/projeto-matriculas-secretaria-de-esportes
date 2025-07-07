@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/presentation/providers/matricula_modalidade_notifier.dart';
+import 'package:projeto_secretaria_de_esportes/utils/result.dart';
 
 class AlertdialogDeleteMatriculaModalidade extends ConsumerStatefulWidget {
   final int? alunoId;
@@ -36,23 +37,18 @@ class _AlertdialogDeleteMatriculaModalidadeState
             child: Text('cancelar')),
         TextButton(
           onPressed: () async {
-            try {
-              await ref
-                  .read(matriculaModalidade.notifier)
-                  .deletarMatriculaModalidade(widget.alunoId!,
-                      idModalidade: widget.modalidadeID);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Center(
-                child: Text('Matricula excluida com sucesso'),
-              )));
-            } catch (erro) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  content: Center(
-                    child: Text('Erro ao excluir matricula!'),
-                  )));
-            }
-            Navigator.pop(context);
+            final Result result = await ref
+                .read(matriculaModalidade.notifier)
+                .deletarMatriculaModalidade(widget.alunoId!,
+                    idModalidade: widget.modalidadeID);
+            final msg = result is Ok
+                ? 'Matricula excluida com sucesso'
+                : 'Erro ao excluir matricula!';
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Center(
+              child: Text(msg),
+            )));
+            if (result is Ok) Navigator.pop(context);
           },
           style: ButtonStyle(
               backgroundColor: WidgetStatePropertyAll(

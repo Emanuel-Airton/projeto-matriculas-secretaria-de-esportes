@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/matricula_modalidades_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/modalidades_model.dart';
+import 'package:projeto_secretaria_de_esportes/utils/result.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MatriculaModalidadeSevices {
@@ -12,74 +13,86 @@ class MatriculaModalidadeSevices {
 
   MatriculaModalidadeSevices();
 
-  Future<ModalidadesModel> buscarModalidade(int id) async {
-    final response =
-        await _supabase.from(tabelaModalidade).select().eq('id', id);
-    return response
-        .map<ModalidadesModel>((json) => ModalidadesModel.fromJson(json))
-        .single;
+  Future<Result<ModalidadesModel>> buscarModalidade(int id) async {
+    try {
+      final response =
+          await _supabase.from(tabelaModalidade).select().eq('id', id);
+      return Result.ok(response
+          .map<ModalidadesModel>((json) => ModalidadesModel.fromJson(json))
+          .single);
+    } on Exception catch (e) {
+      return Result.error(Exception(e));
+    }
   }
 
-  Future<List<ModalidadesModel>> buscarListaModalidade() async {
-    buscarModalidade(1);
-    final response = await _supabase.from(tabelaModalidade).select();
-    return response.map<ModalidadesModel>((json) {
-      debugPrint(json.toString());
-      return ModalidadesModel.fromJson(json);
-    }).toList();
+//service
+  Future<Result<List<ModalidadesModel>>> buscarListaModalidade() async {
+    try {
+      final response = await _supabase.from(tabelaModalidade).select();
+      return Result.ok(response
+          .map<ModalidadesModel>((json) => ModalidadesModel.fromJson(json))
+          .toList());
+    } on Exception catch (e) {
+      return Result.error(Exception(e));
+    }
   }
 
   //retorna a lista de todas as matriculas de acordo com o ID da modalidade
-  Future<List<MatriculaModalidadesModel>> buscarMatriculaModalidadeFiltro(
-      int id) async {
+  Future<Result<List<MatriculaModalidadesModel>>>
+      buscarMatriculaModalidadeFiltro(int id) async {
     try {
       final response = await _supabase
           .from(tabelaMatriculaModalidade)
           .select('id, data_matricula, alunos($buscarAluno), modalidades(nome)')
           .filter('modalidade_id', 'eq', id)
           .order('data_matricula', ascending: true);
-      return response.map<MatriculaModalidadesModel>(
-        (json) {
-          debugPrint('teste filtro: ${json.toString()}');
-          return MatriculaModalidadesModel.fromJson(json);
-        },
-      ).toList();
+      return Result.ok(response
+          .map<MatriculaModalidadesModel>(
+              (json) => MatriculaModalidadesModel.fromJson(json))
+          .toList());
     } catch (e) {
-      debugPrint('Exceção: $e');
-      throw Exception(e);
+      return Result.error(Exception(e));
     }
   }
 
   //retorna a lista de todas as matriculas
-  Future<List<MatriculaModalidadesModel>> buscarMatriculaModalidade() async {
+  Future<Result<List<MatriculaModalidadesModel>>>
+      buscarMatriculaModalidade() async {
     try {
       final response = await _supabase
           .from(tabelaMatriculaModalidade)
           .select(
               'id, data_matricula, aluno_id, alunos($buscarAluno), modalidades(nome)')
           .order('data_matricula', ascending: true);
-      return response.map<MatriculaModalidadesModel>(
-        (json) {
-          return MatriculaModalidadesModel.fromJson(json);
-        },
-      ).toList();
-    } catch (e) {
-      throw Exception(e);
+
+      return Result.ok(response
+          .map<MatriculaModalidadesModel>(
+              (json) => MatriculaModalidadesModel.fromJson(json))
+          .toList());
+    } on Exception catch (e) {
+      return Result.error(e);
     }
   }
 
-  Future<List<Map<String, dynamic>>> buscarSemIdModalidade(
+  Future<Result<List<MatriculaModalidadesModel>>> buscarSemIdModalidade(
       String nomeAluno, dynamic idsAlunos) async {
-    List<Map<String, dynamic>> response = await _supabase
-        .from(tabelaMatriculaModalidade)
-        .select(
-            'id, data_matricula, aluno_id, alunos($buscarAluno), modalidades(nome)')
-        .inFilter('aluno_id', idsAlunos)
-        .order('data_matricula', ascending: true);
-    return response;
+    try {
+      List<Map<String, dynamic>> response = await _supabase
+          .from(tabelaMatriculaModalidade)
+          .select(
+              'id, data_matricula, aluno_id, alunos($buscarAluno), modalidades(nome)')
+          .inFilter('aluno_id', idsAlunos)
+          .order('data_matricula', ascending: true);
+      return Result.ok(response
+          .map((json) => MatriculaModalidadesModel.fromJson(json))
+          .toList());
+    } on Exception catch (e) {
+      debugPrint('ERRO');
+      return Result.error(e);
+    }
   }
 
-  Future<List<Map<String, dynamic>>> buscarComIdModalidade(
+  Future<Result<List<MatriculaModalidadesModel>>> buscarComIdModalidade(
       String nomeAluno, int idModalidade, dynamic idsAlunos) async {
     try {
       List<Map<String, dynamic>> response = await _supabase
@@ -89,17 +102,21 @@ class MatriculaModalidadeSevices {
           .filter('modalidade_id', 'eq', idModalidade)
           .inFilter('aluno_id', idsAlunos)
           .order('data_matricula', ascending: true);
-      return response;
-    } catch (e) {
-      throw Exception(e);
+      return Result.ok(response
+          .map((json) => MatriculaModalidadesModel.fromJson(json))
+          .toList());
+    } on Exception catch (e) {
+      return Result.error(e);
     }
   }
 
-  deletarMatriculaModalidade(int id) async {
+// classe service
+  Future<Result> deletarMatriculaModalidade(int id) async {
     try {
       await _supabase.from(tabelaMatriculaModalidade).delete().eq('id', id);
-    } catch (erro) {
-      throw 'Erro ao deletar matricula $erro';
+      return Result.ok(null);
+    } on Exception catch (e) {
+      return Result.error(e);
     }
   }
 }

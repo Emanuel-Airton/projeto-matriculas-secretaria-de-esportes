@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/repositories/aluno_repository.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/modalidades_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/services/matricula_modalidade_sevices.dart';
+import 'package:projeto_secretaria_de_esportes/utils/result.dart';
 import '../models/matricula_modalidades_model.dart';
 
 class ModalidadesRepository {
@@ -9,44 +11,65 @@ class ModalidadesRepository {
   ModalidadesRepository(
       this._matriculaModalidadeSevices, this._alunoRepository);
 
-  Future<ModalidadesModel> buscarModalidade(int id) async {
-    return _matriculaModalidadeSevices.buscarModalidade(id);
+  Future<Result<ModalidadesModel>> buscarModalidade(int id) async {
+    final result = await _matriculaModalidadeSevices.buscarModalidade(id);
+    if (result is Ok) return result;
+    return Result.error(Exception('Erro ao buscar modalidade'));
   }
 
-  Future<List<ModalidadesModel>> buscarListaModalidade() async {
-    return _matriculaModalidadeSevices.buscarListaModalidade();
+//repository
+  Future<Result<List<ModalidadesModel>>> buscarListaModalidade() async {
+    final result = await _matriculaModalidadeSevices.buscarListaModalidade();
+    if (result is Ok) return result;
+    return Result.error(Exception('Erro ao buscar lista de modalidade'));
   }
 
   //retorna a lista de todas as matriculas de acordo com o ID da modalidade
-  Future<List<MatriculaModalidadesModel>> buscarMatriculaModalidadeFiltro(
-      int id) async {
-    return _matriculaModalidadeSevices.buscarMatriculaModalidadeFiltro(id);
+  Future<Result<List<MatriculaModalidadesModel>>>
+      buscarMatriculaModalidadeFiltro(int id) async {
+    final result =
+        await _matriculaModalidadeSevices.buscarMatriculaModalidadeFiltro(id);
+    if (result is Ok) return result;
+    return Result.error(Exception('erro ao buscar lista'));
   }
 
   //retorna a lista de todas as matriculas
-  Future<List<MatriculaModalidadesModel>> buscarMatriculaModalidade() async {
-    return _matriculaModalidadeSevices.buscarMatriculaModalidade();
+  Future<Result<List<MatriculaModalidadesModel>>>
+      buscarMatriculaModalidade() async {
+    final result =
+        await _matriculaModalidadeSevices.buscarMatriculaModalidade();
+    if (result is Ok) return result;
+    return Result.error(Exception('erro ao buscar lista'));
   }
 
   //Busca as matriculas de acordo com o nome digitado
-  Future<List<MatriculaModalidadesModel>> buscarMatriculaModalidadePnomeAluno(
-      String nomeAluno,
-      {int? idModalidade}) async {
-    List<Map<String, dynamic>> response = [];
+  Future<Result<List<MatriculaModalidadesModel>>>
+      buscarMatriculaModalidadePnomeAluno(String nomeAluno,
+          {int? idModalidade}) async {
+    final Result<List<MatriculaModalidadesModel>> result;
     final idsAlunos = await _alunoRepository.buscarListAlunosPorNome(nomeAluno);
     if (idModalidade != null) {
-      response = await _matriculaModalidadeSevices.buscarComIdModalidade(
+      result = await _matriculaModalidadeSevices.buscarComIdModalidade(
           nomeAluno, idModalidade, idsAlunos);
     } else {
-      response = await _matriculaModalidadeSevices.buscarSemIdModalidade(
+      result = await _matriculaModalidadeSevices.buscarSemIdModalidade(
           nomeAluno, idsAlunos);
+      debugPrint('OK');
     }
-    return response.map<MatriculaModalidadesModel>((json) {
-      return MatriculaModalidadesModel.fromJson(json);
-    }).toList();
+    if (result is Ok) {
+      return result;
+    } else {
+      debugPrint('ERO');
+
+      return Result.error(Exception('Erro ao buscar matricula do aluno'));
+    }
   }
 
-  deletarMatriculaModalidade(int id) async {
-    return _matriculaModalidadeSevices.deletarMatriculaModalidade(id);
+//classe repository
+  Future<Result> deletarMatriculaModalidade(int id) async {
+    final result =
+        await _matriculaModalidadeSevices.deletarMatriculaModalidade(id);
+    if (result is Ok) return result;
+    return Result.error(Exception('Erro ao excluir matricula'));
   }
 }

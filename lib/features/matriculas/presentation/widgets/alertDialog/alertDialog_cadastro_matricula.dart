@@ -5,8 +5,10 @@ import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/prov
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
 import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/providers/button_save_matricula_provider.dart';
 import 'package:projeto_secretaria_de_esportes/features/matriculas/presentation/widgets/buttons/elevatedButton_salvar_matricula.dart';
+import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/modalidades_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/presentation/providers/modalidades_provider.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:projeto_secretaria_de_esportes/utils/result.dart';
 
 class AlertdialogCadastroMatricula extends ConsumerStatefulWidget {
   const AlertdialogCadastroMatricula({super.key});
@@ -183,9 +185,10 @@ class _AlertdialogCadastroMatriculaState
                     );
                   },
                   loading: () => const CircularProgressIndicator(),
-                  error: (err, stack) => Text('Erro: $err'),
+                  error: (err, stack) => Text(err.toString()),
                 ),
                 const SizedBox(height: 16),
+                //UI
                 modalidadesAsync.when(
                   data: (modalidades) {
                     return Column(
@@ -225,7 +228,7 @@ class _AlertdialogCadastroMatriculaState
                     );
                   },
                   loading: () => const CircularProgressIndicator(),
-                  error: (err, stack) => Text('Erro: $err'),
+                  error: (err, stack) => Text(err.toString()),
                 ),
                 SizedBox(height: 30),
                 // Botão de Cadastro

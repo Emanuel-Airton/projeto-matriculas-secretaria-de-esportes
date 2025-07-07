@@ -136,8 +136,8 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                     ContainerSearch(
                       controller: controller,
                       texto: 'Pesquisar matricula por aluno...',
-                      function: (value) {
-                        ref
+                      function: (value) async {
+                        await ref
                             .read(matriculaModalidade.notifier)
                             .buscarMatriculaModalidadePnomeAluno(value,
                                 idModalidade: modalidade.value?.id);
@@ -261,8 +261,7 @@ class _MatriculaFormViewState extends ConsumerState<MatriculaFormView> {
                       },
                       error: (error, stackTrace) {
                         return Center(
-                            child: Text(
-                                'Erro ao buscar os dados! Tente novamente mais tarde!',
+                            child: Text(error.toString(),
                                 style: TextStyle(
                                     fontSize: 18,
                                     color: Colors.grey,
