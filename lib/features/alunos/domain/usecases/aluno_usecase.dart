@@ -6,7 +6,7 @@ class AlunoUseCase {
 
   AlunoUseCase(this._repository);
 
-  Future<List<AlunoModel>> buscarAlunos() {
+  buscarAlunos() {
     return _repository.buscarAlunos();
   }
 
@@ -18,19 +18,15 @@ class AlunoUseCase {
     return _repository.watchAluno();
   }*/
 
-  Future<List<AlunoModel>> buscarAlunoNome(String nome) {
+  buscarAlunoNome(String nome) {
     return _repository.buscarAlunoPNome(nome);
   }
 
-  Stream<List<AlunoModel>> buscarAlunosListen(int count) {
-    return _repository.buscarAlunosListen(count);
-  }
-
-  Future<AlunoModel> cadastrarAluno(AlunoModel aluno) {
+  cadastrarAluno(AlunoModel aluno) {
     return _repository.cadastrarAluno(aluno);
   }
 
-  Future<void> atualizarAluno(int alunoId, Map<String, dynamic> json) {
+  atualizarAluno(int alunoId, Map<String, dynamic> json) {
     return _repository.atualizarAluno(alunoId, json);
   }
 
@@ -38,15 +34,11 @@ class AlunoUseCase {
     return _repository.deletarAluno(alunoId);
   }
 
-  Stream<List<AlunoModel>> buscarAlunoPorNomeStream(String nomeAluno) {
-    return _repository.buscarAlunoPorNomeStream(nomeAluno);
+  retornaIdListAlunos(String nomeAluno) {
+    return _repository.retornaIdListAlunos(nomeAluno);
   }
 
-  buscarListAlunosPorNome(String nomeAluno) {
-    return _repository.buscarListAlunosPorNome(nomeAluno);
-  }
-
-  Future<List<AlunoModel>> buscarAlunoPNome(String nomeAluno) {
+  buscarAlunoPNome(String nomeAluno) {
     return _repository.buscarAlunoPNome(nomeAluno);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../providers/aluno_provider.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/alunoNotifier.dart';
+import 'package:projeto_secretaria_de_esportes/utils/result.dart';
 import '../../providers/image_storage_provider.dart';
 
 class ButtomAtualizarDados extends ConsumerStatefulWidget {
@@ -28,17 +29,15 @@ class _ButtomAtualizarDadosState extends ConsumerState<ButtomAtualizarDados> {
             debugPrint('URL da imagem: ${widget.json['foto_perfil_url']}');
 
             if (widget.json.isNotEmpty) {
-              try {
-                await ref
-                    .read(alunoUseCaseProvider)
-                    .atualizarAluno(widget.id, widget.json);
-                debugPrint(widget.json.toString());
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Center(child: Text('Dados atualizados!'))),
-                );
-              } catch (e) {
-                debugPrint('Erro ao atualizar dados: $e');
-              }
+              Result result = await ref
+                  .read(alunoNotifierProvider.notifier)
+                  .atualizarDadosAlunos(widget.id, widget.json);
+              final msg = result is Error
+                  ? '${result.error}'
+                  : 'Erro ao atualizar dados';
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Center(child: Text(msg))),
+              );
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -47,17 +46,15 @@ class _ButtomAtualizarDadosState extends ConsumerState<ButtomAtualizarDados> {
               );
             }
           } else if (widget.json.isNotEmpty) {
-            try {
-              await ref
-                  .read(alunoUseCaseProvider)
-                  .atualizarAluno(widget.id, widget.json);
-              debugPrint(widget.json.toString());
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Center(child: Text('Dados atualizados!'))),
-              );
-            } catch (e) {
-              debugPrint('Erro ao atualizar dados: $e');
-            }
+            Result result = await ref
+                .read(alunoNotifierProvider.notifier)
+                .atualizarDadosAlunos(widget.id, widget.json);
+            final msg = result is Error
+                ? '${result.error}'
+                : 'Dados atualizados com sucesso';
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Center(child: Text(msg))),
+            );
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

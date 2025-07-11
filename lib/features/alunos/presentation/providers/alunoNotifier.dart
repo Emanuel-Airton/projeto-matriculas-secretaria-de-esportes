@@ -1,8 +1,7 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:projeto_secretaria_de_esportes/features/alunos/data/repositories/aluno_repository.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
+import 'package:projeto_secretaria_de_esportes/utils/result.dart';
 import '../../data/models/aluno_model.dart';
 import '../../domain/usecases/aluno_usecase.dart';
 
@@ -29,51 +28,83 @@ class AlunoNotifier extends StateNotifier<AsyncValue<List<AlunoModel>>> {
 
   buscarAlunosSalvarCache() async {
     await Future.delayed(Duration(milliseconds: 500));
-    final alunos = await _alunoUseCase.buscarAlunos();
-    _cache = alunos;
-    state = AsyncValue.data(alunos);
-  }
-
-  Future<void> deletarAluno(int alunoId) async {
-    try {
-      await _alunoUseCase.deletarAluno(alunoId);
-      _cache = _cache.where((element) => element.id != alunoId).toList();
-      state = AsyncValue.data(_cache);
-      timer = Timer(const Duration(milliseconds: 5000), () => _fetchAlunos());
-    } catch (e) {
-      rethrow;
+    Result result = await _alunoUseCase.buscarAlunos();
+    switch (result) {
+      case Ok _:
+        _cache = result.value;
+        state = AsyncValue.data(_cache);
+        break;
+      case Error _:
+        state = AsyncValue.error(result.error, StackTrace.current);
     }
   }
 
-  cadastrarAluno(AlunoModel alunoModel) async {
-    try {
-      final aluno = await _alunoUseCase.cadastrarAluno(alunoModel);
-      _cache = [..._cache, aluno];
-      state = AsyncValue.data(_cache);
-      _fetchAlunos(forcedDelay: true);
-    } catch (e) {
-      _fetchAlunos();
-      debugPrint('erro: $e');
+  Future<Result> deletarAluno(int alunoId) async {
+    Result result = await _alunoUseCase.deletarAluno(alunoId);
+    switch (result) {
+      case Ok():
+        _cache = _cache.where((element) => element.id != alunoId).toList();
+        state = AsyncValue.data(_cache);
+        timer = Timer(const Duration(milliseconds: 5000), () => _fetchAlunos());
+      case Error():
+        Result.error(Exception(result.error));
     }
+    return result;
+  }
+
+  Future<Result> cadastrarAluno(AlunoModel alunoModel) async {
+    Result<AlunoModel> result = await _alunoUseCase.cadastrarAluno(alunoModel);
+    switch (result) {
+      case Ok():
+        _cache = [..._cache, result.value];
+        state = AsyncValue.data(_cache);
+        _fetchAlunos(forcedDelay: true);
+      case Error():
+        _fetchAlunos();
+        Result.error(Exception(result.error));
+    }
+    return result;
+  }
+
+  Future<Result> atualizarDadosAlunos(
+      int alunoId, Map<String, dynamic> json) async {
+    Result<AlunoModel> result =
+        await _alunoUseCase.atualizarAluno(alunoId, json);
+    switch (result) {
+      case Ok<AlunoModel>():
+        _cache = _cache
+            .map((element) => element.id == alunoId ? result.value : element)
+            .toList();
+        state = AsyncValue.data(_cache);
+        _fetchAlunos(forcedDelay: true);
+
+      case Error():
+        _fetchAlunos();
+        Result.error(Exception(result.error));
+    }
+    return result;
   }
 
   buscarAlunoPorNome(String nome) async {
-    try {
-      _cache = await _alunoUseCase.buscarAlunoPNome(nome);
-      state = AsyncValue.data(_cache);
-      if (state.value!.isEmpty) {
-        throw 'Aluno não encontrado!';
-      }
-    } catch (e, st) {
-      state = AsyncValue.error(e, st);
+    Result result = await _alunoUseCase.buscarAlunoPNome(nome);
+    Exception exception;
+    switch (result) {
+      case Ok _:
+        _cache = result.value;
+        state = AsyncValue.data(_cache);
+        if (state.value!.isEmpty) {
+          exception = Exception('Aluno não encontrado!');
+          state = AsyncValue.error(exception, StackTrace.current);
+        }
+      case Error _:
+        exception = result.error;
+        state = AsyncValue.error(exception, StackTrace.current);
     }
   }
 }
 
 final alunoNotifierProvider =
     StateNotifierProvider<AlunoNotifier, AsyncValue<List<AlunoModel>>>((ref) {
-  //final supabase = Supabase.instance.client;
-  // final alunoRepository = AlunoRepository(Supabase.instance.client);
   final alunoUseCase = ref.read(alunoUseCaseProvider);
   return AlunoNotifier(alunoUseCase);
 });

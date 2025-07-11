@@ -47,21 +47,27 @@ class ModalidadesRepository {
       buscarMatriculaModalidadePnomeAluno(String nomeAluno,
           {int? idModalidade}) async {
     final Result<List<MatriculaModalidadesModel>> result;
-    final idsAlunos = await _alunoRepository.buscarListAlunosPorNome(nomeAluno);
-    if (idModalidade != null) {
-      result = await _matriculaModalidadeSevices.buscarComIdModalidade(
-          nomeAluno, idModalidade, idsAlunos);
-    } else {
-      result = await _matriculaModalidadeSevices.buscarSemIdModalidade(
-          nomeAluno, idsAlunos);
-      debugPrint('OK');
-    }
-    if (result is Ok) {
-      return result;
-    } else {
-      debugPrint('ERO');
+    Result resultIdsAlunos =
+        await _alunoRepository.retornaIdListAlunos(nomeAluno);
+    switch (resultIdsAlunos) {
+      case Ok _:
+        if (idModalidade != null) {
+          result = await _matriculaModalidadeSevices.buscarComIdModalidade(
+              nomeAluno, idModalidade, resultIdsAlunos.value);
+        } else {
+          result = await _matriculaModalidadeSevices.buscarSemIdModalidade(
+              nomeAluno, resultIdsAlunos.value);
+          debugPrint('OK');
+        }
+        if (result is Ok) {
+          return result;
+        } else {
+          debugPrint('ERO');
+          return Result.error(Exception('Erro ao buscar matricula do aluno'));
+        }
 
-      return Result.error(Exception('Erro ao buscar matricula do aluno'));
+      case Error _:
+        return Result.error(Exception(resultIdsAlunos.error));
     }
   }
 

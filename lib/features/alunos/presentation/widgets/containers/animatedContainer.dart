@@ -13,6 +13,16 @@ class Animatedcontainer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final listAlunos = ref.watch(alunoNotifierProvider);
+    /* final streamAlunos = ref.watch(streamListAlunos);
+    streamAlunos.when(
+        data: (data) {
+          debugPrint('dados');
+          for (var dados in data) {
+            debugPrint(dados.nome);
+          }
+        },
+        error: (error, stackTrace) {},
+        loading: () {});*/
     Future.delayed(Duration(milliseconds: 500)).then((value) {
       debugPrint('lista atualizada');
       if (listAlunos.hasError == false) {

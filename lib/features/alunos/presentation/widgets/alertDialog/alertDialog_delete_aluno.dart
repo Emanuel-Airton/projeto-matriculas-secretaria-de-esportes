@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/alunoNotifier.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/buttom_delete_aluno_provider.dart';
+import 'package:projeto_secretaria_de_esportes/utils/result.dart';
 
 class AlertdialogDeleteAluno extends ConsumerStatefulWidget {
   final int alunoId;
@@ -38,22 +39,17 @@ class _AlertdialogDeleteAlunoState
         TextButton(
           onPressed: () async {
             ref.read(buttonDeleteAlunoProvider.notifier).saveButton(() async {
-              try {
-                await ref
-                    .read(alunoNotifierProvider.notifier)
-                    .deletarAluno(widget.alunoId);
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Center(
-                  child: Text('Registro de aluno deletado com sucesso'),
-                )));
-                Navigator.pop(context);
-              } catch (e) {
-                debugPrint('ERRO: ${e.toString()}');
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Center(
-                  child: Text('Erro ao excluir registro de aluno'),
-                )));
-              }
+              Result result = await ref
+                  .read(alunoNotifierProvider.notifier)
+                  .deletarAluno(widget.alunoId);
+              final msg = result is Ok
+                  ? 'Registro de aluno deletado com sucesso'
+                  : 'Erro ao excluir registro de aluno';
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Center(
+                child: Text(msg),
+              )));
+              if (result is Ok) Navigator.pop(context);
             });
           },
           style: ButtonStyle(

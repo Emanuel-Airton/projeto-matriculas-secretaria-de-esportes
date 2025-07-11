@@ -56,3 +56,6 @@ final cadastrarAlunoProvider = ((ref) {
 });
 
 final expandedStateProvider = StateProvider<Map<int, bool>>((ref) => {});
+
+final streamListAlunos =
+    StreamProvider((ref) => ref.watch(alunoServices).buscarAlunosListen());
