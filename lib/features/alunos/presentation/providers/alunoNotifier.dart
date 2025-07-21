@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/domain/repositories/aluno_repository.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
 import 'package:projeto_secretaria_de_esportes/utils/result.dart';
 import '../../data/models/aluno_model.dart';
-import '../../domain/usecases/aluno_usecase.dart';
 
 class AlunoNotifier extends StateNotifier<AsyncValue<List<AlunoModel>>> {
-  final AlunoUseCase _alunoUseCase;
+  final AlunoRepository _alunoRepository;
   List<AlunoModel> _cache = <AlunoModel>[];
   Timer? timer;
-  AlunoNotifier(this._alunoUseCase) : super(AsyncValue.data([])) {
+  AlunoNotifier(this._alunoRepository) : super(AsyncValue.data([])) {
     _fetchAlunos();
   }
 
@@ -28,7 +28,7 @@ class AlunoNotifier extends StateNotifier<AsyncValue<List<AlunoModel>>> {
 
   buscarAlunosSalvarCache() async {
     await Future.delayed(Duration(milliseconds: 500));
-    Result result = await _alunoUseCase.buscarAlunos();
+    Result result = await _alunoRepository.buscarAlunos();
     switch (result) {
       case Ok _:
         _cache = result.value;
@@ -40,7 +40,7 @@ class AlunoNotifier extends StateNotifier<AsyncValue<List<AlunoModel>>> {
   }
 
   Future<Result> deletarAluno(int alunoId) async {
-    Result result = await _alunoUseCase.deletarAluno(alunoId);
+    Result result = await _alunoRepository.deletarAluno(alunoId);
     switch (result) {
       case Ok():
         _cache = _cache.where((element) => element.id != alunoId).toList();
@@ -53,7 +53,8 @@ class AlunoNotifier extends StateNotifier<AsyncValue<List<AlunoModel>>> {
   }
 
   Future<Result> cadastrarAluno(AlunoModel alunoModel) async {
-    Result<AlunoModel> result = await _alunoUseCase.cadastrarAluno(alunoModel);
+    Result<AlunoModel> result =
+        await _alunoRepository.cadastrarAluno(alunoModel);
     switch (result) {
       case Ok():
         _cache = [..._cache, result.value];
@@ -69,7 +70,7 @@ class AlunoNotifier extends StateNotifier<AsyncValue<List<AlunoModel>>> {
   Future<Result> atualizarDadosAlunos(
       int alunoId, Map<String, dynamic> json) async {
     Result<AlunoModel> result =
-        await _alunoUseCase.atualizarAluno(alunoId, json);
+        await _alunoRepository.atualizarAluno(alunoId, json);
     switch (result) {
       case Ok<AlunoModel>():
         _cache = _cache
@@ -86,7 +87,7 @@ class AlunoNotifier extends StateNotifier<AsyncValue<List<AlunoModel>>> {
   }
 
   buscarAlunoPorNome(String nome) async {
-    Result result = await _alunoUseCase.buscarAlunoPNome(nome);
+    Result result = await _alunoRepository.buscarAlunoPNome(nome);
     Exception exception;
     switch (result) {
       case Ok _:
@@ -105,7 +106,6 @@ class AlunoNotifier extends StateNotifier<AsyncValue<List<AlunoModel>>> {
 
 final alunoNotifierProvider =
     StateNotifierProvider<AlunoNotifier, AsyncValue<List<AlunoModel>>>((ref) {
-  final alunoUseCase = ref.read(alunoUseCaseProvider);
-  return AlunoNotifier(alunoUseCase);
+  return AlunoNotifier(ref.read(alunoRepositoryProvider));
 });
 final nomeAlunoProvider = StateProvider<String>((ref) => '');

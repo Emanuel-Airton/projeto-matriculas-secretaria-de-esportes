@@ -9,18 +9,14 @@ class MatriculaModalidadesModel {
   AlunoModel? aluno; // Instância de AlunoModel
   DateTime? dataMatricula;
 
-  /* MatriculaModalidadesModel(
-      {required this.matriculaId, required this.modalidadeId, this.aluno});*/
   MatriculaModalidadesModel(
       {required this.alunoId, required this.modalidadeId, this.aluno});
 
   MatriculaModalidadesModel.teste({
     required this.id,
-    // required this.matriculaId,
     required this.alunoId,
     required this.modalidadeNome,
     required this.dataMatricula,
-    //this.dataMatricula,
     this.aluno,
   });
 
@@ -37,7 +33,6 @@ class MatriculaModalidadesModel {
 
   Map<String, dynamic> toJson() {
     return {
-      //'matricula_id': matriculaId,
       'aluno_id': alunoId,
       'modalidade_id': modalidadeId,
     };

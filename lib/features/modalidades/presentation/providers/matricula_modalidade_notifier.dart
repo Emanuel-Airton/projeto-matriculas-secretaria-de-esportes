@@ -2,17 +2,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/matricula_modalidades_model.dart';
-import 'package:projeto_secretaria_de_esportes/features/modalidades/domain/usecases/modalidades_usecase.dart';
+import 'package:projeto_secretaria_de_esportes/features/modalidades/data/repositories/modalidades_repository_impl.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/presentation/providers/modalidades_provider.dart';
 import 'package:projeto_secretaria_de_esportes/utils/result.dart';
 
 class MatriculaModalidadeNotifier
     extends StateNotifier<AsyncValue<List<MatriculaModalidadesModel>>> {
-  final ModalidadesUsecase _modalidadesUsecase;
+  final ModalidadesRepositoryImpl _modalidadesRepository;
   List<MatriculaModalidadesModel> cache = [];
   Timer? _timer;
   dynamic _result;
-  MatriculaModalidadeNotifier(this._modalidadesUsecase)
+  MatriculaModalidadeNotifier(this._modalidadesRepository)
       : super(AsyncValue.data([])) {
     fetchMatriculasModalidade();
   }
@@ -37,7 +37,7 @@ class MatriculaModalidadeNotifier
 
   _buscarMatriculasModalidade() async {
     await Future.delayed(Duration(milliseconds: 500));
-    _result = await _modalidadesUsecase.buscarMatriculaModalidade();
+    _result = await _modalidadesRepository.buscarMatriculaModalidade();
 
     if (_result is Ok) {
       cache = _result?.value;
@@ -52,7 +52,7 @@ class MatriculaModalidadeNotifier
 //classe statenotifier
   deletarMatriculaModalidade(int idMatriculaModalidade,
       {int? idModalidade}) async {
-    final Result result = await _modalidadesUsecase
+    final Result result = await _modalidadesRepository
         .deletarMatriculaModalidade(idMatriculaModalidade);
     switch (result) {
       case Ok _:
@@ -77,7 +77,7 @@ class MatriculaModalidadeNotifier
     state = AsyncValue.loading();
     await Future.delayed(Duration(milliseconds: 500));
     debugPrint('id: ${idModalidade.toString()}');
-    _result = await _modalidadesUsecase.buscarMatriculaModalidadePnomeAluno(
+    _result = await _modalidadesRepository.buscarMatriculaModalidadePnomeAluno(
         nomeAluno,
         idModalidade: idModalidade);
     debugPrint(_result.toString());
@@ -98,7 +98,7 @@ class MatriculaModalidadeNotifier
   _buscarMatriculasModalidadeFiltro(int id) async {
     state = AsyncValue.loading();
     await Future.delayed(Duration(milliseconds: 500));
-    _result = await _modalidadesUsecase.buscarMatriculaModalidadeFiltro(id);
+    _result = await _modalidadesRepository.buscarMatriculaModalidadeFiltro(id);
     switch (_result) {
       case Ok _:
         cache = _result.value;
@@ -115,9 +115,7 @@ class MatriculaModalidadeNotifier
 final matriculaModalidade = StateNotifierProvider<MatriculaModalidadeNotifier,
     AsyncValue<List<MatriculaModalidadesModel>>>(
   (ref) {
-    //final supabase = Supabase.instance.client;
-    // final modalidadesRepository = ModalidadesRepository();
-    return MatriculaModalidadeNotifier(ref.read(modalidadeUsecaseProvider));
+    return MatriculaModalidadeNotifier(ref.read(modalidadeRepository));
   },
 );
 //final matriculaModalidadeProvider = StateProvider<int?>((ref) => null);

@@ -29,7 +29,7 @@ class _ContainerInfoAlunosState extends ConsumerState<ContainerInfoAlunos> {
             ),
             SizedBox(height: 60),
             FutureBuilder(
-              future: Future.delayed(Duration(seconds: 1))
+              future: Future.delayed(Duration(milliseconds: 1500))
                   .then((value) => ref.watch(quantidadeAlunos.future)),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
@@ -41,7 +41,7 @@ class _ContainerInfoAlunosState extends ConsumerState<ContainerInfoAlunos> {
                     throw UnimplementedError();
                   case ConnectionState.done:
                     if (snapshot.hasError) {
-                      return Text('erro');
+                      return Text('Erro ao carregar dados');
                     }
                     Map<String, dynamic> map = snapshot.data ?? {};
                     // debugPrint(snapshot.data.toString());

@@ -1,23 +1,24 @@
-import 'package:flutter/material.dart';
-import 'package:projeto_secretaria_de_esportes/features/alunos/data/repositories/aluno_repository.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/data/repositories/aluno_repository_impl.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/modalidades_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/services/matricula_modalidade_sevices.dart';
+import 'package:projeto_secretaria_de_esportes/features/modalidades/domain/repositories/modalidades_repository.dart';
 import 'package:projeto_secretaria_de_esportes/utils/result.dart';
 import '../models/matricula_modalidades_model.dart';
 
-class ModalidadesRepository {
+class ModalidadesRepositoryImpl implements ModalidadesRepository {
   final MatriculaModalidadeSevices _matriculaModalidadeSevices;
-  final AlunoRepository _alunoRepository;
-  ModalidadesRepository(
+  final AlunoRepositoryImpl _alunoRepository;
+  ModalidadesRepositoryImpl(
       this._matriculaModalidadeSevices, this._alunoRepository);
 
+  @override
   Future<Result<ModalidadesModel>> buscarModalidade(int id) async {
     final result = await _matriculaModalidadeSevices.buscarModalidade(id);
     if (result is Ok) return result;
     return Result.error(Exception('Erro ao buscar modalidade'));
   }
 
-//repository
+  @override
   Future<Result<List<ModalidadesModel>>> buscarListaModalidade() async {
     final result = await _matriculaModalidadeSevices.buscarListaModalidade();
     if (result is Ok) return result;
@@ -25,6 +26,7 @@ class ModalidadesRepository {
   }
 
   //retorna a lista de todas as matriculas de acordo com o ID da modalidade
+  @override
   Future<Result<List<MatriculaModalidadesModel>>>
       buscarMatriculaModalidadeFiltro(int id) async {
     final result =
@@ -34,6 +36,7 @@ class ModalidadesRepository {
   }
 
   //retorna a lista de todas as matriculas
+  @override
   Future<Result<List<MatriculaModalidadesModel>>>
       buscarMatriculaModalidade() async {
     final result =
@@ -43,6 +46,7 @@ class ModalidadesRepository {
   }
 
   //Busca as matriculas de acordo com o nome digitado
+  @override
   Future<Result<List<MatriculaModalidadesModel>>>
       buscarMatriculaModalidadePnomeAluno(String nomeAluno,
           {int? idModalidade}) async {
@@ -57,21 +61,18 @@ class ModalidadesRepository {
         } else {
           result = await _matriculaModalidadeSevices.buscarSemIdModalidade(
               nomeAluno, resultIdsAlunos.value);
-          debugPrint('OK');
         }
         if (result is Ok) {
           return result;
         } else {
-          debugPrint('ERO');
           return Result.error(Exception('Erro ao buscar matricula do aluno'));
         }
-
       case Error _:
         return Result.error(Exception(resultIdsAlunos.error));
     }
   }
 
-//classe repository
+  @override
   Future<Result> deletarMatriculaModalidade(int id) async {
     final result =
         await _matriculaModalidadeSevices.deletarMatriculaModalidade(id);
