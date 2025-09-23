@@ -8,12 +8,10 @@ class MobileImagePickerService implements ImagePickerService {
     final ImagePicker imagePicker = ImagePicker();
     XFile? imageFile = await imagePicker.pickImage(source: ImageSource.gallery);
     if (imageFile != null) {
-      final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
-      Map<String, dynamic> mapContentImageFile = {
-        'fileName': fileName,
+      return {
+        'fileName': '${DateTime.now().millisecondsSinceEpoch}.jpg',
         'filePath': File(imageFile.path)
       };
-      return mapContentImageFile;
     }
     return null;
   }

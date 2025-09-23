@@ -13,23 +13,20 @@ class Animatedcontainer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final listAlunos = ref.watch(alunoNotifierProvider);
-    /* final streamAlunos = ref.watch(streamListAlunos);
-    streamAlunos.when(
-        data: (data) {
-          debugPrint('dados');
-          for (var dados in data) {
-            debugPrint(dados.nome);
-          }
-        },
-        error: (error, stackTrace) {},
-        loading: () {});*/
-    Future.delayed(Duration(milliseconds: 500)).then((value) {
-      debugPrint('lista atualizada');
-      if (listAlunos.hasError == false) {
-        ref.read(listAlunosProvider.notifier).state = listAlunos.value;
-        ref.read(quantidadeAlunos);
+
+    ref.listen(alunoNotifierProvider, (_, next) {
+      if (!next.isLoading && !next.hasError) {
+        ref.read(listAlunosProvider.notifier).state = next.value;
+        // ref.read(quantidadeAlunos);
       }
     });
+    /*  Future.delayed(Duration(milliseconds: 4500)).then((value) {
+      debugPrint('lista atualizada');
+      if (listAlunos.hasError == false && listAlunos.isLoading == false) {
+        ref.read(listAlunosProvider.notifier).state = listAlunos.value;
+        //  ref.read(quantidadeAlunos);
+      }
+    });*/
     final expandedState = ref.watch(expandedStateProvider);
     //  return ref.watch(alunoNotifierProvider.notifier).loading
     return listAlunos.when(

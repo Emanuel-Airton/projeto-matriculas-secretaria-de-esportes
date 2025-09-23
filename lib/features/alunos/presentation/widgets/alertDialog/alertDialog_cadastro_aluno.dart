@@ -38,6 +38,25 @@ class _DialogCadastroAlunoState extends ConsumerState<DialogCadastroAluno> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    controllerNomeAluno.dispose();
+    controllerTelefone.dispose();
+    controllercpf.dispose();
+    controllerRg.dispose();
+    controllerEscola.dispose();
+    controllerTurno.dispose();
+    controllerEndereco.dispose();
+    controllerNomeMae.dispose();
+    controllerRgMae.dispose();
+    controllerCpfMae.dispose();
+    controllerPostoSaude.dispose();
+    controllerRenda.dispose();
+    controllerNascimento.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,

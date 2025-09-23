@@ -54,8 +54,8 @@ class AlunoRepositoryImpl implements AlunoRepository {
   }
 
   //recebe a lista completa de alunos e separa a quantidade de acordo com o sexo
-  Future<Result<Map<String, dynamic>>> quantidadeAlunoPorGenero(
-      List<AlunoModel> listAlunos) async {
+  Result<Map<String, dynamic>> quantidadeAlunoPorGenero(
+      List<AlunoModel> listAlunos) {
     try {
       final List listMasc = [];
       final List listFem = [];

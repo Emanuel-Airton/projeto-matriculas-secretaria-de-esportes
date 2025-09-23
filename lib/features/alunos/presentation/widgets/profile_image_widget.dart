@@ -32,7 +32,7 @@ class _MyWidgetState extends ConsumerState<ProfileImageWidget> {
               try {
                 ref.read(mapContentFileInfo.notifier).state = {};
                 Map<String, dynamic>? map =
-                    await ref.read(pickImageUseCase).pickImage();
+                    await ref.read(imageRepository).pickImage();
                 setState(() {
                   file = map!['filePath'];
                   debugPrint('nome do arquivo ${map['fileName']}');

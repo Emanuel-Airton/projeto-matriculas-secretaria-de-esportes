@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/image_storage_provider.dart';

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
+import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/quantidade_alunos_notifier.dart';
 
-class ContainerInfoAlunos extends ConsumerStatefulWidget {
+/*class ContainerInfoAlunos extends ConsumerStatefulWidget {
   const ContainerInfoAlunos({super.key});
 
   @override
@@ -29,7 +30,7 @@ class _ContainerInfoAlunosState extends ConsumerState<ContainerInfoAlunos> {
             ),
             SizedBox(height: 60),
             FutureBuilder(
-              future: Future.delayed(Duration(milliseconds: 1500))
+              future: Future.delayed(Duration(milliseconds: 500))
                   .then((value) => ref.watch(quantidadeAlunos.future)),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
@@ -41,7 +42,7 @@ class _ContainerInfoAlunosState extends ConsumerState<ContainerInfoAlunos> {
                     throw UnimplementedError();
                   case ConnectionState.done:
                     if (snapshot.hasError) {
-                      return Text('Erro ao carregar dados');
+                      return Text(snapshot.error.toString());
                     }
                     Map<String, dynamic> map = snapshot.data ?? {};
                     // debugPrint(snapshot.data.toString());
@@ -100,12 +101,7 @@ Widget containerInfoListAlunos(
         ),
       ],
     ),
-  );
-}
-/*
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
+  );*/
 
 class ContainerInfoAlunos extends ConsumerStatefulWidget {
   const ContainerInfoAlunos({super.key});
@@ -117,26 +113,23 @@ class ContainerInfoAlunos extends ConsumerStatefulWidget {
 
 class _ContainerInfoAlunosState extends ConsumerState<ContainerInfoAlunos> {
   // Map<String, dynamic>? map = {};
+  //var listAlunos;
   @override
   void initState() {
-    // TODO: implement initState
-    //future();
     super.initState();
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    debugPrint('dispose');
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    /* Future.delayed(Duration(seconds: 1)).then((value) {
-      var listAlunos = ref.watch(quantidadeAlunos);
-      listAlunos.when(
-          data: (data) => debugPrint('dados: ${data.toString()}'),
-          error: (error, stackTrace) {},
-          loading: () {
-            CircularProgressIndicator();
-          });
-    });*/
-    var listAlunos = ref.watch(quantidadeAlunos);
-    return  Container(
+    var listAlunos = ref.watch(quantidadeAlunosNotifierProvider);
+    return Container(
       width: MediaQuery.sizeOf(context).width * 0.14,
       padding: EdgeInsets.all(15.0),
       decoration: BoxDecoration(
@@ -153,31 +146,37 @@ class _ContainerInfoAlunosState extends ConsumerState<ContainerInfoAlunos> {
             SizedBox(height: 60),
             listAlunos.when(
               data: (data) {
-                return Column(
-                  children: [
-                    containerInfoListAlunos(
-                      context,
-                      'assets/images/student.png',
-                      'Total de alunos  ${data!['total']}',
-                    ),
-                    SizedBox(height: 30),
-                    containerInfoListAlunos(
-                      context,
-                      'assets/images/masculino.png',
-                      'Meninos ${data['masculino']}',
-                    ),
-                    SizedBox(height: 30),
-                    containerInfoListAlunos(
-                      context,
-                      'assets/images/femenino.png',
-                      'Meninas ${data['feminino']}',
-                    ),
-                  ],
-                );
+                debugPrint('DADOS');
+                return data != null
+                    ? Column(
+                        children: [
+                          containerInfoListAlunos(
+                            context,
+                            'assets/images/student.png',
+                            'Total de alunos  ${data['total']}',
+                          ),
+                          SizedBox(height: 30),
+                          containerInfoListAlunos(
+                            context,
+                            'assets/images/masculino.png',
+                            'Meninos ${data['masculino']}',
+                          ),
+                          SizedBox(height: 30),
+                          containerInfoListAlunos(
+                            context,
+                            'assets/images/femenino.png',
+                            'Meninas ${data['feminino']}',
+                          ),
+                        ],
+                      )
+                    : Center(child: Text('Sem dados'));
               },
-              loading: () => CircularProgressIndicator(),
+              loading: () {
+                debugPrint('carregando...');
+                return const CircularProgressIndicator();
+              },
               error: (error, stackTrace) {
-                return Text(error.toString());
+                return Text('Erro: ${error.toString()}');
               },
             )
           ],
@@ -213,5 +212,3 @@ Widget containerInfoListAlunos(
     ),
   );
 }
-
-*/

@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/repositories/aluno_repository_impl.dart';
@@ -14,20 +17,27 @@ final alunoRepositoryProvider =
 
 // Estado dos alunos
 final listAlunosProvider = StateProvider<List<AlunoModel>?>((ref) => []);
-final quantidadeAlunos = FutureProvider<Map<String, dynamic>?>((ref) async {
+
+final quantidadeAlunos = StreamProvider<Map<String, dynamic>?>((ref) {
   final recuperaListAlunos = ref.watch(listAlunosProvider);
-  if (recuperaListAlunos!.isNotEmpty) {
-    Result result = await ref
-        .read(alunoRepositoryProvider)
-        .quantidadeAlunoPorGenero(recuperaListAlunos);
-    if (result is Ok) {
-      return result.value;
-    } else if (result is Error) {
-      throw result.error;
-    } else {
-      throw Exception('Erro desconhecido');
-    }
+  if (recuperaListAlunos == null || recuperaListAlunos.isEmpty) {
+    return Stream.value(null);
   }
+  final streamController = StreamController<Map<String, dynamic>?>();
+
+  Result result = ref
+      .read(alunoRepositoryProvider)
+      .quantidadeAlunoPorGenero(recuperaListAlunos);
+
+  if (result is Ok) {
+    streamController.add(result.value);
+  } else if (result is Error) {
+    streamController.addError(result.error);
+  } else {
+    streamController.addError(Exception('Erro desconhecido'));
+  }
+
+  return streamController.stream;
 });
 
 final count = StateProvider<int?>((ref) => 5);
