@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/models/aluno_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/data/repositories/aluno_repository_impl.dart';

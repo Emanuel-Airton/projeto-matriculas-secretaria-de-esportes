@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/aluno_provider.dart';
 import 'package:projeto_secretaria_de_esportes/features/alunos/presentation/providers/quantidade_alunos_notifier.dart';
 
 /*class ContainerInfoAlunos extends ConsumerStatefulWidget {

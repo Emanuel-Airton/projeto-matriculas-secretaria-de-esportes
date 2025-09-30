@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/data/models/modalidades_model.dart';
 import 'package:projeto_secretaria_de_esportes/features/modalidades/presentation/providers/matricula_modalidade_notifier.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../providers/modalidades_provider.dart';
 
 class RowContainersSelectModalidade extends ConsumerWidget {
